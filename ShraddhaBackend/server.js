@@ -3,12 +3,16 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { connectDB } from "./config/db.js";
+
+// Import routes
 import authRoutes from "./routes/auth.routes.js";
 import profileRoutes from "./routes/profile.routes.js";
 import accountRoutes from "./routes/account.routes.js";
 import depositRoutes from "./routes/deposit.routes.js";
 import withdrawalRoutes from "./routes/withdrawal.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
+
+// Error handling middleware
 import { notFound, errorHandler } from "./middleware/errorHandler.js";
 
 dotenv.config();
@@ -24,10 +28,14 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+    origin: (origin, callback) => {
+      // Allow server-to-server or curl requests (no origin)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.warn(`🚫 CORS blocked request from: ${origin}`);
         callback(new Error("CORS policy: Origin not allowed"));
       }
     },
@@ -38,6 +46,9 @@ app.use(
   })
 );
 
+// Explicitly handle preflight requests (important for some browsers)
+app.options("*", cors());
+
 // ----------------------
 // Body Parsing
 // ----------------------
@@ -45,7 +56,7 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 // ----------------------
-// Health Check
+// Health Check Endpoint
 // ----------------------
 app.get("/health", (req, res) => {
   res.status(200).json({
@@ -57,7 +68,7 @@ app.get("/health", (req, res) => {
 });
 
 // ----------------------
-// Routes
+// API Routes
 // ----------------------
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
@@ -66,7 +77,7 @@ app.use("/api/deposits", depositRoutes);
 app.use("/api/withdrawals", withdrawalRoutes);
 app.use("/api/admin", adminRoutes);
 
-// Static files (uploads)
+// Serve static uploads
 app.use("/uploads", express.static("uploads"));
 
 // ----------------------
