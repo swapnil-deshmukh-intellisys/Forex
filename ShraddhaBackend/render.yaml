@@ -17,7 +17,7 @@ services:
       - key: PORT
         value: 5000
       - key: ALLOWED_ORIGINS
-        value: https://your-frontend-domain.com
+        value: https://glen-demo.vercel.app/
       - key: ADMIN_EMAIL
         value: admin@expressforex.com
       - key: ADMIN_PASSWORD
