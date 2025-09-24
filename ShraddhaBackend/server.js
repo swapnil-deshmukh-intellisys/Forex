@@ -12,7 +12,10 @@ import adminRoutes from "./routes/admin.routes.js";
 
 dotenv.config();
 const app = express();
-const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
+// Get allowed origins from environment or use defaults
+const allowedOrigins = process.env.ALLOWED_ORIGINS 
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : ["http://localhost:5173", "http://localhost:5174"];
 
 // Middlewares
 app.use(
@@ -30,6 +33,16 @@ app.use(
 );
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+// Health check endpoint
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "OK",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || "development"
+  });
+});
 
 // Routes
 app.use("/api/auth", authRoutes);

@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: shraddha-backend
+    env: node
+    plan: free
+    buildCommand: pnpm install
+    startCommand: pnpm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        fromDatabase:
+          name: mongodb
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 5000
+      - key: ALLOWED_ORIGINS
+        value: https://your-frontend-domain.com
+      - key: ADMIN_EMAIL
+        value: admin@expressforex.com
+      - key: ADMIN_PASSWORD
+        value: admin123
+
+databases:
+  - name: mongodb
+    plan: free
