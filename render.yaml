@@ -9,20 +9,15 @@ services:
       - key: NODE_ENV
         value: production
       - key: MONGODB_URI
-        fromDatabase:
-          name: mongodb
-          property: connectionString
+        value: mongodb+srv://swapnildeshmukhintellisys_db_user:Orpo0zBcmKDuPCkX@forex.rmwpg4q.mongodb.net/
       - key: JWT_SECRET
         generateValue: true
       - key: PORT
         value: 5000
       - key: ALLOWED_ORIGINS
-        value: https://forex-phi-seven.vercel.app,https://forex-phi-seven.vercel.app/
+        value: https://forex-phi-seven.vercel.app/
       - key: ADMIN_EMAIL
         value: admin@expressforex.com
       - key: ADMIN_PASSWORD
         value: admin123
 
-databases:
-  - name: mongodb
-    plan: free
