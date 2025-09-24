@@ -47,7 +47,7 @@ app.use(
 );
 
 // ✅ FIXED: Express 5 requires /* or regex, not *
-app.options("/*", cors()); // Preflight handling
+// app.options("/*", cors()); // Preflight handling
 
 // ----------------------
 // Body Parsing
