@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: #0F172A; /* forest-green */
+    color: #F1F5F9; /* off-white */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-golden text-forest-green font-semibold px-6 py-3 rounded-xl hover:bg-golden/90 transition-colors;
+  }
+  
+  .btn-secondary {
+    @apply bg-transparent border-2 border-sky-blue text-sky-blue font-semibold px-6 py-3 rounded-xl hover:bg-sky-blue/10 transition-colors;
+  }
+  
+  .card {
+    @apply bg-sky-blue/10 backdrop-blur-sm border border-sky-blue/20 rounded-2xl;
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-golden to-sky-blue bg-clip-text text-transparent;
+  }
+  
+  .section-padding {
+    @apply py-20;
+  }
+  
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .backdrop-blur-custom {
+    backdrop-filter: blur(10px);
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Date picker mobile fixes */
+input[type="date"] {
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure date picker popup stays within viewport on mobile */
+@media (max-width: 768px) {
+  input[type="date"] {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+  
+  /* Force date picker to appear above other elements */
+  input[type="date"]:focus {
+    position: relative;
+    z-index: 9999;
+  }
+}
+
+/* Additional mobile viewport fixes */
+@media (max-width: 480px) {
+  input[type="date"] {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
