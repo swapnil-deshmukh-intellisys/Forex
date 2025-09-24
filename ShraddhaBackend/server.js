@@ -29,7 +29,7 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow server-to-server or curl requests (no origin)
+      // Allow requests with no origin (like server-to-server or Postman)
       if (!origin) return callback(null, true);
 
       if (allowedOrigins.includes(origin)) {
@@ -46,8 +46,8 @@ app.use(
   })
 );
 
-// Explicitly handle preflight requests (important for some browsers)
-app.options("*", cors());
+// ✅ FIXED: Express 5 requires /* or regex, not *
+app.options("/*", cors()); // Preflight handling
 
 // ----------------------
 // Body Parsing
