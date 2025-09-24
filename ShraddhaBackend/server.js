@@ -21,22 +21,19 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
 
 console.log("Allowed origins:", allowedOrigins);
 
-// CORS
+// CORS - More permissive for debugging
 app.use(
   cors({
-    origin: function (origin, callback) {
-      console.log("Request origin:", origin);
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      } else {
-        console.log("CORS blocked for origin:", origin);
-        return callback(new Error("CORS Not Allowed"));
-      }
-    },
+    origin: [
+      'https://forex-phi-seven.vercel.app',
+      'https://forex-phi-seven.vercel.app/',
+      'http://localhost:5173',
+      'http://localhost:5174'
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    optionsSuccessStatus: 200
   })
 );
 
