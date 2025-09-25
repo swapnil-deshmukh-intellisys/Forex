@@ -112,22 +112,15 @@ export const getUserAccounts = async (req, res) => {
     // Get all accounts for the user (including newly created ones)
     const allAccounts = await Account.find({ user: userId }).sort({ createdAt: -1 });
     
-    // Get admin data for each account type
-    const adminDataMap = {};
-    const adminDataList = await AdminData.find({});
-    adminDataList.forEach(data => {
-      adminDataMap[data.accountType] = data;
-    });
-
-    // Merge account data with admin data
+    // Use individual account data only (no global admin data override)
     const accountsWithAdminData = allAccounts.map(account => {
-      const adminData = adminDataMap[account.type];
       return {
         ...account.toObject(),
-        balance: adminData ? adminData.balance : account.balance,
-        currency: adminData ? adminData.currency : account.currency,
-        equity: adminData ? adminData.equity : account.equity,
-        margin: adminData ? adminData.margin : account.margin
+        // Use individual account balance, not global admin data
+        balance: account.balance,
+        currency: account.currency,
+        equity: account.equity,
+        margin: account.margin
       };
     });
 
@@ -152,15 +145,14 @@ export const getAccountById = async (req, res) => {
       return res.status(404).json({ success: false, message: "Account not found" });
     }
 
-    // Get admin data for this account type
-    const adminData = await AdminData.findOne({ accountType: account.type });
-    
+    // Use individual account data only (no global admin data override)
     const accountWithAdminData = {
       ...account.toObject(),
-      balance: adminData ? adminData.balance : account.balance,
-      currency: adminData ? adminData.currency : account.currency,
-      equity: adminData ? adminData.equity : account.equity,
-      margin: adminData ? adminData.margin : account.margin
+      // Use individual account balance, not global admin data
+      balance: account.balance,
+      currency: account.currency,
+      equity: account.equity,
+      margin: account.margin
     };
 
     res.status(200).json({
@@ -169,6 +161,39 @@ export const getAccountById = async (req, res) => {
     });
   } catch (error) {
     console.error("Get Account Error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// =============== UPDATE ACCOUNT ===============
+export const updateAccount = async (req, res) => {
+  try {
+    const { accountId } = req.params;
+    const { balance, currency, equity, margin } = req.body;
+
+    // Find and update the account
+    const account = await Account.findOneAndUpdate(
+      { _id: accountId },
+      { 
+        balance: balance || 0,
+        currency: currency || '₹',
+        equity: equity || 0,
+        margin: margin || 0
+      },
+      { new: true }
+    );
+
+    if (!account) {
+      return res.status(404).json({ success: false, message: "Account not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Account updated successfully",
+      account: account
+    });
+  } catch (error) {
+    console.error("Update Account Error:", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };

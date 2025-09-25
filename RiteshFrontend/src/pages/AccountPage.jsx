@@ -37,38 +37,7 @@ const AccountPage = ({ userEmail, onSignOut, onProfileClick, onBack, onShowAccou
     localStorage.setItem('showOffersSection', showOffersSection.toString());
   }, [showOffersSection]);
 
-  // Load admin data from localStorage
-  useEffect(() => {
-    const savedData = localStorage.getItem('adminAccountTypesData');
-    if (savedData) {
-      setAdminData(JSON.parse(savedData));
-    }
-  }, []);
-
-  // Listen for changes to admin data
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const savedData = localStorage.getItem('adminAccountTypesData');
-      if (savedData) {
-        setAdminData(JSON.parse(savedData));
-      }
-    };
-
-    const handleBalanceUpdate = () => {
-      const savedData = localStorage.getItem('adminAccountTypesData');
-      if (savedData) {
-        setAdminData(JSON.parse(savedData));
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('balanceUpdated', handleBalanceUpdate);
-    
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('balanceUpdated', handleBalanceUpdate);
-    };
-  }, []);
+  // No longer need to load global admin data - using individual account data only
   const [createdAccounts, setCreatedAccounts] = useState([]);
   const [isLoadingAccounts, setIsLoadingAccounts] = useState(true);
 
@@ -291,35 +260,14 @@ const AccountPage = ({ userEmail, onSignOut, onProfileClick, onBack, onShowAccou
     setShowOffersSection(false);
   };
 
-  // Get display data for an account (individual account data first, then fallback to admin data)
+  // Get display data for an account (use individual account data only)
   const getAccountDisplayData = (account) => {
-    // Use individual account data first
-    if (account.balance !== undefined && account.balance !== null) {
-      return {
-        balance: account.balance || 0,
-        currency: account.currency || '₹',
-        equity: account.equity || 0,
-        margin: account.margin || 0
-      };
-    }
-    
-    // Fallback to admin data if individual account data is not available
-    const adminAccountData = adminData[account.type];
-    if (adminAccountData) {
-      return {
-        balance: adminAccountData.balance,
-        currency: adminAccountData.currency,
-        equity: adminAccountData.equity,
-        margin: adminAccountData.margin
-      };
-    }
-    
-    // Final fallback
+    // Use individual account data only - no global admin data fallback
     return {
-      balance: 0,
-      currency: '₹',
-      equity: 0,
-      margin: 0
+      balance: account.balance || 0,
+      currency: account.currency || '₹',
+      equity: account.equity || 0,
+      margin: account.margin || 0
     };
   };
 

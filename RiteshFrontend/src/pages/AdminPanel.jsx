@@ -125,17 +125,25 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
 
   // Update edit data when selected account type changes
   useEffect(() => {
-    if (accountTypesData[selectedAccountType]) {
-      setEditData(accountTypesData[selectedAccountType]);
-    } else {
-      setEditData({
-        balance: '0.00',
-        equity: '0.00',
-        margin: '0.00',
-        currency: '₹'
-      });
+    if (selectedUser?.accounts) {
+      const userAccount = selectedUser.accounts.find(acc => acc.type === selectedAccountType);
+      if (userAccount) {
+        setEditData({
+          balance: userAccount.balance?.toString() || '0.00',
+          equity: userAccount.equity?.toString() || '0.00',
+          margin: userAccount.margin?.toString() || '0.00',
+          currency: userAccount.currency || '₹'
+        });
+      } else {
+        setEditData({
+          balance: '0.00',
+          equity: '0.00',
+          margin: '0.00',
+          currency: '₹'
+        });
+      }
     }
-  }, [selectedAccountType, accountTypesData]);
+  }, [selectedAccountType, selectedUser]);
 
   // Save data to localStorage whenever accountTypesData changes
   useEffect(() => {
@@ -230,12 +238,13 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
 
   const handleEdit = () => {
     setIsEditing(true);
-    setEditData({ ...accountTypesData[selectedAccountType] || {
-      balance: '0.00',
-      equity: '0.00',
-      margin: '0.00',
-      currency: '₹'
-    }});
+    const userAccount = selectedUser?.accounts?.find(acc => acc.type === selectedAccountType);
+    setEditData({
+      balance: userAccount?.balance?.toString() || '0.00',
+      equity: userAccount?.equity?.toString() || '0.00',
+      margin: userAccount?.margin?.toString() || '0.00',
+      currency: userAccount?.currency || '₹'
+    });
   };
 
   const handleSave = async () => {
@@ -252,43 +261,66 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
         return;
       }
 
-      // Check if user is in offline mode
-      const user = JSON.parse(sessionStorage.getItem('user') || '{}');
-      if (user.offline) {
-        // Update localStorage for offline mode
-        const currentData = JSON.parse(localStorage.getItem('adminAccountTypesData') || '{}');
-        currentData[selectedAccountType] = { ...editData };
-        localStorage.setItem('adminAccountTypesData', JSON.stringify(currentData));
-
-        // Update local state
-        setAccountTypesData(prev => ({
-          ...prev,
-          [selectedAccountType]: { ...editData }
-        }));
-
-        setIsEditing(false);
-        alert('Admin data updated successfully! (Offline mode)');
+      // Find the user's account to update
+      const userAccount = selectedUser?.accounts?.find(acc => acc.type === selectedAccountType);
+      if (!userAccount) {
+        alert('Account not found for the selected user');
         return;
       }
 
-      // Update via API
+      // Check if user is in offline mode
+      const user = JSON.parse(sessionStorage.getItem('user') || '{}');
+      if (user.offline) {
+        // Update localStorage for offline mode - update the user's account data
+        const savedAccounts = localStorage.getItem('createdAccounts');
+        if (savedAccounts) {
+          const accounts = JSON.parse(savedAccounts);
+          const updatedAccounts = accounts.map(acc => {
+            if (acc.id === userAccount.id || acc._id === userAccount._id) {
+              return {
+                ...acc,
+                balance: parseFloat(editData.balance),
+                currency: editData.currency,
+                equity: parseFloat(editData.equity),
+                margin: parseFloat(editData.margin)
+              };
+            }
+            return acc;
+          });
+          localStorage.setItem('createdAccounts', JSON.stringify(updatedAccounts));
+        }
+
+        setIsEditing(false);
+        alert('User account updated successfully! (Offline mode)');
+        return;
+      }
+
+      // Update individual user's account via API
       const updateData = {
-        accountType: selectedAccountType,
         balance: parseFloat(editData.balance),
         currency: editData.currency,
         equity: parseFloat(editData.equity),
         margin: parseFloat(editData.margin)
       };
 
-      await adminAPI.updateAdminData(updateData);
+      // Call account update API
+      const response = await fetch(`https://shraddha-backend.onrender.com/api/accounts/${userAccount._id || userAccount.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('adminToken')}`
+        },
+        body: JSON.stringify(updateData)
+      });
 
-      // Update local state
-      setAccountTypesData(prev => ({
-        ...prev,
-        [selectedAccountType]: { ...editData }
-      }));
-      setIsEditing(false);
-      alert('Account details updated successfully!');
+      if (response.ok) {
+        setIsEditing(false);
+        alert('User account updated successfully!');
+        // Reload user data to reflect changes
+        window.location.reload();
+      } else {
+        throw new Error('Failed to update account');
+      }
     } catch (error) {
       console.error('Error updating admin data:', error);
       alert(`Error updating account details: ${error.message}`);
@@ -296,12 +328,13 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
   };
 
   const handleCancel = () => {
-    setEditData({ ...accountTypesData[selectedAccountType] || {
-      balance: '0.00',
-      equity: '0.00',
-      margin: '0.00',
-      currency: '₹'
-    }});
+    const userAccount = selectedUser?.accounts?.find(acc => acc.type === selectedAccountType);
+    setEditData({
+      balance: userAccount?.balance?.toString() || '0.00',
+      equity: userAccount?.equity?.toString() || '0.00',
+      margin: userAccount?.margin?.toString() || '0.00',
+      currency: userAccount?.currency || '₹'
+    });
     setIsEditing(false);
   };
 
@@ -896,7 +929,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                     </div>
                   ) : (
                     <div className="text-5xl sm:text-6xl font-extrabold text-text-primary">
-                      {accountTypesData[selectedAccountType]?.balance || '0.00'} {accountTypesData[selectedAccountType]?.currency || '₹'}
+                      {selectedUser?.accounts?.find(acc => acc.type === selectedAccountType)?.balance || '0.00'} {selectedUser?.accounts?.find(acc => acc.type === selectedAccountType)?.currency || '₹'}
                     </div>
                   )}
                 </div>

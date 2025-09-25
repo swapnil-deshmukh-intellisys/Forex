@@ -96,14 +96,14 @@ const AccountDetailsPage = ({ account, onBack, onSignOut, onProfileClick }) => {
       // Check if user is in offline mode
       const user = JSON.parse(sessionStorage.getItem('user') || '{}');
       if (user.offline) {
-        // Use localStorage for offline mode
-        const savedData = localStorage.getItem('adminAccountTypesData');
-        if (savedData && account) {
-          const parsedData = JSON.parse(savedData);
-          const accountTypeData = parsedData[account.type];
-          if (accountTypeData) {
-            setAdminData(accountTypeData);
-          }
+        // For offline mode, use the account's own data
+        if (account) {
+          setAdminData({
+            balance: account.balance || 0,
+            currency: account.currency || '₹',
+            equity: account.equity || 0,
+            margin: account.margin || 0
+          });
         }
         return;
       }
@@ -120,14 +120,14 @@ const AccountDetailsPage = ({ account, onBack, onSignOut, onProfileClick }) => {
         }
       } catch (error) {
         console.error('Error loading account data:', error);
-        // Fallback to localStorage
-        const savedData = localStorage.getItem('adminAccountTypesData');
-        if (savedData && account) {
-          const parsedData = JSON.parse(savedData);
-          const accountTypeData = parsedData[account.type];
-          if (accountTypeData) {
-            setAdminData(accountTypeData);
-          }
+        // Fallback to account's own data
+        if (account) {
+          setAdminData({
+            balance: account.balance || 0,
+            currency: account.currency || '₹',
+            equity: account.equity || 0,
+            margin: account.margin || 0
+          });
         }
       }
     };
