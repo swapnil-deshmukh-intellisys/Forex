@@ -134,8 +134,8 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
 
   // Update edit data when selected account type changes
   useEffect(() => {
-    if (selectedUser?.accounts) {
-      const userAccount = selectedUser.accounts.find(acc => acc.type === selectedAccountType);
+    if (createdAccounts.length > 0) {
+      const userAccount = createdAccounts.find(acc => acc.type === selectedAccountType);
       if (userAccount) {
         setEditData({
           balance: userAccount.balance?.toString() || '0.00',
@@ -143,16 +143,16 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
           margin: userAccount.margin?.toString() || '0.00',
           currency: userAccount.currency || '₹'
         });
-    } else {
-      setEditData({
-        balance: '0.00',
-        equity: '0.00',
-        margin: '0.00',
-        currency: '₹'
-      });
+      } else {
+        setEditData({
+          balance: '0.00',
+          equity: '0.00',
+          margin: '0.00',
+          currency: '₹'
+        });
+      }
     }
-    }
-  }, [selectedAccountType, selectedUser]);
+  }, [selectedAccountType, createdAccounts]);
 
   // No longer need to save global admin data to localStorage
 
@@ -161,8 +161,11 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
     const loadUserAccounts = async () => {
       if (selectedUser) {
         try {
+          console.log('Loading accounts for user:', selectedUser.id);
           const userResponse = await adminAPI.getUserById(selectedUser.id);
+          console.log('User response:', userResponse);
           if (userResponse.success && userResponse.user.accounts) {
+            console.log('User accounts loaded:', userResponse.user.accounts);
             setCreatedAccounts(userResponse.user.accounts);
             
             // Set first account type as selected if none is selected
@@ -267,7 +270,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
 
   const handleEdit = () => {
     setIsEditing(true);
-    const userAccount = selectedUser?.accounts?.find(acc => acc.type === selectedAccountType);
+    const userAccount = createdAccounts.find(acc => acc.type === selectedAccountType);
     setEditData({
       balance: userAccount?.balance?.toString() || '0.00',
       equity: userAccount?.equity?.toString() || '0.00',
@@ -291,7 +294,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
       }
 
       // Find the user's account to update
-      const userAccount = selectedUser?.accounts?.find(acc => acc.type === selectedAccountType);
+      const userAccount = createdAccounts.find(acc => acc.type === selectedAccountType);
       if (!userAccount) {
         alert('Account not found for the selected user');
         return;
@@ -357,7 +360,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
   };
 
   const handleCancel = () => {
-    const userAccount = selectedUser?.accounts?.find(acc => acc.type === selectedAccountType);
+    const userAccount = createdAccounts.find(acc => acc.type === selectedAccountType);
     setEditData({
       balance: userAccount?.balance?.toString() || '0.00',
       equity: userAccount?.equity?.toString() || '0.00',
@@ -964,7 +967,16 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                     </div>
                   ) : (
                     <div className="text-5xl sm:text-6xl font-extrabold text-text-primary">
-                      {selectedUser?.accounts?.find(acc => acc.type === selectedAccountType)?.balance || '0.00'} {selectedUser?.accounts?.find(acc => acc.type === selectedAccountType)?.currency || '₹'}
+                      {(() => {
+                        const userAccount = createdAccounts.find(acc => acc.type === selectedAccountType);
+                        console.log('Created accounts:', createdAccounts);
+                        console.log('Selected account type:', selectedAccountType);
+                        console.log('Found user account:', userAccount);
+                        return userAccount?.balance || '0.00';
+                      })()} {(() => {
+                        const userAccount = createdAccounts.find(acc => acc.type === selectedAccountType);
+                        return userAccount?.currency || '₹';
+                      })()}
                     </div>
                   )}
                 </div>
