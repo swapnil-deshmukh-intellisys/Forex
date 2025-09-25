@@ -60,29 +60,38 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
       }
 
       try {
-        // Load admin data
-        const adminResponse = await adminAPI.getAdminData();
-        if (adminResponse.success) {
-          const adminDataMap = {};
-          adminResponse.adminData.forEach(data => {
-            adminDataMap[data.accountType] = data;
-          });
-          setAccountTypesData(adminDataMap);
+        // Load selected user's accounts if user is selected
+        if (selectedUser) {
+          try {
+            const userResponse = await adminAPI.getUserById(selectedUser.id);
+            if (userResponse.success && userResponse.user.accounts) {
+              setCreatedAccounts(userResponse.user.accounts);
+              
+              // Set first account type as selected if none is selected
+              if (userResponse.user.accounts.length > 0 && !selectedAccountType) {
+                // Prioritize user's primary account if available, otherwise use first account
+                if (selectedUser.accountType && userResponse.user.accounts.some(acc => acc.type === selectedUser.accountType)) {
+                  setSelectedAccountType(selectedUser.accountType);
+                } else {
+                  setSelectedAccountType(userResponse.user.accounts[0].type);
+                }
+              }
+            }
+          } catch (userError) {
+            console.error('Error loading user accounts:', userError);
+          }
         }
 
-        // Load account types
-        const accountTypesResponse = await adminAPI.getAccountTypes();
-        if (accountTypesResponse.success) {
-          const accountTypes = accountTypesResponse.accountTypes.map(type => ({ type }));
-          setCreatedAccounts(accountTypes);
-          
-          // Set first account type as selected if none is selected
-          if (accountTypes.length > 0 && !selectedAccountType) {
-            // Prioritize user's primary account if available, otherwise use first account
-            if (selectedUser && selectedUser.accountType && accountTypes.some(acc => acc.type === selectedUser.accountType)) {
-              setSelectedAccountType(selectedUser.accountType);
-            } else {
-            setSelectedAccountType(accountTypes[0].type);
+        // Load account types only if no user is selected
+        if (!selectedUser) {
+          const accountTypesResponse = await adminAPI.getAccountTypes();
+          if (accountTypesResponse.success) {
+            const accountTypes = accountTypesResponse.accountTypes.map(type => ({ type }));
+            setCreatedAccounts(accountTypes);
+            
+            // Set first account type as selected if none is selected
+            if (accountTypes.length > 0 && !selectedAccountType) {
+              setSelectedAccountType(accountTypes[0].type);
             }
           }
         }
@@ -134,27 +143,45 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
           margin: userAccount.margin?.toString() || '0.00',
           currency: userAccount.currency || '₹'
         });
-      } else {
-        setEditData({
-          balance: '0.00',
-          equity: '0.00',
-          margin: '0.00',
-          currency: '₹'
-        });
-      }
+    } else {
+      setEditData({
+        balance: '0.00',
+        equity: '0.00',
+        margin: '0.00',
+        currency: '₹'
+      });
+    }
     }
   }, [selectedAccountType, selectedUser]);
 
-  // Save data to localStorage whenever accountTypesData changes
-  useEffect(() => {
-    localStorage.setItem('adminAccountTypesData', JSON.stringify(accountTypesData));
-  }, [accountTypesData]);
+  // No longer need to save global admin data to localStorage
 
-  // Set Primary Account as default when user is selected
+  // Load user's accounts when user is selected
   useEffect(() => {
-    if (selectedUser && selectedUser.accountType) {
-      setSelectedAccountType(selectedUser.accountType);
-    }
+    const loadUserAccounts = async () => {
+      if (selectedUser) {
+        try {
+          const userResponse = await adminAPI.getUserById(selectedUser.id);
+          if (userResponse.success && userResponse.user.accounts) {
+            setCreatedAccounts(userResponse.user.accounts);
+            
+            // Set first account type as selected if none is selected
+            if (userResponse.user.accounts.length > 0 && !selectedAccountType) {
+              // Prioritize user's primary account if available, otherwise use first account
+              if (selectedUser.accountType && userResponse.user.accounts.some(acc => acc.type === selectedUser.accountType)) {
+                setSelectedAccountType(selectedUser.accountType);
+              } else {
+                setSelectedAccountType(userResponse.user.accounts[0].type);
+              }
+            }
+          }
+        } catch (error) {
+          console.error('Error loading user accounts:', error);
+        }
+      }
+    };
+
+    loadUserAccounts();
   }, [selectedUser]);
 
   // Load deposit requests based on selectedUser
@@ -165,6 +192,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
         try {
           const depositResponse = await depositAPI.getDepositRequests();
           if (depositResponse.success) {
+            console.log('Loaded deposit requests:', depositResponse.depositRequests); // Debug log
             setDepositRequests(depositResponse.depositRequests);
           }
         } catch (error) {
@@ -175,6 +203,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
         try {
           const userDepositResponse = await adminAPI.getUserDepositRequests(selectedUser.id);
           if (userDepositResponse.success) {
+            console.log('Loaded user deposit requests:', userDepositResponse.depositRequests); // Debug log
             setDepositRequests(userDepositResponse.depositRequests);
           }
         } catch (error) {
@@ -314,7 +343,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
       });
 
       if (response.ok) {
-        setIsEditing(false);
+      setIsEditing(false);
         alert('User account updated successfully!');
         // Reload user data to reflect changes
         window.location.reload();
@@ -617,9 +646,13 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
 
       // Show success message for approved payments
       if (action === 'approve' && verifiedAmount) {
-        alert(`Payment approved! ₹${verifiedAmount} has been added to ${depositRequests.find(r => r.id === requestId)?.accountType} account balance.`);
+        const request = depositRequests.find(r => r._id === requestId || r.id === requestId);
+        console.log('Found request:', request); // Debug log
+        alert(`Payment approved! ₹${verifiedAmount} has been added to ${request?.accountType || 'the'} account balance.`);
       } else if (action === 'reject') {
-        alert(`Payment rejected for ${depositRequests.find(r => r.id === requestId)?.accountType} account.`);
+        const request = depositRequests.find(r => r._id === requestId || r.id === requestId);
+        console.log('Found request for rejection:', request); // Debug log
+        alert(`Payment rejected for ${request?.accountType || 'the'} account.`);
       }
     } catch (error) {
       console.error('Error verifying payment:', error);
@@ -752,9 +785,11 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
 
       // Show success message
       if (action === 'approve' && verifiedAmount) {
-        alert(`Withdrawal approved! ₹${verifiedAmount} has been deducted from ${withdrawalRequests.find(r => r.id === requestId)?.accountType} account balance.`);
+        const request = withdrawalRequests.find(r => r._id === requestId || r.id === requestId);
+        alert(`Withdrawal approved! ₹${verifiedAmount} has been deducted from ${request?.accountType || 'the'} account balance.`);
       } else if (action === 'reject') {
-        alert(`Withdrawal rejected for ${withdrawalRequests.find(r => r.id === requestId)?.accountType} account.`);
+        const request = withdrawalRequests.find(r => r._id === requestId || r.id === requestId);
+        alert(`Withdrawal rejected for ${request?.accountType || 'the'} account.`);
       }
     } catch (error) {
       console.error('Error verifying withdrawal:', error);

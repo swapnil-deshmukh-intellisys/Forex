@@ -191,25 +191,18 @@ export const getUserById = async (req, res) => {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    // Get user's accounts
+    // Get user's accounts with individual balances
     const accounts = await Account.find({ user: userId });
     
-    // Get admin data for each account type
-    const adminDataMap = {};
-    const adminDataList = await AdminData.find({});
-    adminDataList.forEach(data => {
-      adminDataMap[data.accountType] = data;
-    });
-    
-    // Merge account data with admin data
-    const accountsWithAdminData = accounts.map(account => {
-      const adminData = adminDataMap[account.type];
+    // Use individual account data only (no global admin data override)
+    const accountsWithData = accounts.map(account => {
       return {
         ...account.toObject(),
-        balance: adminData ? adminData.balance : account.balance,
-        currency: adminData ? adminData.currency : account.currency,
-        equity: adminData ? adminData.equity : account.equity,
-        margin: adminData ? adminData.margin : account.margin
+        // Use individual account balance, not global admin data
+        balance: account.balance,
+        currency: account.currency,
+        equity: account.equity,
+        margin: account.margin
       };
     });
 
@@ -217,7 +210,7 @@ export const getUserById = async (req, res) => {
       success: true,
       user: {
         ...user.toObject(),
-        accounts: accountsWithAdminData
+        accounts: accountsWithData
       }
     });
   } catch (error) {

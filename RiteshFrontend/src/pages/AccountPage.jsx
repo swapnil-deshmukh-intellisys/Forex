@@ -263,12 +263,12 @@ const AccountPage = ({ userEmail, onSignOut, onProfileClick, onBack, onShowAccou
   // Get display data for an account (use individual account data only)
   const getAccountDisplayData = (account) => {
     // Use individual account data only - no global admin data fallback
-    return {
-      balance: account.balance || 0,
-      currency: account.currency || '₹',
-      equity: account.equity || 0,
-      margin: account.margin || 0
-    };
+      return {
+        balance: account.balance || 0,
+        currency: account.currency || '₹',
+        equity: account.equity || 0,
+        margin: account.margin || 0
+      };
   };
 
   // Handle deposit request
