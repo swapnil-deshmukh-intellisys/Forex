@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import LogoPng from '../assets/Logo.png';
 import { authAPI } from '../services/api';
+import ForgotPasswordModal from '../components/ForgotPasswordModal';
 
 
 const SignInPage = ({ onSignIn, onSignUpClick, onBack }) => {
@@ -10,6 +11,7 @@ const SignInPage = ({ onSignIn, onSignUpClick, onBack }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState(""); // ✅ Added state
   const [successMessage, setSuccessMessage] = useState(""); // ✅ For popup
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
  const handleSubmit = async (e) => {
   e.preventDefault();
@@ -168,9 +170,13 @@ const SignInPage = ({ onSignIn, onSignUpClick, onBack }) => {
                 </label>
               </div>
               <div className="text-sm">
-                <a href="#" className="text-accent-color hover:text-accent-color/80 transition-colors">
+                <button 
+                  type="button"
+                  onClick={() => setShowForgotPassword(true)}
+                  className="text-accent-color hover:text-accent-color/80 transition-colors"
+                >
                   Forgot password?
-                </a>
+                </button>
               </div>
             </div>
 
@@ -228,6 +234,12 @@ const SignInPage = ({ onSignIn, onSignUpClick, onBack }) => {
           </p>
         </div>
       </div>
+
+      {/* Forgot Password Modal */}
+      <ForgotPasswordModal 
+        isOpen={showForgotPassword}
+        onClose={() => setShowForgotPassword(false)}
+      />
     </div>
   );
 };

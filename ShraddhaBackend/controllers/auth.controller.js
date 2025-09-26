@@ -3,6 +3,9 @@ import Admin from "../models/Admin.js";
 import Account from "../models/Account.js";
 import AdminData from "../models/AdminData.js";
 import Profile from "../models/Profile.js";
+import OTP from "../models/OTP.js";
+// Using real email service with your credentials
+import { sendOTPEmail, sendPasswordResetSuccessEmail } from "../services/emailService.js";
 import jwt from "jsonwebtoken";
 
 // =============== SIGNUP ===============
@@ -313,6 +316,163 @@ export const createAdminUser = async (req, res) => {
     });
   } catch (error) {
     console.error("Create Admin User Error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// =============== FORGOT PASSWORD ===============
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ success: false, message: "Email is required" });
+    }
+
+    // Check if user exists
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found with this email" });
+    }
+
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Delete any existing OTPs for this email
+    await OTP.deleteMany({ email: email.toLowerCase(), type: 'password_reset' });
+
+    // Create new OTP record
+    const otpRecord = await OTP.create({
+      email: email.toLowerCase(),
+      otp: otp,
+      type: 'password_reset'
+    });
+
+    // Send OTP email
+    const emailResult = await sendOTPEmail(email, otp, 'password_reset');
+    
+    if (!emailResult.success) {
+      console.error('Failed to send OTP email:', emailResult.error);
+      return res.status(500).json({ 
+        success: false, 
+        message: "Failed to send OTP email. Please try again." 
+      });
+    }
+
+    console.log(`✅ OTP sent to ${email} for password reset`);
+    
+    res.status(200).json({
+      success: true,
+      message: "OTP sent to your email address",
+      email: email // Return email for frontend to use in verification
+    });
+
+  } catch (error) {
+    console.error("Forgot Password Error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// =============== VERIFY OTP ===============
+export const verifyOTP = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({ success: false, message: "Email and OTP are required" });
+    }
+
+    // Find valid OTP record
+    const otpRecord = await OTP.findOne({
+      email: email.toLowerCase(),
+      otp: otp,
+      type: 'password_reset',
+      isUsed: false,
+      expiresAt: { $gt: new Date() }
+    });
+
+    if (!otpRecord) {
+      // Increment attempts for this email
+      await OTP.updateMany(
+        { email: email.toLowerCase(), type: 'password_reset' },
+        { $inc: { attempts: 1 } }
+      );
+      
+      return res.status(400).json({ 
+        success: false, 
+        message: "Invalid or expired OTP" 
+      });
+    }
+
+    // Mark OTP as used
+    otpRecord.isUsed = true;
+    await otpRecord.save();
+
+    // Generate temporary token for password reset
+    const resetToken = jwt.sign(
+      { email: email.toLowerCase(), type: 'password_reset' },
+      process.env.JWT_SECRET || "mySuperSecretKey",
+      { expiresIn: "15m" } // 15 minutes
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "OTP verified successfully",
+      resetToken: resetToken
+    });
+
+  } catch (error) {
+    console.error("Verify OTP Error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// =============== RESET PASSWORD ===============
+export const resetPassword = async (req, res) => {
+  try {
+    const { resetToken, newPassword } = req.body;
+
+    if (!resetToken || !newPassword) {
+      return res.status(400).json({ success: false, message: "Reset token and new password are required" });
+    }
+
+    // Verify reset token
+    let decoded;
+    try {
+      decoded = jwt.verify(resetToken, process.env.JWT_SECRET || "mySuperSecretKey");
+    } catch (error) {
+      return res.status(400).json({ success: false, message: "Invalid or expired reset token" });
+    }
+
+    if (decoded.type !== 'password_reset') {
+      return res.status(400).json({ success: false, message: "Invalid token type" });
+    }
+
+    // Find user
+    const user = await User.findOne({ email: decoded.email });
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    // Update password
+    user.password = newPassword; // Password will be hashed by the schema pre-save hook
+    await user.save();
+
+    // Send success email
+    await sendPasswordResetSuccessEmail(user.email);
+
+    // Delete all OTPs for this email
+    await OTP.deleteMany({ email: user.email, type: 'password_reset' });
+
+    console.log(`✅ Password reset successful for ${user.email}`);
+    
+    res.status(200).json({
+      success: true,
+      message: "Password reset successfully"
+    });
+
+  } catch (error) {
+    console.error("Reset Password Error:", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };

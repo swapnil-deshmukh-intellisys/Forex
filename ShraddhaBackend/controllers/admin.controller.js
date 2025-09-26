@@ -303,3 +303,39 @@ export const verifyUser = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+// =============== GET USER WITHDRAWAL REQUESTS ===============
+export const getUserWithdrawalRequests = async (req, res) => {
+  console.log("🚀 getUserWithdrawalRequests function called!");
+  try {
+    const { userId } = req.params;
+    console.log(`🔍 Getting withdrawal requests for user: ${userId}`);
+    
+    // Get withdrawal requests for the specific user
+    const withdrawalRequests = await WithdrawalRequest.find({ 
+      userId: userId 
+    }).sort({ createdAt: -1 });
+
+    console.log(`📊 Found ${withdrawalRequests.length} withdrawal requests for user`);
+    if (withdrawalRequests.length > 0) {
+      console.log(`📋 Withdrawal requests:`, withdrawalRequests.map(req => ({ id: req._id, userId: req.userId, amount: req.amount, status: req.status })));
+    }
+
+    // Convert ObjectIds to strings for proper serialization
+    const serializedWithdrawalRequests = withdrawalRequests.map(request => ({
+      ...request.toObject(),
+      _id: request._id.toString(),
+      userId: request.userId.toString(),
+      accountId: request.accountId.toString(),
+      verifiedBy: request.verifiedBy ? request.verifiedBy.toString() : null
+    }));
+
+    res.status(200).json({
+      success: true,
+      withdrawalRequests: serializedWithdrawalRequests
+    });
+  } catch (error) {
+    console.error("Get User Withdrawal Requests Error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};

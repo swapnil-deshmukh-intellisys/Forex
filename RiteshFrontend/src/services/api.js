@@ -1,5 +1,5 @@
-// API Base URL
-const API_BASE_URL = 'https://shraddha-backend.onrender.com/api';
+// API Base URL - Using local backend for testing forgot password
+const API_BASE_URL = 'http://localhost:5000/api';
 
 // Helper function to get auth token
 const getAuthToken = () => {
@@ -94,6 +94,30 @@ export const authAPI = {
   createAdminUser: async () => {
     return apiRequest('/auth/create-admin', {
       method: 'POST',
+    });
+  },
+
+  // Forgot password
+  forgotPassword: async (email) => {
+    return apiRequest('/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  },
+
+  // Verify OTP
+  verifyOTP: async (email, otp) => {
+    return apiRequest('/auth/verify-otp', {
+      method: 'POST',
+      body: JSON.stringify({ email, otp }),
+    });
+  },
+
+  // Reset password
+  resetPassword: async (resetToken, newPassword) => {
+    return apiRequest('/auth/reset-password', {
+      method: 'POST',
+      body: JSON.stringify({ resetToken, newPassword }),
     });
   },
 };
@@ -213,6 +237,11 @@ export const adminAPI = {
   // Get user deposit requests
   getUserDepositRequests: async (userId) => {
     return adminApiRequest(`/admin/users/${userId}/deposits`);
+  },
+
+  // Get user withdrawal requests
+  getUserWithdrawalRequests: async (userId) => {
+    return adminApiRequest(`/admin/users/${userId}/withdrawals`);
   },
 };
 

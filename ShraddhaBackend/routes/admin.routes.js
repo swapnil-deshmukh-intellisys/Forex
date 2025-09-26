@@ -7,6 +7,7 @@ import {
   getAllUsers,
   getUserById,
   getUserDepositRequests,
+  getUserWithdrawalRequests,
   verifyUser
 } from "../controllers/admin.controller.js";
 import authMiddleware from "../middleware/authMiddleware.js";
@@ -25,6 +26,7 @@ router.get("/statistics", getDepositStatistics);
 router.get("/users", getAllUsers);
 router.get("/users/:userId", getUserById);
 router.get("/users/:userId/deposits", getUserDepositRequests);
+router.get("/users/:userId/withdrawals", getUserWithdrawalRequests);
 router.put("/verify-user/:userId", verifyUser);
 
 export default router;
