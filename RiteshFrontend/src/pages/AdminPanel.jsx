@@ -56,6 +56,11 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
         if (savedDepositRequests) {
           setDepositRequests(JSON.parse(savedDepositRequests));
         }
+
+        const savedWithdrawalRequests = localStorage.getItem('withdrawalRequests');
+        if (savedWithdrawalRequests) {
+          setWithdrawalRequests(JSON.parse(savedWithdrawalRequests));
+        }
         return;
       }
 
@@ -96,6 +101,23 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
           }
         }
 
+        // Load withdrawal requests for admin overview (when no user selected)
+        if (!selectedUser) {
+          try {
+            console.log('📡 Loading all withdrawal requests in main loadData...');
+            console.log('🔑 Admin token check:', sessionStorage.getItem('adminToken') ? 'Present' : 'Missing');
+            const withdrawalResponse = await withdrawalAPI.getWithdrawalRequests();
+            console.log('📡 Withdrawal API response in main loadData:', withdrawalResponse);
+            if (withdrawalResponse.success) {
+              console.log('✅ Loaded withdrawal requests in main loadData:', withdrawalResponse.withdrawalRequests.length);
+              setWithdrawalRequests(withdrawalResponse.withdrawalRequests);
+            } else {
+              console.log('❌ Withdrawal API failed in main loadData:', withdrawalResponse);
+            }
+          } catch (error) {
+            console.error('❌ Error loading withdrawal requests in main loadData:', error);
+          }
+        }
         // Deposit requests will be loaded by the selectedUser useEffect
       } catch (error) {
         console.error('Error loading admin data:', error);
@@ -125,6 +147,11 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
         const savedRequests = localStorage.getItem('depositRequests');
         if (savedRequests) {
           setDepositRequests(JSON.parse(savedRequests));
+        }
+
+        const savedWithdrawalRequests = localStorage.getItem('withdrawalRequests');
+        if (savedWithdrawalRequests) {
+          setWithdrawalRequests(JSON.parse(savedWithdrawalRequests));
         }
       }
     };
@@ -222,7 +249,11 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
   // Load withdrawal requests based on selectedUser
   useEffect(() => {
     const loadWithdrawalRequests = async () => {
-      console.log('🔄 Loading withdrawal requests...', { selectedUser: selectedUser?.id || selectedUser?._id });
+      console.log('🔄 Loading withdrawal requests...', { 
+        selectedUser: selectedUser?.id || selectedUser?._id,
+        selectedUserName: selectedUser?.fullName,
+        hasSelectedUser: !!selectedUser
+      });
       
       if (!selectedUser) {
         // If no user selected, load all withdrawal requests for verification
@@ -230,10 +261,10 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
           console.log('📡 Fetching all withdrawal requests...');
           console.log('🔑 Admin token:', sessionStorage.getItem('adminToken') ? 'Present' : 'Missing');
           const withdrawalResponse = await withdrawalAPI.getWithdrawalRequests();
-          console.log('📡 Withdrawal API response:', withdrawalResponse);
+          console.log('📡 Withdrawal API response (ALL):', withdrawalResponse);
           
           if (withdrawalResponse.success) {
-            console.log('✅ Setting withdrawal requests:', withdrawalResponse.withdrawalRequests);
+            console.log('✅ Setting withdrawal requests (ALL):', withdrawalResponse.withdrawalRequests.length, 'requests');
             setWithdrawalRequests(withdrawalResponse.withdrawalRequests);
           } else {
             console.log('❌ Withdrawal API failed:', withdrawalResponse);
@@ -244,15 +275,20 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
       } else {
         // If user selected, load their specific withdrawal requests
         try {
-          console.log('📡 Fetching withdrawal requests for user:', selectedUser.id || selectedUser._id);
-          const withdrawalResponse = await adminAPI.getUserWithdrawalRequests(selectedUser.id || selectedUser._id);
+          const userId = selectedUser.id || selectedUser._id;
+          console.log('📡 Fetching withdrawal requests for user:', userId);
+          console.log('📡 User details:', { id: userId, name: selectedUser.fullName, email: selectedUser.email });
+          
+          const withdrawalResponse = await adminAPI.getUserWithdrawalRequests(userId);
           console.log('📡 Withdrawal API response for user:', withdrawalResponse);
           
           if (withdrawalResponse.success) {
-            console.log('🔍 User withdrawals:', withdrawalResponse.withdrawalRequests);
+            console.log('🔍 User withdrawals:', withdrawalResponse.withdrawalRequests.length, 'requests');
+            console.log('🔍 User withdrawal details:', withdrawalResponse.withdrawalRequests);
             setWithdrawalRequests(withdrawalResponse.withdrawalRequests);
           } else {
             console.log('❌ Withdrawal API failed for user:', withdrawalResponse);
+            setWithdrawalRequests([]);
           }
         } catch (error) {
           console.error('❌ Error loading user withdrawal requests:', error);
@@ -1622,32 +1658,24 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
             <div className="mt-8">
               <div className="bg-card-bg backdrop-blur-sm border border-border-color rounded-2xl p-6 shadow-xl">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-2xl font-bold text-text-primary">
-                    {selectedUser ? `${selectedUser.fullName}'s Withdrawal Requests` : 'Withdrawal Requests'} 
-                    <span className="text-sm font-normal text-text-secondary ml-2">
-                      ({withdrawalRequests.length} total, {withdrawalRequests.filter(r => r.status === 'pending').length} pending)
-                    </span>
-                  </h3>
-                  <button
-                    onClick={() => {
-                      console.log('🔄 Manual refresh of withdrawal requests...');
-                      const loadWithdrawalRequests = async () => {
-                        try {
-                          const withdrawalResponse = await withdrawalAPI.getWithdrawalRequests();
-                          console.log('🔄 Manual refresh response:', withdrawalResponse);
-                          if (withdrawalResponse.success) {
-                            setWithdrawalRequests(withdrawalResponse.withdrawalRequests);
-                          }
-                        } catch (error) {
-                          console.error('❌ Manual refresh error:', error);
-                        }
-                      };
-                      loadWithdrawalRequests();
-                    }}
-                    className="px-4 py-2 bg-accent-color text-white rounded-lg hover:bg-accent-color/90 transition-colors"
-                  >
-                    🔄 Refresh
-                  </button>
+                  <div>
+                    <h3 className="text-2xl font-bold text-text-primary">
+                      {selectedUser ? `${selectedUser.fullName}'s Withdrawal Requests` : 'Withdrawal Requests'} 
+                      <span className="text-sm font-normal text-text-secondary ml-2">
+                        ({withdrawalRequests.length} total, {withdrawalRequests.filter(r => r.status === 'pending').length} pending)
+                      </span>
+                    </h3>
+                    {selectedUser && (
+                      <div className="mt-2 text-sm text-text-secondary">
+                        🔍 Showing withdrawal requests for: <span className="font-semibold text-accent-color">{selectedUser.fullName}</span> ({selectedUser.email})
+                      </div>
+                    )}
+                    {!selectedUser && (
+                      <div className="mt-2 text-sm text-text-secondary">
+                        🔍 Showing all withdrawal requests (no user selected)
+                      </div>
+                    )}
+                  </div>
                 </div>
                 
                 {withdrawalRequests.filter(request => request.status === 'pending').length > 0 ? (
@@ -1793,9 +1821,21 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
             {withdrawalRequests.filter(request => request.status !== 'pending').length > 0 && (
               <div className="mt-8">
                 <div className="bg-card-bg backdrop-blur-sm border border-border-color rounded-2xl p-6 shadow-xl">
-                  <h3 className="text-2xl font-bold text-text-primary mb-6">
-                    {selectedUser ? `${selectedUser.fullName}'s Withdrawal History` : 'Withdrawal History'}
-                  </h3>
+                  <div className="mb-6">
+                    <h3 className="text-2xl font-bold text-text-primary">
+                      {selectedUser ? `${selectedUser.fullName}'s Withdrawal History` : 'Withdrawal History'}
+                    </h3>
+                    {selectedUser && (
+                      <div className="mt-2 text-sm text-text-secondary">
+                        🔍 Showing withdrawal history for: <span className="font-semibold text-accent-color">{selectedUser.fullName}</span> ({selectedUser.email})
+                      </div>
+                    )}
+                    {!selectedUser && (
+                      <div className="mt-2 text-sm text-text-secondary">
+                        🔍 Showing all withdrawal history (no user selected)
+                      </div>
+                    )}
+                  </div>
                   
                   <div className="space-y-3">
                     {withdrawalRequests

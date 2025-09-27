@@ -347,9 +347,11 @@ const AccountPage = ({ userEmail, onSignOut, onProfileClick, onBack, onShowAccou
       if (user.offline) {
         // Handle withdrawal request locally for offline mode
         const withdrawalRequests = JSON.parse(localStorage.getItem('withdrawalRequests') || '[]');
+        // Find the account for proper ID mapping
+        const account = createdAccounts.find(acc => acc.type === withdrawalRequest.accountType);
         const newRequest = {
           id: Date.now().toString(),
-          accountId: withdrawalRequest.accountType,
+          accountId: account?._id || account?.id || withdrawalRequest.accountType,
           accountType: withdrawalRequest.accountType,
           amount: withdrawalRequest.amount,
           method: withdrawalRequest.method,

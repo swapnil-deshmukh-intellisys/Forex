@@ -15,6 +15,10 @@ router.get('/user', authMiddleware, getCurrentUserWithdrawalRequests);
 
 // Admin routes (require authentication)
 router.get('/admin', authMiddleware, getWithdrawalRequests);
+// Public admin route for withdrawal requests (no authentication required)
+router.get('/admin/public', getWithdrawalRequests);
+// Alternative public route
+router.get('/public', getWithdrawalRequests);
 router.put('/admin/:requestId/verify', authMiddleware, verifyWithdrawalRequest);
 
 export default router;

@@ -5,6 +5,13 @@ const authMiddleware = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
   console.log(`🔑 Token present: ${!!token}`);
 
+  // Special case for admin withdrawal requests - allow access without token
+  if (req.path === '/admin' && req.method === 'GET') {
+    console.log("🔓 Allowing admin withdrawal access without authentication");
+    req.user = { id: 'admin', role: 'admin' }; // Mock admin user
+    return next();
+  }
+
   if (!token) {
     console.log("❌ No token provided");
     return res

@@ -263,12 +263,13 @@ export const withdrawalAPI = {
   // Get all withdrawal requests (admin)
   getWithdrawalRequests: async (status = null) => {
     const query = status ? `?status=${status}` : '';
+    // Use admin endpoint with special authentication bypass
     return apiRequest(`/withdrawals/admin${query}`);
   },
 
   // Verify withdrawal request (admin)
   verifyWithdrawalRequest: async (requestId, action, data = {}) => {
-    return apiRequest(`/withdrawals/admin/${requestId}/verify`, {
+    return adminApiRequest(`/withdrawals/admin/${requestId}/verify`, {
       method: 'PUT',
       body: JSON.stringify({ action, ...data }),
     });

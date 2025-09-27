@@ -92,9 +92,7 @@ function App() {
           role: 'admin' 
         }));
       }
-      if (!sessionStorage.getItem('adminToken')) {
-        sessionStorage.setItem('adminToken', 'admin-master-token');
-      }
+      // Don't override existing adminToken - let the login process handle it
     } else {
       sessionStorage.removeItem('adminEmail');
     }
