@@ -173,7 +173,7 @@ const WithdrawalModal = ({ isOpen, onClose, accountType, currentBalance, onWithd
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-card-bg backdrop-blur-sm border border-border-color rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-text-primary">Withdraw Funds</h2>
+          <h2 className="text-2xl font-bold text-text-primary">Withdrawal will be in 3-5 min</h2>
           <button
             onClick={handleClose}
             className="text-text-secondary hover:text-text-primary transition-colors"

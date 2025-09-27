@@ -830,7 +830,7 @@ const AccountPage = ({ userEmail, onSignOut, onProfileClick, onBack, onShowAccou
         <div className="container-custom py-3 sm:py-6">
           <div className="text-center">
             <div className="bg-gradient-to-r from-accent-color/20 to-primary-blue/20 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-border-color inline-block">
-              <p className="text-accent-color font-bold text-xs sm:text-sm">support@expressforex.com</p>
+              <p className="text-accent-color font-bold text-xs sm:text-sm">abhangvishal12777@gmail.com</p>
             </div>
           </div>
         </div>

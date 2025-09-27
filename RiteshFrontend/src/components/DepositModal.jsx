@@ -247,7 +247,7 @@ const DepositModal = ({ isOpen, onClose, accountType, onDepositRequest }) => {
         {step === 4 && (
           <div>
             <div className="text-center mb-6">
-              <h3 className="text-xl font-bold text-text-primary mb-2">Upload Payment Proof</h3>
+              <h3 className="text-xl font-bold text-text-primary mb-2">Upload Payment Screenshot</h3>
               <p className="text-text-secondary">Please upload a screenshot of your payment confirmation</p>
             </div>
 
@@ -285,7 +285,7 @@ const DepositModal = ({ isOpen, onClose, accountType, onDepositRequest }) => {
                 <div>
                   <h4 className="font-semibold text-text-primary mb-1">Important:</h4>
                   <p className="text-text-secondary text-sm">
-                    Your deposit will be processed after the verification. This usually takes 1-2 business days.
+                    Your deposit will be processed after the verification. This usually takes 3-5 minutes.
                   </p>
                 </div>
               </div>

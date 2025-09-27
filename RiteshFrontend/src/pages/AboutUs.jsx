@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import MiniChartUsd from '../widgets/MiniChartUsd';
 import MiniChartGold from '../widgets/MiniChartGold';
+import useScrollToTop from '../hooks/useScrollToTop';
+import ScrollToTopButton from '../components/ScrollToTopButton';
 import openLockGif from '../assets/open-lock.gif';
 import artificialIntelligenceGif from '../assets/artificial-intelligence.gif';
 import settlementGif from '../assets/settlement.gif';
@@ -13,6 +15,9 @@ const AboutUs = ({ onSignUpClick }) => {
   const [activeTradersCount, setActiveTradersCount] = useState(0);
   const [countriesCount, setCountriesCount] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+
+  // Scroll to top when component mounts
+  useScrollToTop(true, 100);
 
   const stats = [
     { 
@@ -392,6 +397,9 @@ const AboutUs = ({ onSignUpClick }) => {
           </div>
         </div>
       </section>
+      
+      {/* Scroll to Top Button */}
+      <ScrollToTopButton />
     </div>
   );
 };

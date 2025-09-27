@@ -17,9 +17,9 @@ const HomePage = ({ onSignUpClick }) => {
   const carouselRef = useRef(null);
 
   const features = [
-    { icon: FaChartLine, title: "Ultra-Low Spreads", desc: "on XAU₹ EUR₹" },
+    { icon: FaChartLine, title: "Ultra-Low Spreads", desc: "on XAU EUR" },
     { icon: FaGlobe, title: "200+ Instruments", desc: "Forex, Crypto & More" },
-    { icon: FaRupeeSign, title: "₹50 Minimum", desc: "Start with just ₹50" },
+    { icon: FaRupeeSign, title: "$40 Minimum", desc: "Start with just $400" },
     { icon: FaShieldAlt, title: "24/7 Support", desc: "Round-the-clock assistance" }
   ];
 
@@ -29,22 +29,22 @@ const HomePage = ({ onSignUpClick }) => {
     {
       bonus: "Standard",
       description: "Start trading with standard account",
-      minDeposit: "$50",
-      features: ["Instant credit", "No hidden fees", "Trade immediately"],
+      minDeposit: "$40",
+      features: ["Instant credit", "No hidden fees", "Trade immediately", "Deposit & Withdrawal in 2 minutes", "MT5"],
       popular: true
     },
     {
       bonus: "Premium",
       description: "Advanced features for serious traders",
       minDeposit: "$100",
-      features: ["Priority support", "Advanced analytics", "Lower spreads"],
+      features: ["Priority support", "Advanced analytics", "Lower spreads", "Deposit & Withdrawal in 2 minutes", "MT5"],
       popular: false
     },
     {
       bonus: "Platinum",
       description: "Premium trading experience with exclusive benefits",
       minDeposit: "$200",
-      features: ["Personal account manager", "VIP support", "Exclusive market insights"],
+      features: ["Personal account manager", "VIP support", "Exclusive market insights", "Deposit & Withdrawal in 2 minutes", "MT5"],
       popular: false
     }
   ];
@@ -70,7 +70,7 @@ const HomePage = ({ onSignUpClick }) => {
       </div>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-bg-primary to-bg-secondary py-20 relative">
+      <section className="bg-gradient-to-br from-bg-primary to-bg-secondary py-12 relative">
       
         <div className="absolute top-10 right-10 w-20 h-20 bg-accent-color/10 rounded-full animate-bounce delay-700"></div>
         <div className="absolute bottom-20 left-10 w-16 h-16 bg-accent-color/10 rounded-full animate-bounce delay-300"></div>
@@ -78,7 +78,7 @@ const HomePage = ({ onSignUpClick }) => {
         <div className="container-custom relative z-10">
           
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
+            <div className="space-y-6">
               
               <div className="inline-flex items-center bg-gradient-to-r SCALPER MODEfrom-accent-color/20 to-primary-blue/20 text-accent-color px-4 py-2 rounded-full shadow-lg animate-pulse">
                 <FaBolt className="mr-2" />
@@ -97,11 +97,9 @@ const HomePage = ({ onSignUpClick }) => {
                   onClick={onSignUpClick}
                   className="bg-accent-color text-text-quaternary font-semibold px-8 py-4 rounded-xl hover:bg-accent-color/90 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-accent-color/30"
                 >
-                  Register Live
+                  Trade Now
                 </button>
-                <button className="bg-transparent border-2 border-accent-color text-accent-color font-semibold px-8 py-4 rounded-xl hover:bg-accent-color/10 transition-all duration-300 transform hover:-translate-y-1">
-                  Register Demo
-                </button>
+                
               </div>
             </div>
             <div className="relative">
@@ -120,11 +118,11 @@ const HomePage = ({ onSignUpClick }) => {
       </section>
 
       {/* Features */}
-      <section className="py-20 bg-bg-secondary relative">
+      <section className="py-12 bg-bg-secondary relative">
         <div className="absolute -top-10 left-1/2 w-24 h-24 bg-accent-color/5 rounded-full blur-2xl"></div>
         
         <div className="container-custom">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4 text-text-primary">
               Why Choose <span className="text-accent-color bg-gradient-to-r from-accent-color to-primary-blue bg-clip-text text-transparent">Express Forex</span>
             </h2>
@@ -154,11 +152,11 @@ const HomePage = ({ onSignUpClick }) => {
       
 
       {/* Exclusive Bonuses Section */}
-      <section className="py-20 bg-bg-secondary relative">
+      <section className="py-12 bg-bg-secondary relative">
         <div className="absolute top-1/2 left-10 w-24 h-24 bg-accent-color/5 rounded-full blur-2xl"></div>
         
         <div className="container-custom">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">
               <span className="text-text-primary">Account</span> <span className="text-accent-color bg-gradient-to-r from-accent-color to-primary-blue bg-clip-text text-transparent">Types</span>
             </h2>
@@ -204,17 +202,17 @@ const HomePage = ({ onSignUpClick }) => {
                     </span>
                   </div>
                 )}
-                <div className="text-center mb-8">
+                <div className="text-center mb-6">
                   <div className="text-4xl font-bold text-accent-color mb-2 transform hover:scale-110 transition-transform duration-300">{promotions[currentPromoIndex].bonus}</div>
                 </div>
-                <p className="text-text-secondary mb-6 text-center">{promotions[currentPromoIndex].description}</p>
-                <div className="space-y-4 mb-8">
+                <p className="text-text-secondary mb-4 text-center">{promotions[currentPromoIndex].description}</p>
+                <div className="space-y-4 mb-6">
                   <div className="flex justify-between py-2 border-b border-border-color">
                     <span className="text-text-secondary">Min Deposit</span>
                     <span className="font-semibold text-accent-color">{promotions[currentPromoIndex].minDeposit}</span>
                   </div>
                 </div>
-                <div className="space-y-2 mb-8">
+                <div className="space-y-2 mb-6">
                   {promotions[currentPromoIndex].features.map((feature, idx) => (
                     <div key={idx} className="flex items-center space-x-2 transition-transform duration-300 hover:translate-x-1">
                       <FaCheck className="text-success-color" />
@@ -223,13 +221,13 @@ const HomePage = ({ onSignUpClick }) => {
                   ))}
                 </div>
                 <button className="w-full bg-accent-color text-text-quaternary font-semibold px-6 py-3 rounded-xl hover:bg-accent-color/90 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-accent-color/30">
-                  Claim Bonus
+                  Trade Now
                 </button>
               </div>
             </div>
 
             {/* Dots Indicator */}
-            <div className="flex justify-center mt-8 space-x-2">
+            <div className="flex justify-center mt-6 space-x-2">
               {promotions.map((_, index) => (
                 <button
                   key={index}
@@ -247,11 +245,11 @@ const HomePage = ({ onSignUpClick }) => {
       </section>
 
       {/* Special Offers Section */}
-      <section className="py-20 bg-bg-primary relative">
+      <section className="py-12 bg-bg-primary relative">
         <div className="absolute top-1/2 right-10 w-32 h-32 bg-accent-color/5 rounded-full blur-2xl"></div>
         
         <div className="container-custom">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4 text-text-primary">
               <span className="text-accent-color bg-gradient-to-r from-accent-color to-primary-blue bg-clip-text text-transparent">Special Offers</span>
             </h2>
@@ -264,7 +262,7 @@ const HomePage = ({ onSignUpClick }) => {
               <div className="absolute -inset-0.5 bg-gradient-to-r from-accent-color/20 via-primary-blue/20 to-accent-color/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-sm rounded-3xl"></div>
               <div className="absolute bottom-0 right-0 w-32 h-32 bg-gradient-to-br from-accent-color/10 to-transparent rounded-full blur-2xl"></div>
               <div className="relative z-10">
-                <div className="text-center mb-4">
+                <div className="text-center mb-3">
                   <h2 className="text-2xl font-bold bg-gradient-to-r from-accent-color to-primary-blue bg-clip-text text-transparent mb-2">SCALPER MODE</h2>
                   <h3 className="text-lg font-bold text-text-primary mb-2">FASTEST</h3>
                   <p className="text-text-secondary text-sm">Trade execution • Withdrawal • Deposit</p>
@@ -316,13 +314,13 @@ const HomePage = ({ onSignUpClick }) => {
               </div>
               
               <div className="relative z-10">
-                <p className="text-center mb-4 text-text-secondary leading-relaxed">
+                <p className="text-center mb-3 text-text-secondary leading-relaxed">
                   Refer your friend and earn 
                   <span className="text-accent-color font-bold text-lg"> $20 per lot </span> 
                   and <span className="font-bold text-accent-color text-lg">10% bonus</span> of referral deposit
                 </p>
                 <div className="bg-gradient-to-r from-accent-color/10 to-primary-blue/10 rounded-xl p-4">
-                  <h3 className="text-xl font-bold text-accent-color text-center mb-4">SHARE REFERRAL LINK</h3>
+                  <h3 className="text-xl font-bold text-accent-color text-center mb-3">SHARE REFERRAL LINK</h3>
                   <ul className="space-y-3 text-text-secondary">
                     <li className="flex items-center space-x-3">
                       <div className="w-2 h-2 bg-accent-color rounded-full"></div>
@@ -345,11 +343,11 @@ const HomePage = ({ onSignUpClick }) => {
       </section>
 
       {/* Market Overview */}
-      <section className="py-20 bg-bg-secondary relative">
+      <section className="py-12 bg-bg-secondary relative">
         <div className="absolute bottom-10 left-1/4 w-28 h-28 bg-accent-color/5 rounded-full blur-2xl"></div>
         
         <div className="container-custom">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4 text-text-primary">
               Live <span className="text-accent-color bg-gradient-to-r from-accent-color to-primary-blue bg-clip-text text-transparent">Market Overview</span>
             </h2>

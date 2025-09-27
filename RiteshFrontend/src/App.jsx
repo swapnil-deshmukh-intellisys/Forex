@@ -295,7 +295,10 @@ function App() {
         return (
           <>
             <HomePage onSignUpClick={handleSignUpClick} />
-            <Footer />
+            <Footer 
+          onAboutUsClick={handleAboutUsClick}
+          onContactUsClick={handleContactUsClick}
+        />
           </>
         );
     }

@@ -4,8 +4,9 @@ import Account from "../models/Account.js";
 import AdminData from "../models/AdminData.js";
 import Profile from "../models/Profile.js";
 import OTP from "../models/OTP.js";
-// Using real email service with your credentials
-import { sendOTPEmail, sendPasswordResetSuccessEmail } from "../services/emailService.js";
+// Using mock email service for production testing
+// For production with real emails, use: import { sendOTPEmail, sendPasswordResetSuccessEmail } from "../services/emailService.js";
+import { sendOTPEmail, sendPasswordResetSuccessEmail } from "../services/mockEmailService.js";
 import jwt from "jsonwebtoken";
 
 // =============== SIGNUP ===============

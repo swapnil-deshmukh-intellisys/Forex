@@ -1,5 +1,5 @@
-// API Base URL - Using local backend for testing forgot password
-const API_BASE_URL = 'http://localhost:5000/api';
+// API Base URL
+const API_BASE_URL = 'https://shraddha-backend.onrender.com/api';
 
 // Helper function to get auth token
 const getAuthToken = () => {

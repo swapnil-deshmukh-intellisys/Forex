@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import useScrollToTop from '../hooks/useScrollToTop';
+import ScrollToTopButton from '../components/ScrollToTopButton';
 import messageGif from '../assets/message.gif';
 import chatGif from '../assets/chat.gif';
 import phoneCallGif from '../assets/phone-call.gif';
@@ -11,6 +13,9 @@ const ContactUs = ({ onSignUpClick }) => {
     subject: '',
     message: ''
   });
+
+  // Scroll to top when component mounts
+  useScrollToTop(true, 100);
 
 
   const handleChange = (e) => {
@@ -39,7 +44,7 @@ const ContactUs = ({ onSignUpClick }) => {
       icon: messageGif,
       isGif: true,
       title: "Email Us",
-      details: "support@expressforex.com",
+      details: "abhangvishal12777@gmail.com",
       description: "Send us an email anytime"
     },
     {
@@ -53,7 +58,7 @@ const ContactUs = ({ onSignUpClick }) => {
       icon: phoneCallGif,
       isGif: true,
       title: "Call Us",
-      details: "+1 (555) 123-4567",
+      details: "+91 8446519926",
       description: "Mon-Fri from 8am to 5pm"
     },
     {
@@ -126,7 +131,7 @@ const ContactUs = ({ onSignUpClick }) => {
                   )}
                 </div>
                 <h3 className="text-xl font-bold mb-2 text-gray-800">{method.title}</h3>
-                <p className="text-lg font-semibold text-blue-600 mb-1">{method.details}</p>
+                <p className="text-sm font-semibold text-blue-600 mb-1">{method.details}</p>
                 <p className="text-gray-600 text-sm">{method.description}</p>
               </div>
             ))}
@@ -234,6 +239,9 @@ const ContactUs = ({ onSignUpClick }) => {
           </button>
         </div>
       </section>
+      
+      {/* Scroll to Top Button */}
+      <ScrollToTopButton />
     </div>
   );
 };
