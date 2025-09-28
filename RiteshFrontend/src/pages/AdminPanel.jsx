@@ -106,10 +106,12 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
           try {
             console.log('📡 Loading all withdrawal requests in main loadData...');
             console.log('🔑 Admin token check:', sessionStorage.getItem('adminToken') ? 'Present' : 'Missing');
+            console.log('🔍 selectedUser check:', selectedUser);
             const withdrawalResponse = await withdrawalAPI.getWithdrawalRequests();
             console.log('📡 Withdrawal API response in main loadData:', withdrawalResponse);
             if (withdrawalResponse.success) {
               console.log('✅ Loaded withdrawal requests in main loadData:', withdrawalResponse.withdrawalRequests.length);
+              console.log('📋 Withdrawal requests data:', withdrawalResponse.withdrawalRequests);
               setWithdrawalRequests(withdrawalResponse.withdrawalRequests);
             } else {
               console.log('❌ Withdrawal API failed in main loadData:', withdrawalResponse);
@@ -117,6 +119,8 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
           } catch (error) {
             console.error('❌ Error loading withdrawal requests in main loadData:', error);
           }
+        } else {
+          console.log('🔍 User selected, skipping withdrawal loading in main loadData');
         }
         // Deposit requests will be loaded by the selectedUser useEffect
       } catch (error) {
@@ -1678,6 +1682,11 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                   </div>
                 </div>
                 
+                {console.log('🔍 Rendering withdrawal requests:', {
+                  total: withdrawalRequests.length,
+                  pending: withdrawalRequests.filter(request => request.status === 'pending').length,
+                  requests: withdrawalRequests
+                })}
                 {withdrawalRequests.filter(request => request.status === 'pending').length > 0 ? (
                   <div className="space-y-4">
                     {withdrawalRequests

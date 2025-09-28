@@ -263,8 +263,25 @@ export const withdrawalAPI = {
   // Get all withdrawal requests (admin)
   getWithdrawalRequests: async (status = null) => {
     const query = status ? `?status=${status}` : '';
-    // Use admin endpoint with special authentication bypass
-    return apiRequest(`/withdrawals/admin${query}`);
+    // Make direct API call without authentication
+    try {
+      const response = await fetch(`${API_BASE_URL}/withdrawals/admin${query}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'API request failed');
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Withdrawal API Error:', error);
+      throw error;
+    }
   },
 
   // Verify withdrawal request (admin)
