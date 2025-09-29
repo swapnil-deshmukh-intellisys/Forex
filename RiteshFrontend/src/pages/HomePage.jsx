@@ -37,14 +37,14 @@ const HomePage = ({ onSignUpClick }) => {
       bonus: "Premium",
       description: "Advanced features for serious traders",
       minDeposit: "$100",
-      features: ["Priority support", "Advanced analytics", "Lower spreads", "Deposit & Withdrawal in 2 minutes", "MT5"],
+      features: ["100% deposit bonus","Priority support", "Advanced analytics", "Lower spreads", "Deposit & Withdrawal in 2 minutes", "MT5"],
       popular: false
     },
     {
       bonus: "Platinum",
       description: "Premium trading experience with exclusive benefits",
-      minDeposit: "$200",
-      features: ["Personal account manager", "VIP support", "Exclusive market insights", "Deposit & Withdrawal in 2 minutes", "MT5"],
+      minDeposit: "$500",
+      features: ["100% deposit bonus","Personal account manager", "VIP support", "Exclusive market insights", "Deposit & Withdrawal in 2 minutes", "MT5"],
       popular: false
     }
   ];
