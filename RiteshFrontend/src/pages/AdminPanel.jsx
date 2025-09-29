@@ -1,20 +1,26 @@
- import React, { useState, useEffect, useRef } from 'react';
+ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Header from '../components/Header';
-import { adminAPI, depositAPI, withdrawalAPI } from '../services/api';
+import { adminAPI, depositAPI, withdrawalAPI, getUploadUrl, getApiBaseUrl } from '../services/api';
 
 const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
-  const [selectedAccountType, setSelectedAccountType] = useState('');
-  const [accountTypesData, setAccountTypesData] = useState({});
-  const [createdAccounts, setCreatedAccounts] = useState([]);
-  const [depositRequests, setDepositRequests] = useState([]);
-  const [withdrawalRequests, setWithdrawalRequests] = useState([]);
+  // Consolidated data state
+  const [data, setData] = useState({
+    selectedAccountType: '',
+    accountTypesData: {},
+    createdAccounts: [],
+    depositRequests: [],
+    withdrawalRequests: []
+  });
   const [isEditing, setIsEditing] = useState(false);
-  const [showImagePopup, setShowImagePopup] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [imageScale, setImageScale] = useState(1);
-  const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  // Consolidated image popup state
+  const [imagePopup, setImagePopup] = useState({
+    isOpen: false,
+    selectedImage: null,
+    scale: 1,
+    position: { x: 0, y: 0 },
+    isDragging: false,
+    dragStart: { x: 0, y: 0 }
+  });
   const imagePopupRef = useRef(null);
   const [editData, setEditData] = useState({
     balance: '0.00',
@@ -23,150 +29,134 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
     currency: '₹'
   });
   const [showProfileSection, setShowProfileSection] = useState(false);
+  const [apiStatus, setApiStatus] = useState({
+    withdrawalRequests: 'loading',
+    depositRequests: 'loading',
+    userAccounts: 'loading'
+  });
 
-  // Load data from API on component mount
+  // Standardized error handling helper
+  const handleApiError = (error, context, fallbackMessage = 'An unexpected error occurred') => {
+    console.error(`${context}:`, error);
+    const errorMessage = error?.message || error?.response?.data?.message || fallbackMessage;
+    
+    // Don't show alert for 500 errors to avoid spam, just log them
+    if (error?.message?.includes('Server error') || error?.message?.includes('500')) {
+      console.warn(`${context}: Server temporarily unavailable. Using fallback data.`);
+      return;
+    }
+    
+    alert(`${context}: ${errorMessage}`);
+  };
+
+  // Standardized API call wrapper with retry mechanism
+  const safeApiCall = async (apiCall, context, fallbackValue = null, retries = 2) => {
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        const result = await apiCall();
+        return result;
+      } catch (error) {
+        const isLastAttempt = attempt === retries;
+        
+        // For server errors (500), try to use cached data as fallback
+        if (error?.message?.includes('Server error') || error?.message?.includes('500')) {
+          console.warn(`${context}: Attempt ${attempt + 1} failed. ${isLastAttempt ? 'Using fallback data.' : 'Retrying...'}`);
+          
+          if (isLastAttempt) {
+            // Try to load from localStorage as fallback
+            const cacheKey = context.toLowerCase().replace(/\s+/g, '').replace(/failedtoload/g, '');
+            const cachedData = safeLocalStorageGet(cacheKey, null);
+            if (cachedData) {
+              console.info(`🔄 ${context}: Using cached data as fallback.`);
+              return { success: true, ...cachedData };
+            }
+            console.warn(`⚠️ ${context}: No cached data available, using fallback value.`);
+            return fallbackValue;
+          }
+          
+          // Wait before retry (exponential backoff)
+          await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
+          continue;
+        }
+        
+        // For other errors, handle normally
+        if (isLastAttempt) {
+          handleApiError(error, context);
+          return fallbackValue;
+        }
+      }
+    }
+    return fallbackValue;
+  };
+
+  // Safe localStorage operations with error handling
+  const safeLocalStorageGet = (key, fallback = null) => {
+    try {
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : fallback;
+    } catch (error) {
+      console.error(`Error reading from localStorage (${key}):`, error);
+      return fallback;
+    }
+  };
+
+  const safeLocalStorageSet = (key, value) => {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+      return true;
+    } catch (error) {
+      console.error(`Error writing to localStorage (${key}):`, error);
+      return false;
+    }
+  };
+
+  // Load initial data from localStorage (offline mode)
   useEffect(() => {
-    const loadData = async () => {
-      // Check if user is in offline mode
+    const loadOfflineData = () => {
       const user = JSON.parse(sessionStorage.getItem('user') || '{}');
       if (user.offline) {
-        // Use localStorage for offline mode
-        const savedAccounts = localStorage.getItem('createdAccounts');
-        if (savedAccounts) {
-          const parsedAccounts = JSON.parse(savedAccounts);
-          setCreatedAccounts(parsedAccounts);
-          
-          const uniqueAccountTypes = [...new Set(parsedAccounts.map(account => account.type))];
-          if (uniqueAccountTypes.length > 0 && !selectedAccountType) {
-            // Prioritize user's primary account if available, otherwise use first account
-            if (selectedUser && selectedUser.accountType && uniqueAccountTypes.includes(selectedUser.accountType)) {
-              setSelectedAccountType(selectedUser.accountType);
-            } else {
-            setSelectedAccountType(uniqueAccountTypes[0]);
-            }
-          }
-        }
+        const savedAccounts = safeLocalStorageGet('createdAccounts', []);
+        const savedData = safeLocalStorageGet('adminAccountTypesData', {});
+        const savedDepositRequests = safeLocalStorageGet('depositRequests', []);
+        const savedWithdrawalRequests = safeLocalStorageGet('withdrawalRequests', []);
 
-        const savedData = localStorage.getItem('adminAccountTypesData');
-        if (savedData) {
-          setAccountTypesData(JSON.parse(savedData));
-        }
-
-        const savedDepositRequests = localStorage.getItem('depositRequests');
-        if (savedDepositRequests) {
-          setDepositRequests(JSON.parse(savedDepositRequests));
-        }
-
-        const savedWithdrawalRequests = localStorage.getItem('withdrawalRequests');
-        if (savedWithdrawalRequests) {
-          setWithdrawalRequests(JSON.parse(savedWithdrawalRequests));
-        }
-        return;
+        setData(prev => ({
+          ...prev,
+          createdAccounts: savedAccounts,
+          accountTypesData: savedData,
+          depositRequests: savedDepositRequests,
+          withdrawalRequests: savedWithdrawalRequests
+        }));
       }
+    };
 
-      try {
-        // Load selected user's accounts if user is selected
-        if (selectedUser) {
-          try {
-            const userResponse = await adminAPI.getUserById(selectedUser.id);
-            if (userResponse.success && userResponse.user.accounts) {
-              setCreatedAccounts(userResponse.user.accounts);
-              
-              // Set first account type as selected if none is selected
-              if (userResponse.user.accounts.length > 0 && !selectedAccountType) {
-                // Prioritize user's primary account if available, otherwise use first account
-                if (selectedUser.accountType && userResponse.user.accounts.some(acc => acc.type === selectedUser.accountType)) {
-                  setSelectedAccountType(selectedUser.accountType);
-                } else {
-                  setSelectedAccountType(userResponse.user.accounts[0].type);
-                }
-              }
-            }
-          } catch (userError) {
-            console.error('Error loading user accounts:', userError);
-          }
-        }
+    loadOfflineData();
+  }, []);
 
-        // Load account types only if no user is selected
-        if (!selectedUser) {
-        const accountTypesResponse = await adminAPI.getAccountTypes();
-        if (accountTypesResponse.success) {
-          const accountTypes = accountTypesResponse.accountTypes.map(type => ({ type }));
-          setCreatedAccounts(accountTypes);
-          
-          // Set first account type as selected if none is selected
-          if (accountTypes.length > 0 && !selectedAccountType) {
-            setSelectedAccountType(accountTypes[0].type);
-            }
-          }
-        }
-
-        // Load withdrawal requests for admin overview (when no user selected)
-        if (!selectedUser) {
-          try {
-            console.log('📡 Loading all withdrawal requests in main loadData...');
-            console.log('🔑 Admin token check:', sessionStorage.getItem('adminToken') ? 'Present' : 'Missing');
-            console.log('🔍 selectedUser check:', selectedUser);
-            const withdrawalResponse = await withdrawalAPI.getWithdrawalRequests();
-            console.log('📡 Withdrawal API response in main loadData:', withdrawalResponse);
-            if (withdrawalResponse.success) {
-              console.log('✅ Loaded withdrawal requests in main loadData:', withdrawalResponse.withdrawalRequests.length);
-              console.log('📋 Withdrawal requests data:', withdrawalResponse.withdrawalRequests);
-              setWithdrawalRequests(withdrawalResponse.withdrawalRequests);
-            } else {
-              console.log('❌ Withdrawal API failed in main loadData:', withdrawalResponse);
-            }
-          } catch (error) {
-            console.error('❌ Error loading withdrawal requests in main loadData:', error);
-          }
-        } else {
-          console.log('🔍 User selected, skipping withdrawal loading in main loadData');
-        }
-        // Deposit requests will be loaded by the selectedUser useEffect
-      } catch (error) {
-        console.error('Error loading admin data:', error);
-        // Fallback to localStorage
-        const savedAccounts = localStorage.getItem('createdAccounts');
-        if (savedAccounts) {
-          const parsedAccounts = JSON.parse(savedAccounts);
-          setCreatedAccounts(parsedAccounts);
-          
-          const uniqueAccountTypes = [...new Set(parsedAccounts.map(account => account.type))];
-          if (uniqueAccountTypes.length > 0 && !selectedAccountType) {
-            // Prioritize user's primary account if available, otherwise use first account
-            if (selectedUser && selectedUser.accountType && uniqueAccountTypes.includes(selectedUser.accountType)) {
-              setSelectedAccountType(selectedUser.accountType);
-            } else {
-            setSelectedAccountType(uniqueAccountTypes[0]);
-            }
-          }
-        }
-
-        const savedData = localStorage.getItem('adminAccountTypesData');
-        if (savedData) {
-          const parsedData = JSON.parse(savedData);
-          setAccountTypesData(parsedData);
-        }
-
-        const savedRequests = localStorage.getItem('depositRequests');
-        if (savedRequests) {
-          setDepositRequests(JSON.parse(savedRequests));
-        }
-
-        const savedWithdrawalRequests = localStorage.getItem('withdrawalRequests');
-        if (savedWithdrawalRequests) {
-          setWithdrawalRequests(JSON.parse(savedWithdrawalRequests));
+  // Load account types when no user is selected
+  useEffect(() => {
+    const loadAccountTypes = async () => {
+      if (!selectedUser) {
+        const result = await safeApiCall(
+          () => adminAPI.getAccountTypes(),
+          'Failed to load account types',
+          { success: false }
+        );
+        
+        if (result?.success) {
+          const accountTypes = result.accountTypes.map(type => ({ type }));
+          setData(prev => ({ ...prev, createdAccounts: accountTypes }));
         }
       }
     };
 
-    loadData();
-  }, []);
+    loadAccountTypes();
+  }, [selectedUser]);
 
   // Update edit data when selected account type changes
   useEffect(() => {
-    if (createdAccounts.length > 0) {
-      const userAccount = createdAccounts.find(acc => acc.type === selectedAccountType);
+    if (data.createdAccounts.length > 0 && data.selectedAccountType) {
+      const userAccount = data.createdAccounts.find(acc => acc.type === data.selectedAccountType);
       if (userAccount) {
         setEditData({
           balance: userAccount.balance?.toString() || '0.00',
@@ -174,16 +164,16 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
           margin: userAccount.margin?.toString() || '0.00',
           currency: userAccount.currency || '₹'
         });
-    } else {
-      setEditData({
-        balance: '0.00',
-        equity: '0.00',
-        margin: '0.00',
-        currency: '₹'
-      });
+      } else {
+        setEditData({
+          balance: '0.00',
+          equity: '0.00',
+          margin: '0.00',
+          currency: '₹'
+        });
+      }
     }
-    }
-  }, [selectedAccountType, createdAccounts]);
+  }, [data.selectedAccountType, data.createdAccounts]);
 
   // No longer need to save global admin data to localStorage
 
@@ -191,26 +181,24 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
   useEffect(() => {
     const loadUserAccounts = async () => {
       if (selectedUser) {
-        try {
-          console.log('Loading accounts for user:', selectedUser.id);
-          const userResponse = await adminAPI.getUserById(selectedUser.id);
-          console.log('User response:', userResponse);
-          if (userResponse.success && userResponse.user.accounts) {
-            console.log('User accounts loaded:', userResponse.user.accounts);
-            setCreatedAccounts(userResponse.user.accounts);
-            
-            // Set first account type as selected if none is selected
-            if (userResponse.user.accounts.length > 0 && !selectedAccountType) {
-              // Prioritize user's primary account if available, otherwise use first account
-              if (selectedUser.accountType && userResponse.user.accounts.some(acc => acc.type === selectedUser.accountType)) {
-      setSelectedAccountType(selectedUser.accountType);
-              } else {
-                setSelectedAccountType(userResponse.user.accounts[0].type);
-              }
+        const result = await safeApiCall(
+          () => adminAPI.getUserById(selectedUser.id),
+          'Failed to load user accounts',
+          { success: false }
+        );
+        
+        if (result?.success && result.user?.accounts) {
+          setData(prev => ({ ...prev, createdAccounts: result.user.accounts }));
+          
+          // Set first account type as selected if none is selected
+          if (result.user.accounts.length > 0 && !data.selectedAccountType) {
+            // Prioritize user's primary account if available, otherwise use first account
+            if (selectedUser.accountType && result.user.accounts.some(acc => acc.type === selectedUser.accountType)) {
+              setData(prev => ({ ...prev, selectedAccountType: selectedUser.accountType }));
+            } else {
+              setData(prev => ({ ...prev, selectedAccountType: result.user.accounts[0].type }));
             }
           }
-        } catch (error) {
-          console.error('Error loading user accounts:', error);
         }
       }
     };
@@ -223,26 +211,36 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
     const loadDepositRequests = async () => {
       if (!selectedUser) {
         // If no user selected, load all deposit requests for verification
-        try {
-          const depositResponse = await depositAPI.getDepositRequests();
-          if (depositResponse.success) {
-            console.log('Loaded deposit requests:', depositResponse.depositRequests); // Debug log
-            setDepositRequests(depositResponse.depositRequests);
-          }
-        } catch (error) {
-          console.error('Error loading all deposit requests:', error);
+        const result = await safeApiCall(
+          () => depositAPI.getDepositRequests(),
+          'Failed to load deposit requests',
+          { success: false, depositRequests: [] }
+        );
+        
+        if (result?.success) {
+          setData(prev => ({ ...prev, depositRequests: result.depositRequests || [] }));
         }
       } else {
         // If user selected, load user-specific deposit requests
-        try {
-          const userDepositResponse = await adminAPI.getUserDepositRequests(selectedUser.id);
-          if (userDepositResponse.success) {
-            console.log('Loaded user deposit requests:', userDepositResponse.depositRequests); // Debug log
-            setDepositRequests(userDepositResponse.depositRequests);
+        const result = await safeApiCall(
+          () => adminAPI.getUserDepositRequests(selectedUser.id),
+          'Failed to load user deposit requests',
+          { success: false, depositRequests: [] }
+        );
+        
+        if (result?.success) {
+          setData(prev => ({ ...prev, depositRequests: result.depositRequests || [] }));
+          // Cache successful data for future fallback
+          safeLocalStorageSet('userdepositrequests', { depositRequests: result.depositRequests || [] });
+        } else {
+          // Try to load from cache if API fails
+          const cachedData = safeLocalStorageGet('userdepositrequests', null);
+          if (cachedData?.depositRequests) {
+            console.info('Using cached deposit requests data due to API error.');
+            setData(prev => ({ ...prev, depositRequests: cachedData.depositRequests }));
+          } else {
+            setData(prev => ({ ...prev, depositRequests: [] }));
           }
-        } catch (error) {
-          console.error('Error loading user deposit requests:', error);
-          setDepositRequests([]);
         }
       }
     };
@@ -253,50 +251,48 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
   // Load withdrawal requests based on selectedUser
   useEffect(() => {
     const loadWithdrawalRequests = async () => {
-      console.log('🔄 Loading withdrawal requests...', { 
-        selectedUser: selectedUser?.id || selectedUser?._id,
-        selectedUserName: selectedUser?.fullName,
-        hasSelectedUser: !!selectedUser
-      });
+      setApiStatus(prev => ({ ...prev, withdrawalRequests: 'loading' }));
       
       if (!selectedUser) {
         // If no user selected, load all withdrawal requests for verification
-        try {
-          console.log('📡 Fetching all withdrawal requests...');
-          console.log('🔑 Admin token:', sessionStorage.getItem('adminToken') ? 'Present' : 'Missing');
-          const withdrawalResponse = await withdrawalAPI.getWithdrawalRequests();
-          console.log('📡 Withdrawal API response (ALL):', withdrawalResponse);
-          
-          if (withdrawalResponse.success) {
-            console.log('✅ Setting withdrawal requests (ALL):', withdrawalResponse.withdrawalRequests.length, 'requests');
-            setWithdrawalRequests(withdrawalResponse.withdrawalRequests);
-          } else {
-            console.log('❌ Withdrawal API failed:', withdrawalResponse);
-          }
-        } catch (error) {
-          console.error('❌ Error loading all withdrawal requests:', error);
+        const result = await safeApiCall(
+          () => withdrawalAPI.getWithdrawalRequests(),
+          'Failed to load withdrawal requests',
+          { success: false, withdrawalRequests: [] }
+        );
+        
+        if (result?.success) {
+          setData(prev => ({ ...prev, withdrawalRequests: result.withdrawalRequests || [] }));
+          setApiStatus(prev => ({ ...prev, withdrawalRequests: 'success' }));
+        } else {
+          setApiStatus(prev => ({ ...prev, withdrawalRequests: 'error' }));
         }
       } else {
         // If user selected, load their specific withdrawal requests
-        try {
-          const userId = selectedUser.id || selectedUser._id;
-          console.log('📡 Fetching withdrawal requests for user:', userId);
-          console.log('📡 User details:', { id: userId, name: selectedUser.fullName, email: selectedUser.email });
-          
-          const withdrawalResponse = await adminAPI.getUserWithdrawalRequests(userId);
-          console.log('📡 Withdrawal API response for user:', withdrawalResponse);
-          
-          if (withdrawalResponse.success) {
-            console.log('🔍 User withdrawals:', withdrawalResponse.withdrawalRequests.length, 'requests');
-            console.log('🔍 User withdrawal details:', withdrawalResponse.withdrawalRequests);
-            setWithdrawalRequests(withdrawalResponse.withdrawalRequests);
+        const userId = selectedUser.id || selectedUser._id;
+        const result = await safeApiCall(
+          () => adminAPI.getUserWithdrawalRequests(userId),
+          'Failed to load user withdrawal requests',
+          { success: false, withdrawalRequests: [] }
+        );
+        
+        if (result?.success) {
+          setData(prev => ({ ...prev, withdrawalRequests: result.withdrawalRequests || [] }));
+          // Cache successful data for future fallback
+          safeLocalStorageSet('userwithdrawalrequests', { withdrawalRequests: result.withdrawalRequests || [] });
+          setApiStatus(prev => ({ ...prev, withdrawalRequests: 'success' }));
+        } else {
+          // Try to load from cache if API fails
+          const cachedData = safeLocalStorageGet('userwithdrawalrequests', null);
+          if (cachedData?.withdrawalRequests) {
+            console.info(`📱 Using cached withdrawal requests data (${cachedData.withdrawalRequests.length} requests) due to API error.`);
+            setData(prev => ({ ...prev, withdrawalRequests: cachedData.withdrawalRequests }));
+            setApiStatus(prev => ({ ...prev, withdrawalRequests: 'cached' }));
           } else {
-            console.log('❌ Withdrawal API failed for user:', withdrawalResponse);
-            setWithdrawalRequests([]);
+            console.warn('⚠️ No cached withdrawal requests data available.');
+            setData(prev => ({ ...prev, withdrawalRequests: [] }));
+            setApiStatus(prev => ({ ...prev, withdrawalRequests: 'error' }));
           }
-        } catch (error) {
-          console.error('❌ Error loading user withdrawal requests:', error);
-          setWithdrawalRequests([]);
         }
       }
     };
@@ -306,7 +302,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
 
   const handleEdit = () => {
     setIsEditing(true);
-    const userAccount = createdAccounts.find(acc => acc.type === selectedAccountType);
+    const userAccount = data.createdAccounts.find(acc => acc.type === data.selectedAccountType);
     setEditData({
       balance: userAccount?.balance?.toString() || '0.00',
       equity: userAccount?.equity?.toString() || '0.00',
@@ -330,7 +326,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
       }
 
       // Find the user's account to update
-      const userAccount = createdAccounts.find(acc => acc.type === selectedAccountType);
+      const userAccount = data.createdAccounts.find(acc => acc.type === data.selectedAccountType);
       if (!userAccount) {
         alert('Account not found for the selected user');
         return;
@@ -340,10 +336,9 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
       const user = JSON.parse(sessionStorage.getItem('user') || '{}');
       if (user.offline) {
         // Update localStorage for offline mode - update the user's account data
-        const savedAccounts = localStorage.getItem('createdAccounts');
-        if (savedAccounts) {
-          const accounts = JSON.parse(savedAccounts);
-          const updatedAccounts = accounts.map(acc => {
+        const savedAccounts = safeLocalStorageGet('createdAccounts', []);
+        if (savedAccounts.length > 0) {
+          const updatedAccounts = savedAccounts.map(acc => {
             if (acc.id === userAccount.id || acc._id === userAccount._id) {
               return {
                 ...acc,
@@ -355,7 +350,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
             }
             return acc;
           });
-          localStorage.setItem('createdAccounts', JSON.stringify(updatedAccounts));
+          safeLocalStorageSet('createdAccounts', updatedAccounts);
         }
 
         setIsEditing(false);
@@ -372,7 +367,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
       };
 
       // Call account update API
-      const response = await fetch(`https://shraddha-backend.onrender.com/api/accounts/${userAccount._id || userAccount.id}`, {
+      const response = await fetch(`${getApiBaseUrl()}/accounts/${userAccount._id || userAccount.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -382,21 +377,21 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
       });
 
       if (response.ok) {
-      setIsEditing(false);
+        setIsEditing(false);
         alert('User account updated successfully!');
         // Reload user data to reflect changes
         window.location.reload();
       } else {
-        throw new Error('Failed to update account');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to update account');
       }
     } catch (error) {
-      console.error('Error updating admin data:', error);
-      alert(`Error updating account details: ${error.message}`);
+      handleApiError(error, 'Failed to update account details');
     }
   };
 
   const handleCancel = () => {
-    const userAccount = createdAccounts.find(acc => acc.type === selectedAccountType);
+    const userAccount = data.createdAccounts.find(acc => acc.type === data.selectedAccountType);
     setEditData({
       balance: userAccount?.balance?.toString() || '0.00',
       equity: userAccount?.equity?.toString() || '0.00',
@@ -415,53 +410,60 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
 
   // Get unique account types from created accounts
   const getUniqueAccountTypes = () => {
-    return [...new Set(createdAccounts.map(account => account.type))];
+    return [...new Set(data.createdAccounts.map(account => account.type))];
   };
 
   // Handle image popup
   const handleImageClick = (imageSrc, fileName) => {
-    setSelectedImage({ src: imageSrc, name: fileName });
-    setShowImagePopup(true);
-    setImageScale(1);
-    setImagePosition({ x: 0, y: 0 });
+    setImagePopup({
+      isOpen: true,
+      selectedImage: { src: imageSrc, name: fileName },
+      scale: 1,
+      position: { x: 0, y: 0 },
+      isDragging: false,
+      dragStart: { x: 0, y: 0 }
+    });
   };
 
   const closeImagePopup = () => {
-    setShowImagePopup(false);
-    setSelectedImage(null);
-    setImageScale(1);
-    setImagePosition({ x: 0, y: 0 });
+    setImagePopup({
+      isOpen: false,
+      selectedImage: null,
+      scale: 1,
+      position: { x: 0, y: 0 },
+      isDragging: false,
+      dragStart: { x: 0, y: 0 }
+    });
   };
 
   // Zoom functionality
   const handleZoomIn = () => {
-    setImageScale(prev => Math.min(prev + 0.5, 5));
+    setImagePopup(prev => ({ ...prev, scale: Math.min(prev.scale + 0.5, 5) }));
   };
 
   const handleZoomOut = () => {
-    setImageScale(prev => Math.max(prev - 0.5, 0.5));
+    setImagePopup(prev => ({ ...prev, scale: Math.max(prev.scale - 0.5, 0.5) }));
   };
 
   const resetZoom = () => {
-    setImageScale(1);
-    setImagePosition({ x: 0, y: 0 });
+    setImagePopup(prev => ({ ...prev, scale: 1, position: { x: 0, y: 0 } }));
   };
 
   // Mouse wheel zoom
   const handleWheel = (e) => {
     e.preventDefault();
     const delta = e.deltaY > 0 ? -0.2 : 0.2;
-    setImageScale(prev => Math.max(0.5, Math.min(5, prev + delta)));
+    setImagePopup(prev => ({ ...prev, scale: Math.max(0.5, Math.min(5, prev.scale + delta)) }));
   };
 
   // Add wheel event listener with passive: false
   useEffect(() => {
     const popupElement = imagePopupRef.current;
-    if (popupElement && showImagePopup) {
+    if (popupElement && imagePopup.isOpen) {
       const wheelHandler = (e) => {
         e.preventDefault();
         const delta = e.deltaY > 0 ? -0.2 : 0.2;
-        setImageScale(prev => Math.max(0.5, Math.min(5, prev + delta)));
+        setImagePopup(prev => ({ ...prev, scale: Math.max(0.5, Math.min(5, prev.scale + delta)) }));
       };
 
       popupElement.addEventListener('wheel', wheelHandler, { passive: false });
@@ -470,53 +472,65 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
         popupElement.removeEventListener('wheel', wheelHandler);
       };
     }
-  }, [showImagePopup]);
+  }, [imagePopup.isOpen]);
 
   // Drag functionality
   const handleMouseDown = (e) => {
-    setIsDragging(true);
-    setDragStart({
-      x: e.clientX - imagePosition.x,
-      y: e.clientY - imagePosition.y
-    });
+    setImagePopup(prev => ({
+      ...prev,
+      isDragging: true,
+      dragStart: {
+        x: e.clientX - prev.position.x,
+        y: e.clientY - prev.position.y
+      }
+    }));
   };
 
   const handleMouseMove = (e) => {
-    if (isDragging) {
-      setImagePosition({
-        x: e.clientX - dragStart.x,
-        y: e.clientY - dragStart.y
-      });
+    if (imagePopup.isDragging) {
+      setImagePopup(prev => ({
+        ...prev,
+        position: {
+          x: e.clientX - prev.dragStart.x,
+          y: e.clientY - prev.dragStart.y
+        }
+      }));
     }
   };
 
   const handleMouseUp = () => {
-    setIsDragging(false);
+    setImagePopup(prev => ({ ...prev, isDragging: false }));
   };
 
   // Touch events for mobile
   const handleTouchStart = (e) => {
     if (e.touches.length === 1) {
-      setIsDragging(true);
-      setDragStart({
-        x: e.touches[0].clientX - imagePosition.x,
-        y: e.touches[0].clientY - imagePosition.y
-      });
+      setImagePopup(prev => ({
+        ...prev,
+        isDragging: true,
+        dragStart: {
+          x: e.touches[0].clientX - prev.position.x,
+          y: e.touches[0].clientY - prev.position.y
+        }
+      }));
     }
   };
 
   const handleTouchMove = (e) => {
     e.preventDefault();
-    if (e.touches.length === 1 && isDragging) {
-      setImagePosition({
-        x: e.touches[0].clientX - dragStart.x,
-        y: e.touches[0].clientY - dragStart.y
-      });
+    if (e.touches.length === 1 && imagePopup.isDragging) {
+      setImagePopup(prev => ({
+        ...prev,
+        position: {
+          x: e.touches[0].clientX - prev.dragStart.x,
+          y: e.touches[0].clientY - prev.dragStart.y
+        }
+      }));
     }
   };
 
   const handleTouchEnd = () => {
-    setIsDragging(false);
+    setImagePopup(prev => ({ ...prev, isDragging: false }));
   };
 
   // Handle user verification
@@ -536,7 +550,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
         return;
       }
 
-      const response = await fetch(`http://localhost:5000/api/admin/verify-user/${userId}`, {
+      const response = await fetch(`${getApiBaseUrl()}/admin/verify-user/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -552,32 +566,30 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
         // Note: The verification status will be updated in the database
         // The UI will reflect the change when the user data is refreshed
       } else {
-        alert(data.message || 'Failed to update verification status');
+        throw new Error(data.message || 'Failed to update verification status');
       }
     } catch (error) {
-      console.error('Verification error:', error);
-      alert('Something went wrong while updating verification status');
+      handleApiError(error, 'Failed to update user verification status');
     }
   };
 
   // Handle payment verification
   const handlePaymentVerification = async (requestId, action, verifiedAmount = null, rejectionReason = null) => {
-    try {
-      // Check if requestId is valid
-      if (!requestId) {
-        alert('Invalid request ID. Please try again.');
-        return;
-      }
+    // Check if requestId is valid
+    if (!requestId) {
+      alert('Invalid request ID. Please try again.');
+      return;
+    }
 
       // Check if user is in offline mode
       const user = JSON.parse(sessionStorage.getItem('user') || '{}');
       if (user.offline) {
         // Handle payment verification locally for offline mode
-        const updatedRequests = depositRequests.map(request => {
+        const updatedRequests = data.depositRequests.map(request => {
           if (request._id === requestId || request.id === requestId) {
             if (action === 'approve' && verifiedAmount) {
               // Update account balance
-              const currentData = accountTypesData[request.accountType] || {
+              const currentData = data.accountTypesData[request.accountType] || {
                 balance: '0.00',
                 equity: '0.00',
                 margin: '0.00',
@@ -586,21 +598,24 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
               
               const newBalance = (parseFloat(currentData.balance) + parseFloat(verifiedAmount)).toFixed(2);
               
-              setAccountTypesData(prev => ({
+              setData(prev => ({
                 ...prev,
-                [request.accountType]: {
-                  ...currentData,
-                  balance: newBalance
+                accountTypesData: {
+                  ...prev.accountTypesData,
+                  [request.accountType]: {
+                    ...currentData,
+                    balance: newBalance
+                  }
                 }
               }));
 
               // Update localStorage
-              const currentAdminData = JSON.parse(localStorage.getItem('adminAccountTypesData') || '{}');
+              const currentAdminData = safeLocalStorageGet('adminAccountTypesData', {});
               currentAdminData[request.accountType] = {
                 ...currentData,
                 balance: newBalance
               };
-              localStorage.setItem('adminAccountTypesData', JSON.stringify(currentAdminData));
+              safeLocalStorageSet('adminAccountTypesData', currentAdminData);
 
               // Trigger custom event to notify other components of balance update
               window.dispatchEvent(new CustomEvent('balanceUpdated', {
@@ -623,27 +638,35 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
           return request;
         });
 
-        setDepositRequests(updatedRequests);
+        setData(prev => ({ ...prev, depositRequests: updatedRequests }));
         
         // Update localStorage
-        localStorage.setItem('depositRequests', JSON.stringify(updatedRequests));
+        safeLocalStorageSet('depositRequests', updatedRequests);
         
         alert(`Payment ${action === 'approve' ? 'approved' : 'rejected'} successfully! (Offline mode)`);
         return;
       }
 
       // Call API to verify deposit request
-      await depositAPI.verifyDepositRequest(requestId, action, { 
-        verifiedAmount: verifiedAmount || null,
-        rejectionReason: action === 'reject' ? (rejectionReason || 'Deposit rejected by admin') : null
-      });
+      const result = await safeApiCall(
+        () => depositAPI.verifyDepositRequest(requestId, action, { 
+          verifiedAmount: verifiedAmount || null,
+          rejectionReason: action === 'reject' ? (rejectionReason || 'Deposit rejected by admin') : null
+        }),
+        'Failed to verify deposit request',
+        { success: false }
+      );
+
+      if (!result?.success) {
+        return;
+      }
 
       // Update local state
-      const updatedRequests = depositRequests.map(request => {
+      const updatedRequests = data.depositRequests.map(request => {
         if (request._id === requestId || request.id === requestId) {
           if (action === 'approve' && verifiedAmount) {
             // Update account balance
-            const currentData = accountTypesData[request.accountType] || {
+            const currentData = data.accountTypesData[request.accountType] || {
               balance: '0.00',
               equity: '0.00',
               margin: '0.00',
@@ -652,11 +675,14 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
             
             const newBalance = (parseFloat(currentData.balance) + parseFloat(verifiedAmount)).toFixed(2);
             
-            setAccountTypesData(prev => ({
+            setData(prev => ({
               ...prev,
-              [request.accountType]: {
-                ...currentData,
-                balance: newBalance
+              accountTypesData: {
+                ...prev.accountTypesData,
+                [request.accountType]: {
+                  ...currentData,
+                  balance: newBalance
+                }
               }
             }));
 
@@ -681,42 +707,35 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
         return request;
       });
       
-      setDepositRequests(updatedRequests);
+      setData(prev => ({ ...prev, depositRequests: updatedRequests }));
 
       // Show success message for approved payments
       if (action === 'approve' && verifiedAmount) {
-        const request = depositRequests.find(r => r._id === requestId || r.id === requestId);
-        console.log('Found request:', request); // Debug log
+        const request = data.depositRequests.find(r => r._id === requestId || r.id === requestId);
         alert(`Payment approved! ₹${verifiedAmount} has been added to ${request?.accountType || 'the'} account balance.`);
       } else if (action === 'reject') {
-        const request = depositRequests.find(r => r._id === requestId || r.id === requestId);
-        console.log('Found request for rejection:', request); // Debug log
+        const request = data.depositRequests.find(r => r._id === requestId || r.id === requestId);
         alert(`Payment rejected for ${request?.accountType || 'the'} account.`);
       }
-    } catch (error) {
-      console.error('Error verifying payment:', error);
-      alert(`Error verifying payment: ${error.message}`);
-    }
   };
 
   // Handle withdrawal verification
   const handleWithdrawalVerification = async (requestId, action, verifiedAmount = null, rejectionReason = null) => {
-    try {
-      // Check if requestId is valid
-      if (!requestId) {
-        alert('Invalid request ID. Please try again.');
-        return;
-      }
+    // Check if requestId is valid
+    if (!requestId) {
+      alert('Invalid request ID. Please try again.');
+      return;
+    }
 
       // Check if user is in offline mode
       const user = JSON.parse(sessionStorage.getItem('user') || '{}');
       if (user.offline) {
         // Handle withdrawal verification locally for offline mode
-        const updatedRequests = withdrawalRequests.map(request => {
+        const updatedRequests = data.withdrawalRequests.map(request => {
           if (request._id === requestId || request.id === requestId) {
             if (action === 'approve' && verifiedAmount) {
               // Update account balance (subtract for withdrawal)
-              const currentData = accountTypesData[request.accountType] || {
+              const currentData = data.accountTypesData[request.accountType] || {
                 balance: '0.00',
                 equity: '0.00',
                 margin: '0.00',
@@ -725,21 +744,24 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
               
               const newBalance = Math.max(0, parseFloat(currentData.balance) - parseFloat(verifiedAmount)).toFixed(2);
               
-              setAccountTypesData(prev => ({
+              setData(prev => ({
                 ...prev,
-                [request.accountType]: {
-                  ...currentData,
-                  balance: newBalance
+                accountTypesData: {
+                  ...prev.accountTypesData,
+                  [request.accountType]: {
+                    ...currentData,
+                    balance: newBalance
+                  }
                 }
               }));
 
               // Update localStorage
-              const currentAdminData = JSON.parse(localStorage.getItem('adminAccountTypesData') || '{}');
+              const currentAdminData = safeLocalStorageGet('adminAccountTypesData', {});
               currentAdminData[request.accountType] = {
                 ...currentData,
                 balance: newBalance
               };
-              localStorage.setItem('adminAccountTypesData', JSON.stringify(currentAdminData));
+              safeLocalStorageSet('adminAccountTypesData', currentAdminData);
 
               // Trigger custom event to notify other components of balance update
               window.dispatchEvent(new CustomEvent('balanceUpdated', {
@@ -762,27 +784,35 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
           return request;
         });
 
-        setWithdrawalRequests(updatedRequests);
+        setData(prev => ({ ...prev, withdrawalRequests: updatedRequests }));
         
         // Update localStorage
-        localStorage.setItem('withdrawalRequests', JSON.stringify(updatedRequests));
+        safeLocalStorageSet('withdrawalRequests', updatedRequests);
         
         alert(`Withdrawal ${action === 'approve' ? 'approved' : 'rejected'} successfully! (Offline mode)`);
         return;
       }
 
       // Call API to verify withdrawal request
-      await withdrawalAPI.verifyWithdrawalRequest(requestId, action, { 
-        verifiedAmount: verifiedAmount || null,
-        rejectionReason: action === 'reject' ? (rejectionReason || 'Withdrawal rejected by admin') : null
-      });
+      const result = await safeApiCall(
+        () => withdrawalAPI.verifyWithdrawalRequest(requestId, action, { 
+          verifiedAmount: verifiedAmount || null,
+          rejectionReason: action === 'reject' ? (rejectionReason || 'Withdrawal rejected by admin') : null
+        }),
+        'Failed to verify withdrawal request',
+        { success: false }
+      );
+
+      if (!result?.success) {
+        return;
+      }
 
       // Update local state
-      const updatedRequests = withdrawalRequests.map(request => {
+      const updatedRequests = data.withdrawalRequests.map(request => {
         if (request._id === requestId || request.id === requestId) {
           if (action === 'approve' && verifiedAmount) {
             // Update account balance (subtract for withdrawal)
-            const currentData = accountTypesData[request.accountType] || {
+            const currentData = data.accountTypesData[request.accountType] || {
               balance: '0.00',
               equity: '0.00',
               margin: '0.00',
@@ -791,11 +821,14 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
             
             const newBalance = Math.max(0, parseFloat(currentData.balance) - parseFloat(verifiedAmount)).toFixed(2);
             
-            setAccountTypesData(prev => ({
+            setData(prev => ({
               ...prev,
-              [request.accountType]: {
-                ...currentData,
-                balance: newBalance
+              accountTypesData: {
+                ...prev.accountTypesData,
+                [request.accountType]: {
+                  ...currentData,
+                  balance: newBalance
+                }
               }
             }));
 
@@ -820,20 +853,16 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
         return request;
       });
       
-      setWithdrawalRequests(updatedRequests);
+        setData(prev => ({ ...prev, withdrawalRequests: updatedRequests }));
 
       // Show success message
       if (action === 'approve' && verifiedAmount) {
-        const request = withdrawalRequests.find(r => r._id === requestId || r.id === requestId);
+        const request = data.withdrawalRequests.find(r => r._id === requestId || r.id === requestId);
         alert(`Withdrawal approved! ₹${verifiedAmount} has been deducted from ${request?.accountType || 'the'} account balance.`);
       } else if (action === 'reject') {
-        const request = withdrawalRequests.find(r => r._id === requestId || r.id === requestId);
+        const request = data.withdrawalRequests.find(r => r._id === requestId || r.id === requestId);
         alert(`Withdrawal rejected for ${request?.accountType || 'the'} account.`);
       }
-    } catch (error) {
-      console.error('Error verifying withdrawal:', error);
-      alert(`Error verifying withdrawal: ${error.message}`);
-    }
   };
 
   return (
@@ -886,10 +915,10 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                       {getUniqueAccountTypes().length > 0 ? (
                         <div className="relative ml-2 inline-block">
                           <select
-                            value={selectedAccountType}
-                            onChange={(e) => setSelectedAccountType(e.target.value)}
+                            value={data.selectedAccountType}
+                            onChange={(e) => setData(prev => ({ ...prev, selectedAccountType: e.target.value }))}
                             className="appearance-none bg-card-bg backdrop-blur-sm border border-border-color text-text-primary rounded-lg px-4 py-2 pr-12 focus:outline-none focus:border-accent-color focus:ring-2 focus:ring-accent-color/20 transition-all duration-300 hover:border-accent-color/50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed min-w-[150px] w-auto"
-                            style={{ width: `${Math.max(selectedAccountType?.length * 10 + 80, 150)}px` }}
+                            style={{ width: `${Math.max(data.selectedAccountType?.length * 10 + 80, 150)}px` }}
                             disabled={isEditing}
                           >
                             {getUniqueAccountTypes().map(accountType => (
@@ -943,9 +972,9 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                   {!isEditing ? (
                     <button
                       onClick={handleEdit}
-                      disabled={!selectedAccountType}
+                      disabled={!data.selectedAccountType}
                       className={`font-semibold py-2 px-4 rounded-lg transition-all duration-300 ${
-                        selectedAccountType 
+                        data.selectedAccountType 
                           ? 'bg-gradient-to-r from-accent-color to-primary-blue hover:from-primary-blue hover:to-accent-color text-text-quaternary hover:scale-105 shadow-lg' 
                           : 'bg-gray-400 text-gray-600 cursor-not-allowed'
                       }`}
@@ -1004,13 +1033,10 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                   ) : (
                     <div className="text-5xl sm:text-6xl font-extrabold text-text-primary">
                       {(() => {
-                        const userAccount = createdAccounts.find(acc => acc.type === selectedAccountType);
-                        console.log('Created accounts:', createdAccounts);
-                        console.log('Selected account type:', selectedAccountType);
-                        console.log('Found user account:', userAccount);
+                        const userAccount = data.createdAccounts.find(acc => acc.type === data.selectedAccountType);
                         return userAccount?.balance || '0.00';
                       })()} {(() => {
-                        const userAccount = createdAccounts.find(acc => acc.type === selectedAccountType);
+                        const userAccount = data.createdAccounts.find(acc => acc.type === data.selectedAccountType);
                         return userAccount?.currency || '₹';
                       })()}
                     </div>
@@ -1031,7 +1057,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                         className="text-lg font-semibold text-text-primary bg-transparent border-b border-accent-color text-center w-32 focus:outline-none focus:border-primary-blue"
                       />
                     ) : (
-                      <div className="text-lg font-semibold text-text-primary">{accountTypesData[selectedAccountType]?.equity || '0.00'} ₹</div>
+                      <div className="text-lg font-semibold text-text-primary">{data.accountTypesData[data.selectedAccountType]?.equity || '0.00'} ₹</div>
                     )}
                   </div>
                   
@@ -1049,7 +1075,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                         className="text-lg font-semibold text-text-primary bg-transparent border-b border-accent-color text-center w-32 focus:outline-none focus:border-primary-blue"
                       />
                     ) : (
-                      <div className="text-lg font-semibold text-text-primary">{accountTypesData[selectedAccountType]?.margin || '0.00'} ₹</div>
+                      <div className="text-lg font-semibold text-text-primary">{data.accountTypesData[data.selectedAccountType]?.margin || '0.00'} ₹</div>
                     )}
                   </div>
                 </div>
@@ -1169,11 +1195,11 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                               {selectedUser.profilePicture ? (
                                 <div className="relative">
                                   <img 
-                                    src={selectedUser.profilePicture.startsWith('data:') ? selectedUser.profilePicture : `http://localhost:5000/uploads/${selectedUser.profilePicture}`}
+                                    src={getUploadUrl(selectedUser.profilePicture)}
                                     alt="Profile Picture"
                                     className="w-32 h-32 rounded-full object-cover border-4 border-accent-color shadow-lg cursor-pointer hover:scale-105 transition-transform duration-300"
                                     onClick={() => handleImageClick(
-                                      selectedUser.profilePicture.startsWith('data:') ? selectedUser.profilePicture : `http://localhost:5000/uploads/${selectedUser.profilePicture}`,
+                                      getUploadUrl(selectedUser.profilePicture),
                                       'Profile Picture'
                                     )}
                                   />
@@ -1212,11 +1238,11 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                                 {selectedUser.idDocument ? (
                                   <div className="mt-2">
                                     <img 
-                                      src={selectedUser.idDocument.startsWith('data:') ? selectedUser.idDocument : `http://localhost:5000/uploads/${selectedUser.idDocument}`}
+                                      src={getUploadUrl(selectedUser.idDocument)}
                                       alt="ID Document"
                                       className="max-w-full h-32 object-contain border border-border-color rounded cursor-pointer hover:border-accent-color transition-colors"
                                       onClick={() => handleImageClick(
-                                        selectedUser.idDocument.startsWith('data:') ? selectedUser.idDocument : `http://localhost:5000/uploads/${selectedUser.idDocument}`,
+                                        getUploadUrl(selectedUser.idDocument),
                                         'ID Document'
                                       )}
                                     />
@@ -1233,11 +1259,11 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                                 {selectedUser.addressProof ? (
                                   <div className="mt-2">
                                     <img 
-                                      src={selectedUser.addressProof.startsWith('data:') ? selectedUser.addressProof : `http://localhost:5000/uploads/${selectedUser.addressProof}`}
+                                      src={getUploadUrl(selectedUser.addressProof)}
                                       alt="Address Proof"
                                       className="max-w-full h-32 object-contain border border-border-color rounded cursor-pointer hover:border-accent-color transition-colors"
                                       onClick={() => handleImageClick(
-                                        selectedUser.addressProof.startsWith('data:') ? selectedUser.addressProof : `http://localhost:5000/uploads/${selectedUser.addressProof}`,
+                                        getUploadUrl(selectedUser.addressProof),
                                         'Address Proof'
                                       )}
                                     />
@@ -1254,11 +1280,11 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                                 {selectedUser.aadharBack ? (
                                   <div className="mt-2">
                                     <img 
-                                      src={selectedUser.aadharBack.startsWith('data:') ? selectedUser.aadharBack : `http://localhost:5000/uploads/${selectedUser.aadharBack}`}
+                                      src={getUploadUrl(selectedUser.aadharBack)}
                                       alt="Aadhar Back"
                                       className="max-w-full h-32 object-contain border border-border-color rounded cursor-pointer hover:border-accent-color transition-colors"
                                       onClick={() => handleImageClick(
-                                        selectedUser.aadharBack.startsWith('data:') ? selectedUser.aadharBack : `http://localhost:5000/uploads/${selectedUser.aadharBack}`,
+                                        getUploadUrl(selectedUser.aadharBack),
                                         'Aadhar Back'
                                       )}
                                     />
@@ -1438,7 +1464,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
               </div>
 
             {/* Payment Verification Section */}
-            {depositRequests.filter(request => request.status === 'pending').length > 0 && (
+            {data.depositRequests.filter(request => request.status === 'pending').length > 0 && (
               <div className="mt-8">
                 <div className="bg-card-bg backdrop-blur-sm border border-border-color rounded-2xl p-6 shadow-xl">
                   <h3 className="text-2xl font-bold text-text-primary mb-6">
@@ -1446,7 +1472,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                   </h3>
                   
                   <div className="space-y-4">
-                    {depositRequests
+                    {data.depositRequests
                       .filter(request => request.status === 'pending')
                       .map(request => (
                         <div key={request._id || request.id} className="bg-hover-bg border border-border-color rounded-lg p-4">
@@ -1489,11 +1515,11 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                                   <span className="text-text-secondary text-sm">Payment Proof:</span>
                                   <div className="mt-1">
                                     <img 
-                                      src={request.paymentProof.startsWith('data:') ? request.paymentProof : `http://localhost:5000/uploads/${request.paymentProof}`} 
+                                      src={getUploadUrl(request.paymentProof)} 
                                       alt="Payment Proof" 
                                       className="max-w-xs max-h-32 object-contain border border-border-color rounded cursor-pointer hover:border-accent-color transition-colors"
                                       onClick={() => handleImageClick(
-                                        request.paymentProof.startsWith('data:') ? request.paymentProof : `http://localhost:5000/uploads/${request.paymentProof}`, 
+                                        getUploadUrl(request.paymentProof), 
                                         request.proofName || 'Payment Proof'
                                       )}
                                     />
@@ -1582,7 +1608,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                         </div>
                       ))}
                     
-                    {depositRequests.filter(request => request.status === 'pending').length === 0 && (
+                    {data.depositRequests.filter(request => request.status === 'pending').length === 0 && (
                       <div className="text-center text-text-secondary py-8">
                         <div className="text-4xl mb-2">✅</div>
                         <p>No pending payment verifications for {selectedUser ? selectedUser.fullName : 'any user'}</p>
@@ -1594,7 +1620,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
             )}
 
             {/* Payment History */}
-            {depositRequests.filter(request => request.status !== 'pending').length > 0 && (
+            {data.depositRequests.filter(request => request.status !== 'pending').length > 0 && (
               <div className="mt-8">
                 <div className="bg-card-bg backdrop-blur-sm border border-border-color rounded-2xl p-6 shadow-xl">
                   <h3 className="text-2xl font-bold text-text-primary mb-6">
@@ -1602,7 +1628,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                   </h3>
                   
                   <div className="space-y-3">
-                    {depositRequests
+                    {data.depositRequests
                       .filter(request => request.status !== 'pending')
                       .sort((a, b) => {
                         try {
@@ -1666,9 +1692,51 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                     <h3 className="text-2xl font-bold text-text-primary">
                       {selectedUser ? `${selectedUser.fullName}'s Withdrawal Requests` : 'Withdrawal Requests'} 
                       <span className="text-sm font-normal text-text-secondary ml-2">
-                        ({withdrawalRequests.length} total, {withdrawalRequests.filter(r => r.status === 'pending').length} pending)
+                        ({data.withdrawalRequests.length} total, {data.withdrawalRequests.filter(r => r.status === 'pending').length} pending)
                       </span>
+                      {apiStatus.withdrawalRequests === 'cached' && (
+                        <span className="ml-2 text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
+                          📱 Using cached data
+                        </span>
+                      )}
+                      {apiStatus.withdrawalRequests === 'loading' && (
+                        <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                          ⏳ Loading...
+                        </span>
+                      )}
+                      {apiStatus.withdrawalRequests === 'error' && (
+                        <span className="ml-2 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">
+                          ⚠️ Connection issue
+                        </span>
+                      )}
                     </h3>
+                    {apiStatus.withdrawalRequests === 'error' && (
+                      <button
+                        onClick={async () => {
+                          setApiStatus(prev => ({ ...prev, withdrawalRequests: 'loading' }));
+                          // Manually trigger the withdrawal requests reload
+                          const userId = selectedUser?.id || selectedUser?._id;
+                          if (userId) {
+                            const result = await safeApiCall(
+                              () => adminAPI.getUserWithdrawalRequests(userId),
+                              'Failed to load user withdrawal requests',
+                              { success: false, withdrawalRequests: [] }
+                            );
+                            
+                            if (result?.success) {
+                              setData(prev => ({ ...prev, withdrawalRequests: result.withdrawalRequests || [] }));
+                              safeLocalStorageSet('userwithdrawalrequests', { withdrawalRequests: result.withdrawalRequests || [] });
+                              setApiStatus(prev => ({ ...prev, withdrawalRequests: 'success' }));
+                            } else {
+                              setApiStatus(prev => ({ ...prev, withdrawalRequests: 'error' }));
+                            }
+                          }
+                        }}
+                        className="ml-4 text-xs bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full transition-colors"
+                      >
+                        🔄 Retry
+                      </button>
+                    )}
                     {selectedUser && (
                       <div className="mt-2 text-sm text-text-secondary">
                         🔍 Showing withdrawal requests for: <span className="font-semibold text-accent-color">{selectedUser.fullName}</span> ({selectedUser.email})
@@ -1682,14 +1750,9 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                   </div>
                 </div>
                 
-                {console.log('🔍 Rendering withdrawal requests:', {
-                  total: withdrawalRequests.length,
-                  pending: withdrawalRequests.filter(request => request.status === 'pending').length,
-                  requests: withdrawalRequests
-                })}
-                {withdrawalRequests.filter(request => request.status === 'pending').length > 0 ? (
+                {data.withdrawalRequests.filter(request => request.status === 'pending').length > 0 ? (
                   <div className="space-y-4">
-                    {withdrawalRequests
+                    {data.withdrawalRequests
                       .filter(request => request.status === 'pending')
                       .map(request => (
                         <div key={request._id || request.id} className="bg-hover-bg rounded-xl p-4 border border-border-color">
@@ -1827,7 +1890,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
             </div>
 
             {/* Withdrawal History */}
-            {withdrawalRequests.filter(request => request.status !== 'pending').length > 0 && (
+            {data.withdrawalRequests.filter(request => request.status !== 'pending').length > 0 && (
               <div className="mt-8">
                 <div className="bg-card-bg backdrop-blur-sm border border-border-color rounded-2xl p-6 shadow-xl">
                   <div className="mb-6">
@@ -1847,7 +1910,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                   </div>
                   
                   <div className="space-y-3">
-                    {withdrawalRequests
+                    {data.withdrawalRequests
                       .filter(request => request.status !== 'pending')
                       .sort((a, b) => {
                         const dateA = new Date(a.verifiedAt || a.createdAt || a.timestamp);
@@ -1919,7 +1982,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
       </main>
 
       {/* Full-Screen Image Popup Modal */}
-      {showImagePopup && selectedImage && (
+      {imagePopup.isOpen && imagePopup.selectedImage && (
         <div 
           ref={imagePopupRef}
           className="fixed inset-0 bg-black bg-opacity-95 z-50 flex flex-col"
@@ -1934,8 +1997,8 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-4">
                 <h3 className="text-xl font-bold text-white">Payment Proof</h3>
-                {selectedImage.name && (
-                  <span className="text-gray-300 text-sm">{selectedImage.name}</span>
+                {imagePopup.selectedImage.name && (
+                  <span className="text-gray-300 text-sm">{imagePopup.selectedImage.name}</span>
                 )}
               </div>
               
@@ -1953,7 +2016,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                   </button>
                   
                   <span className="text-white text-sm px-2">
-                    {Math.round(imageScale * 100)}%
+                    {Math.round(imagePopup.scale * 100)}%
                   </span>
                   
                   <button
@@ -1995,16 +2058,16 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
             <div
               className="relative"
               style={{
-                transform: `translate(${imagePosition.x}px, ${imagePosition.y}px) scale(${imageScale})`,
-                transition: isDragging ? 'none' : 'transform 0.1s ease-out',
-                cursor: isDragging ? 'grabbing' : 'grab'
+                transform: `translate(${imagePopup.position.x}px, ${imagePopup.position.y}px) scale(${imagePopup.scale})`,
+                transition: imagePopup.isDragging ? 'none' : 'transform 0.1s ease-out',
+                cursor: imagePopup.isDragging ? 'grabbing' : 'grab'
               }}
               onMouseDown={handleMouseDown}
               onTouchStart={handleTouchStart}
             >
               <img 
-                src={selectedImage.src} 
-                alt={selectedImage.name}
+                src={imagePopup.selectedImage.src} 
+                alt={imagePopup.selectedImage.name}
                 className="max-w-none max-h-none select-none"
                 style={{
                   maxWidth: '100vw',

@@ -1,5 +1,6 @@
 import AdminData from "../models/AdminData.js";
 import DepositRequest from "../models/DepositRequest.js";
+import WithdrawalRequest from "../models/WithdrawalRequest.js";
 import Account from "../models/Account.js";
 import User from "../models/User.js";
 import Profile from "../models/Profile.js";
@@ -311,6 +312,14 @@ export const getUserWithdrawalRequests = async (req, res) => {
     const { userId } = req.params;
     console.log(`🔍 Getting withdrawal requests for user: ${userId}`);
     
+    // Validate userId
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required"
+      });
+    }
+
     // Get withdrawal requests for the specific user
     const withdrawalRequests = await WithdrawalRequest.find({ 
       userId: userId 
@@ -318,24 +327,30 @@ export const getUserWithdrawalRequests = async (req, res) => {
 
     console.log(`📊 Found ${withdrawalRequests.length} withdrawal requests for user`);
     if (withdrawalRequests.length > 0) {
-      console.log(`📋 Withdrawal requests:`, withdrawalRequests.map(req => ({ id: req._id, userId: req.userId, amount: req.amount, status: req.status })));
+      console.log(`📋 Withdrawal requests:`, withdrawalRequests.map(req => ({ 
+        id: req._id, 
+        userId: req.userId, 
+        amount: req.amount, 
+        status: req.status 
+      })));
     }
 
-    // Convert ObjectIds to strings for proper serialization
-    const serializedWithdrawalRequests = withdrawalRequests.map(request => ({
-      ...request.toObject(),
-      _id: request._id.toString(),
-      userId: request.userId.toString(),
-      accountId: request.accountId.toString(),
-      verifiedBy: request.verifiedBy ? request.verifiedBy.toString() : null
-    }));
-
+    // Return withdrawal requests directly (MongoDB handles ObjectId serialization)
     res.status(200).json({
       success: true,
-      withdrawalRequests: serializedWithdrawalRequests
+      withdrawalRequests
     });
   } catch (error) {
-    console.error("Get User Withdrawal Requests Error:", error);
-    res.status(500).json({ success: false, message: "Server error" });
+    console.error("❌ Get User Withdrawal Requests Error:", error);
+    console.error("❌ Error details:", {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
+    res.status(500).json({ 
+      success: false, 
+      message: "Server error",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 };

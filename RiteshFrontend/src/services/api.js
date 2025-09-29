@@ -1,6 +1,9 @@
 // API Base URL
 const API_BASE_URL = 'https://shraddha-backend.onrender.com/api';
 
+// Base URL for file uploads
+const UPLOADS_BASE_URL = 'https://shraddha-backend.onrender.com/uploads';
+
 // Helper function to get auth token
 const getAuthToken = () => {
   return sessionStorage.getItem('token');
@@ -337,6 +340,16 @@ export const profileAPI = {
   },
 };
 
+// Helper function to get upload URL
+export const getUploadUrl = (filename) => {
+  if (!filename) return null;
+  if (filename.startsWith('data:')) return filename;
+  return `${UPLOADS_BASE_URL}/${filename}`;
+};
+
+// Helper function to get API base URL
+export const getApiBaseUrl = () => API_BASE_URL;
+
 export default {
   authAPI,
   accountAPI,
@@ -344,4 +357,6 @@ export default {
   withdrawalAPI,
   adminAPI,
   profileAPI,
+  getUploadUrl,
+  getApiBaseUrl,
 };
