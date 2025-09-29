@@ -46,6 +46,23 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
       return;
     }
     
+    // Handle specific business logic errors with user-friendly messages
+    if (errorMessage.includes('Insufficient balance')) {
+      alert('❌ Cannot approve withdrawal: User has insufficient balance in their account.');
+      return;
+    }
+    
+    if (errorMessage.includes('Account not found')) {
+      alert('❌ Cannot process withdrawal: User account not found.');
+      return;
+    }
+    
+    if (errorMessage.includes('Withdrawal request not found')) {
+      alert('❌ Cannot process withdrawal: Withdrawal request not found.');
+      return;
+    }
+    
+    // Generic error handling
     alert(`${context}: ${errorMessage}`);
   };
 
@@ -799,7 +816,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
           verifiedAmount: verifiedAmount || null,
           rejectionReason: action === 'reject' ? (rejectionReason || 'Withdrawal rejected by admin') : null
         }),
-        'Failed to verify withdrawal request',
+        `Failed to ${action} withdrawal request`,
         { success: false }
       );
 
@@ -1829,7 +1846,20 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                 const amountInput = document.getElementById(`withdrawal-amount-${requestId}`);
                 const verifiedAmount = amountInput.value;
                 if (verifiedAmount && parseFloat(verifiedAmount) > 0) {
-                  if (window.confirm(`Are you sure you want to approve this withdrawal request?\n\nAmount: ₹${verifiedAmount}`)) {
+                  // Get current user balance for the account type
+                  const accountType = request.accountType;
+                  const userAccount = data.createdAccounts.find(acc => acc.type === accountType);
+                  const currentBalance = userAccount?.balance?.toString() || '0.00';
+                  const balanceAmount = parseFloat(currentBalance);
+                  const withdrawalAmount = parseFloat(verifiedAmount);
+                  
+                  let confirmMessage = `Are you sure you want to approve this withdrawal request?\n\nAmount: ₹${verifiedAmount}\nAccount Type: ${accountType}\nCurrent Balance: ₹${currentBalance}`;
+                  
+                  if (withdrawalAmount > balanceAmount) {
+                    confirmMessage += `\n\n⚠️ WARNING: Withdrawal amount (₹${verifiedAmount}) exceeds current balance (₹${currentBalance}). This will likely fail due to insufficient funds.`;
+                  }
+                  
+                  if (window.confirm(confirmMessage)) {
                     handleWithdrawalVerification(requestId, 'approve', verifiedAmount);
                   }
                 } else {
@@ -1847,7 +1877,20 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                               <div className="flex gap-2">
                                 <button
                                   onClick={() => {
-                                    if (window.confirm(`Are you sure you want to approve this withdrawal request?\n\nAmount: ₹${request.amount}`)) {
+                                    // Get current user balance for the account type
+                                    const accountType = request.accountType;
+                                    const userAccount = data.createdAccounts.find(acc => acc.type === accountType);
+                                    const currentBalance = userAccount?.balance?.toString() || '0.00';
+                                    const balanceAmount = parseFloat(currentBalance);
+                                    const withdrawalAmount = parseFloat(request.amount);
+                                    
+                                    let confirmMessage = `Are you sure you want to approve this withdrawal request?\n\nAmount: ₹${request.amount}\nAccount Type: ${accountType}\nCurrent Balance: ₹${currentBalance}`;
+                                    
+                                    if (withdrawalAmount > balanceAmount) {
+                                      confirmMessage += `\n\n⚠️ WARNING: Withdrawal amount (₹${request.amount}) exceeds current balance (₹${currentBalance}). This will likely fail due to insufficient funds.`;
+                                    }
+                                    
+                                    if (window.confirm(confirmMessage)) {
                                       handleWithdrawalVerification(request._id || request.id, 'approve', request.amount);
                                     }
                                   }}
