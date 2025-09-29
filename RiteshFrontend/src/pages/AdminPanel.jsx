@@ -1107,15 +1107,6 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                   </div>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-                  <button className="bg-gradient-to-r from-accent-color to-primary-blue hover:from-primary-blue hover:to-accent-color text-text-quaternary font-semibold py-3 px-6 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg">
-                    Reset to Default
-                  </button>
-                  <button className="bg-transparent border border-border-color text-text-secondary hover:text-text-primary hover:border-text-primary font-semibold py-3 px-6 rounded-xl transition-all duration-300">
-                    Export Data
-                  </button>
-                </div>
               </div>
 
               {/* User Profile Section */}
@@ -1142,25 +1133,25 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                               Personal Information
                             </h4>
                             <div className="space-y-3">
-                              <div className="flex justify-between items-center">
-                                <span className="text-text-secondary">Full Name:</span>
-                                <span className="font-semibold text-text-primary">{selectedUser.fullName}</span>
+                              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-2">
+                                <span className="text-text-secondary text-sm sm:text-base">Full Name:</span>
+                                <span className="font-semibold text-text-primary text-sm sm:text-base break-words">{selectedUser.fullName}</span>
                               </div>
-                              <div className="flex justify-between items-center">
-                                <span className="text-text-secondary">Email:</span>
-                                <span className="font-semibold text-text-primary">{selectedUser.email}</span>
+                              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-2">
+                                <span className="text-text-secondary text-sm sm:text-base">Email:</span>
+                                <span className="font-semibold text-text-primary text-sm sm:text-base break-all">{selectedUser.email}</span>
                               </div>
-                              <div className="flex justify-between items-center">
-                                <span className="text-text-secondary">Phone:</span>
-                                <span className="font-semibold text-text-primary">{selectedUser.phone || 'Not provided'}</span>
+                              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-2">
+                                <span className="text-text-secondary text-sm sm:text-base">Phone:</span>
+                                <span className="font-semibold text-text-primary text-sm sm:text-base break-words">{selectedUser.phone || 'Not provided'}</span>
                               </div>
-                              <div className="flex justify-between items-center">
-                                <span className="text-text-secondary">Account Type:</span>
-                                <span className="font-semibold text-accent-color">{selectedUser.accountType}</span>
+                              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-2">
+                                <span className="text-text-secondary text-sm sm:text-base">Account Type:</span>
+                                <span className="font-semibold text-accent-color text-sm sm:text-base break-words">{selectedUser.accountType}</span>
                               </div>
-                              <div className="flex justify-between items-center">
-                                <span className="text-text-secondary">Registration Date:</span>
-                                <span className="font-semibold text-text-primary">
+                              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-2">
+                                <span className="text-text-secondary text-sm sm:text-base">Registration Date:</span>
+                                <span className="font-semibold text-text-primary text-sm sm:text-base break-words">
                                   {selectedUser.createdAt ? new Date(selectedUser.createdAt).toLocaleDateString() : 'N/A'}
                                 </span>
                               </div>
@@ -1176,21 +1167,21 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                               Account Status
                             </h4>
                             <div className="space-y-3">
-                              <div className="flex justify-between items-center">
-                                <span className="text-text-secondary">Status:</span>
-                                <span className="px-3 py-1 bg-success-color/20 text-success-color rounded-full text-sm font-semibold">
+                              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-2">
+                                <span className="text-text-secondary text-sm sm:text-base">Status:</span>
+                                <span className="px-3 py-1 bg-success-color/20 text-success-color rounded-full text-sm font-semibold w-fit">
                                   Active
                                 </span>
                               </div>
-                              <div className="flex justify-between items-center">
-                                <span className="text-text-secondary">Verification:</span>
-                                <span className="px-3 py-1 bg-accent-color/20 text-accent-color rounded-full text-sm font-semibold">
+                              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-2">
+                                <span className="text-text-secondary text-sm sm:text-base">Verification:</span>
+                                <span className="px-3 py-1 bg-accent-color/20 text-accent-color rounded-full text-sm font-semibold w-fit">
                                   {selectedUser.verified ? 'Verified' : 'Pending'}
                                 </span>
                               </div>
-                              <div className="flex justify-between items-center">
-                                <span className="text-text-secondary">Last Login:</span>
-                                <span className="font-semibold text-text-primary">
+                              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-2">
+                                <span className="text-text-secondary text-sm sm:text-base">Last Login:</span>
+                                <span className="font-semibold text-text-primary text-sm sm:text-base break-words">
                                   {selectedUser.lastLogin ? new Date(selectedUser.lastLogin).toLocaleDateString() : 'Never'}
                                 </span>
                               </div>
@@ -1315,16 +1306,16 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                             
                             {/* Verification Button */}
                             <div className="mt-6 pt-4 border-t border-border-color">
-                              <div className="flex items-center justify-between">
+                              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                                 <div className="flex items-center gap-3">
                                   <div className={`w-3 h-3 rounded-full ${selectedUser.verified ? 'bg-success-color' : 'bg-warning-color'}`}></div>
-                                  <span className="text-text-secondary">
+                                  <span className="text-text-secondary text-sm sm:text-base">
                                     Status: {selectedUser.verified ? 'Verified' : 'Pending Verification'}
                                   </span>
                                 </div>
                                 <button
                                   onClick={() => handleUserVerification(selectedUser.id, !selectedUser.verified)}
-                                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                                  className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-sm sm:text-base whitespace-nowrap ${
                                     selectedUser.verified
                                       ? 'bg-warning-color text-white hover:bg-warning-color/90'
                                       : 'bg-success-color text-white hover:bg-success-color/90'
@@ -1345,25 +1336,25 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                               Additional Information
                             </h4>
                             <div className="space-y-3">
-                              <div className="flex justify-between items-center">
-                                <span className="text-text-secondary">Country:</span>
-                                <span className="font-semibold text-text-primary">{selectedUser.country || 'Not specified'}</span>
+                              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-2">
+                                <span className="text-text-secondary text-sm sm:text-base">Country:</span>
+                                <span className="font-semibold text-text-primary text-sm sm:text-base break-words">{selectedUser.country || 'Not specified'}</span>
                               </div>
-                              <div className="flex justify-between items-center">
-                                <span className="text-text-secondary">State:</span>
-                                <span className="font-semibold text-text-primary">{selectedUser.state || 'Not specified'}</span>
+                              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-2">
+                                <span className="text-text-secondary text-sm sm:text-base">State:</span>
+                                <span className="font-semibold text-text-primary text-sm sm:text-base break-words">{selectedUser.state || 'Not specified'}</span>
                               </div>
-                              <div className="flex justify-between items-center">
-                                <span className="text-text-secondary">City:</span>
-                                <span className="font-semibold text-text-primary">{selectedUser.city || 'Not specified'}</span>
+                              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-2">
+                                <span className="text-text-secondary text-sm sm:text-base">City:</span>
+                                <span className="font-semibold text-text-primary text-sm sm:text-base break-words">{selectedUser.city || 'Not specified'}</span>
                               </div>
-                              <div className="flex justify-between items-center">
-                                <span className="text-text-secondary">Postal Code:</span>
-                                <span className="font-semibold text-text-primary">{selectedUser.postalCode || 'Not provided'}</span>
+                              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-2">
+                                <span className="text-text-secondary text-sm sm:text-base">Postal Code:</span>
+                                <span className="font-semibold text-text-primary text-sm sm:text-base break-words">{selectedUser.postalCode || 'Not provided'}</span>
                               </div>
-                              <div className="flex justify-between items-center">
-                                <span className="text-text-secondary">Date of Birth:</span>
-                                <span className="font-semibold text-text-primary">
+                              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-2">
+                                <span className="text-text-secondary text-sm sm:text-base">Date of Birth:</span>
+                                <span className="font-semibold text-text-primary text-sm sm:text-base break-words">
                                   {selectedUser.dateOfBirth ? 
                                     (typeof selectedUser.dateOfBirth === 'string' ? 
                                       new Date(selectedUser.dateOfBirth).toLocaleDateString() : 
@@ -1372,22 +1363,22 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                                   }
                                 </span>
                               </div>
-                              <div className="flex justify-between items-center">
-                                <span className="text-text-secondary">Gender:</span>
-                                <span className="font-semibold text-text-primary capitalize">{selectedUser.gender || 'Not specified'}</span>
+                              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-2">
+                                <span className="text-text-secondary text-sm sm:text-base">Gender:</span>
+                                <span className="font-semibold text-text-primary text-sm sm:text-base capitalize break-words">{selectedUser.gender || 'Not specified'}</span>
                               </div>
-                              <div className="flex justify-between items-center">
-                                <span className="text-text-secondary">Father's Name:</span>
-                                <span className="font-semibold text-text-primary">{selectedUser.fatherName || 'Not provided'}</span>
+                              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-2">
+                                <span className="text-text-secondary text-sm sm:text-base">Father's Name:</span>
+                                <span className="font-semibold text-text-primary text-sm sm:text-base break-words">{selectedUser.fatherName || 'Not provided'}</span>
                               </div>
-                              <div className="flex justify-between items-center">
-                                <span className="text-text-secondary">Mother's Name:</span>
-                                <span className="font-semibold text-text-primary">{selectedUser.motherName || 'Not provided'}</span>
+                              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-2">
+                                <span className="text-text-secondary text-sm sm:text-base">Mother's Name:</span>
+                                <span className="font-semibold text-text-primary text-sm sm:text-base break-words">{selectedUser.motherName || 'Not provided'}</span>
                               </div>
                               {selectedUser.streetAddress && (
-                                <div className="flex justify-between items-start">
-                                  <span className="text-text-secondary">Address:</span>
-                                  <span className="font-semibold text-text-primary text-right max-w-xs">{selectedUser.streetAddress}</span>
+                                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-2">
+                                  <span className="text-text-secondary text-sm sm:text-base">Address:</span>
+                                  <span className="font-semibold text-text-primary text-sm sm:text-base break-words text-left sm:text-right">{selectedUser.streetAddress}</span>
                                 </div>
                               )}
                             </div>
@@ -1404,21 +1395,21 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                               </h4>
                               <div className="space-y-3">
                                 {selectedUser.accountName && (
-                                  <div className="flex justify-between items-center">
-                                    <span className="text-text-secondary">Account Name:</span>
-                                    <span className="font-semibold text-text-primary">{selectedUser.accountName}</span>
+                                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-2">
+                                    <span className="text-text-secondary text-sm sm:text-base">Account Name:</span>
+                                    <span className="font-semibold text-text-primary text-sm sm:text-base break-words">{selectedUser.accountName}</span>
                                   </div>
                                 )}
                                 {selectedUser.bankAccount && (
-                                  <div className="flex justify-between items-center">
-                                    <span className="text-text-secondary">Account Number:</span>
-                                    <span className="font-semibold text-text-primary">{selectedUser.bankAccount}</span>
+                                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-2">
+                                    <span className="text-text-secondary text-sm sm:text-base">Account Number:</span>
+                                    <span className="font-semibold text-text-primary text-sm sm:text-base break-words">{selectedUser.bankAccount}</span>
                                   </div>
                                 )}
                                 {selectedUser.bankName && (
-                                  <div className="flex justify-between items-center">
-                                    <span className="text-text-secondary">Bank Name:</span>
-                                    <span className="font-semibold text-text-primary">{selectedUser.bankName}</span>
+                                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-2">
+                                    <span className="text-text-secondary text-sm sm:text-base">Bank Name:</span>
+                                    <span className="font-semibold text-text-primary text-sm sm:text-base break-words">{selectedUser.bankName}</span>
                                   </div>
                                 )}
                               </div>
@@ -1427,72 +1418,37 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                         </div>
                       </div>
 
-                      {/* Action Buttons for Profile */}
-                      <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
-                        <button className="bg-gradient-to-r from-accent-color to-primary-blue hover:from-primary-blue hover:to-accent-color text-text-quaternary font-semibold py-2 px-4 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg">
-                          Edit Profile
-                        </button>
-                        <button className="bg-gradient-to-r from-info-color to-blue-600 hover:from-blue-600 hover:to-info-color text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg">
-                          Download Profile
-                        </button>
-                        <button className="bg-transparent border border-border-color text-text-secondary hover:text-text-primary hover:border-text-primary font-semibold py-2 px-4 rounded-lg transition-all duration-300">
-                          Send Message
-                        </button>
-                      </div>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* Additional Admin Features */}
-              <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-card-bg backdrop-blur-sm border border-border-color rounded-2xl p-6 shadow-xl">
-                  <h3 className="text-xl font-bold text-text-primary mb-4">Quick Actions</h3>
-                  <div className="space-y-3">
-                    <button className="w-full bg-gradient-to-r from-success-color to-green-600 hover:from-green-600 hover:to-success-color text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300">
-                      Add Test Balance
-                    </button>
-                    <button className="w-full bg-gradient-to-r from-warning-color to-yellow-600 hover:from-yellow-600 hover:to-warning-color text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300">
-                      Reset All Data
-                    </button>
-                    <button className="w-full bg-gradient-to-r from-info-color to-blue-600 hover:from-blue-600 hover:to-info-color text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300">
-                      View Logs
-                    </button>
-                  </div>
-                </div>
-
-                <div className="bg-card-bg backdrop-blur-sm border border-border-color rounded-2xl p-6 shadow-xl">
-                  <h3 className="text-xl font-bold text-text-primary mb-4">System Status</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-text-secondary">Database</span>
-                      <span className="text-success-color font-semibold">Online</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-text-secondary">API Status</span>
-                      <span className="text-success-color font-semibold">Active</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-text-secondary">Last Update</span>
-                      <span className="text-text-primary font-semibold">Just now</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
             {/* Payment Verification Section */}
-            {data.depositRequests.filter(request => request.status === 'pending').length > 0 && (
+            {(data.depositRequests.filter(request => request.status === 'pending').length > 0 || 
+              data.withdrawalRequests.filter(request => request.status === 'pending').length > 0) && (
               <div className="mt-8">
                 <div className="bg-card-bg backdrop-blur-sm border border-border-color rounded-2xl p-6 shadow-xl">
                   <h3 className="text-2xl font-bold text-text-primary mb-6">
                     {selectedUser ? `${selectedUser.fullName}'s Payment Verification` : 'Payment Verification'}
+                    <span className="text-sm font-normal text-text-secondary ml-2">
+                      ({data.depositRequests.filter(r => r.status === 'pending').length} deposits, {data.withdrawalRequests.filter(r => r.status === 'pending').length} withdrawals)
+                    </span>
                   </h3>
                   
                   <div className="space-y-4">
+                    {/* Deposit Requests */}
                     {data.depositRequests
                       .filter(request => request.status === 'pending')
                       .map(request => (
                         <div key={request._id || request.id} className="bg-hover-bg border border-border-color rounded-lg p-4">
+                          <div className="flex items-center gap-2 mb-3">
+                            <div className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                              </svg>
+                              DEPOSIT
+                            </div>
+                          </div>
                           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                             <div className="flex-1">
                               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
@@ -1559,14 +1515,14 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                                   </svg>
                                   <span className="text-sm font-medium text-text-secondary">Manual Approval</span>
                                 </div>
-                                <div className="flex gap-2">
+                                <div className="flex flex-col sm:flex-row gap-2">
                                   <input
                                     type="number"
                                     step="0.01"
                                     min="0"
                                     placeholder="Enter approval amount"
                                     defaultValue={request.amount}
-                                    className="bg-transparent border border-border-color text-text-primary rounded px-3 py-2 text-sm focus:outline-none focus:border-accent-color flex-1"
+                                    className="bg-transparent border border-border-color text-text-primary rounded px-3 py-2 text-sm focus:outline-none focus:border-accent-color flex-1 min-w-0"
                                     id={`amount-${request._id || request.id}`}
                                   />
                                   <button
@@ -1582,7 +1538,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                                         alert('Please enter a valid amount');
                                       }
                                     }}
-                                    className="bg-gradient-to-r from-success-color to-green-600 hover:from-green-600 hover:to-success-color text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg text-sm"
+                                    className="bg-gradient-to-r from-success-color to-green-600 hover:from-green-600 hover:to-success-color text-white font-semibold py-2 px-3 sm:px-4 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg text-sm whitespace-nowrap"
                                   >
                                     Approve
                                   </button>
@@ -1590,19 +1546,20 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                               </div>
 
                               {/* Quick Actions */}
-                              <div className="flex gap-2">
+                              <div className="flex flex-col sm:flex-row gap-2">
                                 <button
                                   onClick={() => {
                                     if (window.confirm(`Are you sure you want to approve this deposit request?\n\nAmount: ₹${request.amount}`)) {
                                       handlePaymentVerification(request._id || request.id, 'approve', request.amount);
                                     }
                                   }}
-                                  className="bg-gradient-to-r from-accent-color to-primary-blue hover:from-primary-blue hover:to-accent-color text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg text-sm flex-1 flex items-center justify-center gap-2"
+                                  className="bg-gradient-to-r from-accent-color to-primary-blue hover:from-primary-blue hover:to-accent-color text-white font-semibold py-2 px-3 sm:px-4 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg text-sm flex-1 flex items-center justify-center gap-2"
                                 >
                                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                                   </svg>
-                                  Quick Approve (₹{request.amount})
+                                  <span className="hidden sm:inline">Quick Approve (₹{request.amount})</span>
+                                  <span className="sm:hidden">Approve ₹{request.amount}</span>
                                 </button>
                                 <button
                                   onClick={() => {
@@ -1615,7 +1572,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                                       alert('Rejection reason is required');
                                     }
                                   }}
-                                  className="bg-gradient-to-r from-danger-color to-red-600 hover:from-red-600 hover:to-danger-color text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg text-sm"
+                                  className="bg-gradient-to-r from-danger-color to-red-600 hover:from-red-600 hover:to-danger-color text-white font-semibold py-2 px-3 sm:px-4 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg text-sm whitespace-nowrap"
                                 >
                                   Reject
                                 </button>
@@ -1625,154 +1582,19 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                         </div>
                       ))}
                     
-                    {data.depositRequests.filter(request => request.status === 'pending').length === 0 && (
-                      <div className="text-center text-text-secondary py-8">
-                        <div className="text-4xl mb-2">✅</div>
-                        <p>No pending payment verifications for {selectedUser ? selectedUser.fullName : 'any user'}</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Payment History */}
-            {data.depositRequests.filter(request => request.status !== 'pending').length > 0 && (
-              <div className="mt-8">
-                <div className="bg-card-bg backdrop-blur-sm border border-border-color rounded-2xl p-6 shadow-xl">
-                  <h3 className="text-2xl font-bold text-text-primary mb-6">
-                    {selectedUser ? `${selectedUser.fullName}'s Payment History` : 'Payment History'}
-                  </h3>
-                  
-                  <div className="space-y-3">
-                    {data.depositRequests
-                      .filter(request => request.status !== 'pending')
-                      .sort((a, b) => {
-                        try {
-                          const dateA = new Date(a.submittedAt || a.createdAt);
-                          const dateB = new Date(b.submittedAt || b.createdAt);
-                          return isNaN(dateB.getTime()) ? -1 : (isNaN(dateA.getTime()) ? 1 : dateB - dateA);
-                        } catch (error) {
-                          return 0;
-                        }
-                      })
-                      .map(request => (
-                        <div key={request._id || request.id} className="bg-hover-bg border border-border-color rounded-lg p-4">
-                          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-                            <div className="flex-1">
-                              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                <div>
-                                  <span className="text-text-secondary text-sm">Account:</span>
-                                  <div className="font-semibold text-text-primary">{request.accountType}</div>
-                                </div>
-                                <div>
-                                  <span className="text-text-secondary text-sm">Requested:</span>
-                                  <div className="font-semibold text-text-primary">₹{request.amount}</div>
-                                </div>
-                                <div>
-                                  <span className="text-text-secondary text-sm">Verified:</span>
-                                  <div className={`font-semibold ${request.verifiedAmount ? 'text-success-color' : 'text-danger-color'}`}>
-                                    {request.verifiedAmount ? `₹${request.verifiedAmount}` : 'N/A'}
-                                  </div>
-                                </div>
-                                <div>
-                                  <span className="text-text-secondary text-sm">Status:</span>
-                                  <div className={`font-semibold ${
-                                    request.status === 'approved' ? 'text-success-color' : 'text-danger-color'
-                                  }`}>
-                                    {request.status.toUpperCase()}
-                                  </div>
-                                </div>
-                                {request.upiApp && (
-                                  <div>
-                                    <span className="text-text-secondary text-sm">UPI App:</span>
-                                    <div className="font-semibold text-text-primary capitalize">
-                                      {request.upiApp}
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              </div>
-              )}
-
-            {/* Withdrawal Requests Section */}
-            <div className="mt-8">
-              <div className="bg-card-bg backdrop-blur-sm border border-border-color rounded-2xl p-6 shadow-xl">
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <h3 className="text-2xl font-bold text-text-primary">
-                      {selectedUser ? `${selectedUser.fullName}'s Withdrawal Requests` : 'Withdrawal Requests'} 
-                      <span className="text-sm font-normal text-text-secondary ml-2">
-                        ({data.withdrawalRequests.length} total, {data.withdrawalRequests.filter(r => r.status === 'pending').length} pending)
-                      </span>
-                      {apiStatus.withdrawalRequests === 'cached' && (
-                        <span className="ml-2 text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
-                          📱 Using cached data
-                        </span>
-                      )}
-                      {apiStatus.withdrawalRequests === 'loading' && (
-                        <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                          ⏳ Loading...
-                        </span>
-                      )}
-                      {apiStatus.withdrawalRequests === 'error' && (
-                        <span className="ml-2 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">
-                          ⚠️ Connection issue
-                        </span>
-                      )}
-                    </h3>
-                    {apiStatus.withdrawalRequests === 'error' && (
-                      <button
-                        onClick={async () => {
-                          setApiStatus(prev => ({ ...prev, withdrawalRequests: 'loading' }));
-                          // Manually trigger the withdrawal requests reload
-                          const userId = selectedUser?.id || selectedUser?._id;
-                          if (userId) {
-                            const result = await safeApiCall(
-                              () => adminAPI.getUserWithdrawalRequests(userId),
-                              'Failed to load user withdrawal requests',
-                              { success: false, withdrawalRequests: [] }
-                            );
-                            
-                            if (result?.success) {
-                              setData(prev => ({ ...prev, withdrawalRequests: result.withdrawalRequests || [] }));
-                              safeLocalStorageSet('userwithdrawalrequests', { withdrawalRequests: result.withdrawalRequests || [] });
-                              setApiStatus(prev => ({ ...prev, withdrawalRequests: 'success' }));
-                            } else {
-                              setApiStatus(prev => ({ ...prev, withdrawalRequests: 'error' }));
-                            }
-                          }
-                        }}
-                        className="ml-4 text-xs bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full transition-colors"
-                      >
-                        🔄 Retry
-                      </button>
-                    )}
-                    {selectedUser && (
-                      <div className="mt-2 text-sm text-text-secondary">
-                        🔍 Showing withdrawal requests for: <span className="font-semibold text-accent-color">{selectedUser.fullName}</span> ({selectedUser.email})
-                      </div>
-                    )}
-                    {!selectedUser && (
-                      <div className="mt-2 text-sm text-text-secondary">
-                        🔍 Showing all withdrawal requests (no user selected)
-                      </div>
-                    )}
-                  </div>
-                </div>
-                
-                {data.withdrawalRequests.filter(request => request.status === 'pending').length > 0 ? (
-                  <div className="space-y-4">
+                    {/* Withdrawal Requests */}
                     {data.withdrawalRequests
                       .filter(request => request.status === 'pending')
                       .map(request => (
-                        <div key={request._id || request.id} className="bg-hover-bg rounded-xl p-4 border border-border-color">
+                        <div key={request._id || request.id} className="bg-hover-bg border border-border-color rounded-lg p-4">
+                          <div className="flex items-center gap-2 mb-3">
+                            <div className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                              </svg>
+                              WITHDRAWAL
+                            </div>
+                          </div>
                           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                             <div className="flex-1">
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1830,51 +1652,51 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                                   </svg>
                                   <span className="text-sm font-medium text-text-secondary">Manual Approval</span>
                                 </div>
-                                <div className="flex gap-2">
+                                <div className="flex flex-col sm:flex-row gap-2">
                                   <input
                                     type="number"
                                     step="0.01"
                                     min="0"
                                     placeholder="Enter approval amount"
                                     defaultValue={request.amount}
-                                    className="bg-transparent border border-border-color text-text-primary rounded px-3 py-2 text-sm focus:outline-none focus:border-accent-color flex-1"
+                                    className="bg-transparent border border-border-color text-text-primary rounded px-3 py-2 text-sm focus:outline-none focus:border-accent-color flex-1 min-w-0"
                                     id={`withdrawal-amount-${request._id || request.id}`}
                                   />
-            <button
-              onClick={() => {
-                const requestId = request._id || request.id;
-                const amountInput = document.getElementById(`withdrawal-amount-${requestId}`);
-                const verifiedAmount = amountInput.value;
-                if (verifiedAmount && parseFloat(verifiedAmount) > 0) {
-                  // Get current user balance for the account type
-                  const accountType = request.accountType;
-                  const userAccount = data.createdAccounts.find(acc => acc.type === accountType);
-                  const currentBalance = userAccount?.balance?.toString() || '0.00';
-                  const balanceAmount = parseFloat(currentBalance);
-                  const withdrawalAmount = parseFloat(verifiedAmount);
-                  
-                  let confirmMessage = `Are you sure you want to approve this withdrawal request?\n\nAmount: ₹${verifiedAmount}\nAccount Type: ${accountType}\nCurrent Balance: ₹${currentBalance}`;
-                  
-                  if (withdrawalAmount > balanceAmount) {
-                    confirmMessage += `\n\n⚠️ WARNING: Withdrawal amount (₹${verifiedAmount}) exceeds current balance (₹${currentBalance}). This will likely fail due to insufficient funds.`;
-                  }
-                  
-                  if (window.confirm(confirmMessage)) {
-                    handleWithdrawalVerification(requestId, 'approve', verifiedAmount);
-                  }
-                } else {
-                  alert('Please enter a valid amount');
-                }
-              }}
-              className="bg-gradient-to-r from-success-color to-green-600 hover:from-green-600 hover:to-success-color text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg text-sm"
-            >
-              Approve
-            </button>
+                                  <button
+                                    onClick={() => {
+                                      const requestId = request._id || request.id;
+                                      const amountInput = document.getElementById(`withdrawal-amount-${requestId}`);
+                                      const verifiedAmount = amountInput.value;
+                                      if (verifiedAmount && parseFloat(verifiedAmount) > 0) {
+                                        // Get current user balance for the account type
+                                        const accountType = request.accountType;
+                                        const userAccount = data.createdAccounts.find(acc => acc.type === accountType);
+                                        const currentBalance = userAccount?.balance?.toString() || '0.00';
+                                        const balanceAmount = parseFloat(currentBalance);
+                                        const withdrawalAmount = parseFloat(verifiedAmount);
+                                        
+                                        let confirmMessage = `Are you sure you want to approve this withdrawal request?\n\nAmount: ₹${verifiedAmount}\nAccount Type: ${accountType}\nCurrent Balance: ₹${currentBalance}`;
+                                        
+                                        if (withdrawalAmount > balanceAmount) {
+                                          confirmMessage += `\n\n⚠️ WARNING: Withdrawal amount (₹${verifiedAmount}) exceeds current balance (₹${currentBalance}). This will likely fail due to insufficient funds.`;
+                                        }
+                                        
+                                        if (window.confirm(confirmMessage)) {
+                                          handleWithdrawalVerification(requestId, 'approve', verifiedAmount);
+                                        }
+                                      } else {
+                                        alert('Please enter a valid amount');
+                                      }
+                                    }}
+                                    className="bg-gradient-to-r from-success-color to-green-600 hover:from-green-600 hover:to-success-color text-white font-semibold py-2 px-3 sm:px-4 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg text-sm whitespace-nowrap"
+                                  >
+                                    Approve
+                                  </button>
                                 </div>
                               </div>
 
                               {/* Quick Actions */}
-                              <div className="flex gap-2">
+                              <div className="flex flex-col sm:flex-row gap-2">
                                 <button
                                   onClick={() => {
                                     // Get current user balance for the account type
@@ -1894,109 +1716,147 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                                       handleWithdrawalVerification(request._id || request.id, 'approve', request.amount);
                                     }
                                   }}
-                                  className="bg-gradient-to-r from-accent-color to-primary-blue hover:from-primary-blue hover:to-accent-color text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg text-sm flex-1 flex items-center justify-center gap-2"
+                                  className="bg-gradient-to-r from-accent-color to-primary-blue hover:from-primary-blue hover:to-accent-color text-white font-semibold py-2 px-3 sm:px-4 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg text-sm flex-1 flex items-center justify-center gap-2"
                                 >
                                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                                   </svg>
-                                  Quick Approve (₹{request.amount})
+                                  <span className="hidden sm:inline">Quick Approve (₹{request.amount})</span>
+                                  <span className="sm:hidden">Approve ₹{request.amount}</span>
                                 </button>
-          <button
-            onClick={() => {
-              const reason = prompt('Enter rejection reason (required):');
-              if (reason && reason.trim()) {
-                if (window.confirm(`Are you sure you want to reject this withdrawal request?\n\nReason: ${reason}`)) {
-                  handleWithdrawalVerification(request._id || request.id, 'reject', null, reason);
-                }
-              } else if (reason !== null) {
-                alert('Rejection reason is required');
-              }
-            }}
-            className="bg-gradient-to-r from-danger-color to-red-600 hover:from-red-600 hover:to-danger-color text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg text-sm"
-          >
-            Reject
-          </button>
+                                <button
+                                  onClick={() => {
+                                    const reason = prompt('Enter rejection reason (required):');
+                                    if (reason && reason.trim()) {
+                                      if (window.confirm(`Are you sure you want to reject this withdrawal request?\n\nReason: ${reason}`)) {
+                                        handleWithdrawalVerification(request._id || request.id, 'reject', null, reason);
+                                      }
+                                    } else if (reason !== null) {
+                                      alert('Rejection reason is required');
+                                    }
+                                  }}
+                                  className="bg-gradient-to-r from-danger-color to-red-600 hover:from-red-600 hover:to-danger-color text-white font-semibold py-2 px-3 sm:px-4 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg text-sm whitespace-nowrap"
+                                >
+                                  Reject
+                                </button>
                               </div>
                             </div>
                           </div>
                         </div>
                       ))}
                     
+                    {(data.depositRequests.filter(request => request.status === 'pending').length === 0 && 
+                      data.withdrawalRequests.filter(request => request.status === 'pending').length === 0) && (
+                      <div className="text-center text-text-secondary py-8">
+                        <div className="text-4xl mb-2">✅</div>
+                        <p>No pending payment verifications for {selectedUser ? selectedUser.fullName : 'any user'}</p>
+                      </div>
+                    )}
                   </div>
-                ) : (
-                  <div className="text-center text-text-secondary py-8">
-                    <div className="text-4xl mb-2">✅</div>
-                    <p>No pending withdrawal requests for {selectedUser ? selectedUser.fullName : 'any user'}</p>
-                  </div>
-                )}
+                </div>
               </div>
-            </div>
+            )}
 
-            {/* Withdrawal History */}
-            {data.withdrawalRequests.filter(request => request.status !== 'pending').length > 0 && (
+            {/* Payment History - Combined Deposits and Withdrawals */}
+            {(data.depositRequests.filter(request => request.status !== 'pending').length > 0 || 
+              data.withdrawalRequests.filter(request => request.status !== 'pending').length > 0) && (
               <div className="mt-8">
                 <div className="bg-card-bg backdrop-blur-sm border border-border-color rounded-2xl p-6 shadow-xl">
-                  <div className="mb-6">
-                    <h3 className="text-2xl font-bold text-text-primary">
-                      {selectedUser ? `${selectedUser.fullName}'s Withdrawal History` : 'Withdrawal History'}
-                    </h3>
-                    {selectedUser && (
-                      <div className="mt-2 text-sm text-text-secondary">
-                        🔍 Showing withdrawal history for: <span className="font-semibold text-accent-color">{selectedUser.fullName}</span> ({selectedUser.email})
-                      </div>
-                    )}
-                    {!selectedUser && (
-                      <div className="mt-2 text-sm text-text-secondary">
-                        🔍 Showing all withdrawal history (no user selected)
-                      </div>
-                    )}
-                  </div>
+                  <h3 className="text-2xl font-bold text-text-primary mb-6">
+                    {selectedUser ? `${selectedUser.fullName}'s Payment History` : 'Payment History'}
+                    <span className="text-sm font-normal text-text-secondary ml-2">
+                      (Deposits & Withdrawals)
+                    </span>
+                  </h3>
                   
                   <div className="space-y-3">
-                    {data.withdrawalRequests
-                      .filter(request => request.status !== 'pending')
+                    {/* Combined deposits and withdrawals, sorted by date */}
+                    {[
+                      // Add deposits with type indicator
+                      ...data.depositRequests
+                        .filter(request => request.status !== 'pending')
+                        .map(request => ({ ...request, transactionType: 'deposit' })),
+                      // Add withdrawals with type indicator
+                      ...data.withdrawalRequests
+                        .filter(request => request.status !== 'pending')
+                        .map(request => ({ ...request, transactionType: 'withdrawal' }))
+                    ]
                       .sort((a, b) => {
-                        const dateA = new Date(a.verifiedAt || a.createdAt || a.timestamp);
-                        const dateB = new Date(b.verifiedAt || b.createdAt || b.timestamp);
-                        return dateB - dateA;
+                        try {
+                          const dateA = new Date(a.submittedAt || a.createdAt || a.verifiedAt);
+                          const dateB = new Date(b.submittedAt || b.createdAt || b.verifiedAt);
+                          return isNaN(dateB.getTime()) ? -1 : (isNaN(dateA.getTime()) ? 1 : dateB - dateA);
+                        } catch (error) {
+                          return 0;
+                        }
                       })
                       .map(request => (
-                        <div key={request._id || request.id} className="bg-hover-bg rounded-xl p-4 border border-border-color">
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                              <span className="text-text-secondary text-sm">Amount:</span>
-                              <div className="font-bold text-accent-color">₹{request.amount}</div>
-                            </div>
-                            <div>
-                              <span className="text-text-secondary text-sm">Method:</span>
-                              <div className="font-semibold text-text-primary capitalize">
-                                {request.method === 'bank' ? 'Bank Transfer' : 'UPI Transfer'}
+                        <div key={request._id || request.id} className="bg-hover-bg border border-border-color rounded-lg p-4">
+                          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-2">
+                                <div className={`px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1 ${
+                                  request.transactionType === 'deposit' 
+                                    ? 'bg-green-100 text-green-800' 
+                                    : 'bg-red-100 text-red-800'
+                                }`}>
+                                  {request.transactionType === 'deposit' ? (
+                                    <>
+                                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                      </svg>
+                                      DEPOSIT
+                                    </>
+                                  ) : (
+                                    <>
+                                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                                      </svg>
+                                      WITHDRAWAL
+                                    </>
+                                  )}
+                                </div>
+                                <span className="text-text-secondary text-sm">
+                                  {new Date(request.submittedAt || request.createdAt || request.verifiedAt).toLocaleDateString()}
+                                </span>
                               </div>
-                            </div>
-                            <div>
-                              <span className="text-text-secondary text-sm">Status:</span>
-                              <div className={`font-semibold ${
-                                request.status === 'approved' ? 'text-success-color' : 'text-danger-color'
-                              }`}>
-                                {request.status.toUpperCase()}
+                              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div>
+                                  <span className="text-text-secondary text-sm">Account:</span>
+                                  <div className="font-semibold text-text-primary">{request.accountType}</div>
+                                </div>
+                                <div>
+                                  <span className="text-text-secondary text-sm">Amount:</span>
+                                  <div className={`font-semibold ${
+                                    request.transactionType === 'deposit' ? 'text-success-color' : 'text-accent-color'
+                                  }`}>
+                                    {request.transactionType === 'deposit' ? '+' : '-'}₹{request.amount}
+                                  </div>
+                                </div>
+                                <div>
+                                  <span className="text-text-secondary text-sm">Method:</span>
+                                  <div className="font-semibold text-text-primary capitalize">
+                                    {request.method === 'bank' ? 'Bank Transfer' : 
+                                     request.method === 'upi' ? 'UPI Transfer' : 
+                                     request.upiApp || 'N/A'}
+                                  </div>
+                                </div>
+                                <div>
+                                  <span className="text-text-secondary text-sm">Status:</span>
+                                  <div className={`font-semibold ${
+                                    request.status === 'approved' ? 'text-success-color' : 'text-danger-color'
+                                  }`}>
+                                    {request.status.toUpperCase()}
+                                  </div>
+                                </div>
                               </div>
+                              {request.verifiedAmount && request.verifiedAmount !== request.amount && (
+                                <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded">
+                                  <span className="text-text-secondary text-sm">Verified Amount: </span>
+                                  <span className="font-semibold text-yellow-800">₹{request.verifiedAmount}</span>
+                                </div>
+                              )}
                             </div>
-                            <div>
-                              <span className="text-text-secondary text-sm">Account Type:</span>
-                              <div className="font-semibold text-text-primary">{request.accountType}</div>
-                            </div>
-                            <div>
-                              <span className="text-text-secondary text-sm">Processed:</span>
-                              <div className="font-semibold text-text-primary">
-                                {new Date(request.verifiedAt || request.createdAt || request.timestamp).toLocaleDateString()}
-                              </div>
-                            </div>
-                            {request.rejectionReason && (
-                              <div className="md:col-span-3">
-                                <span className="text-text-secondary text-sm">Rejection Reason:</span>
-                                <div className="font-semibold text-danger-color">{request.rejectionReason}</div>
-                              </div>
-                            )}
                           </div>
                         </div>
                       ))}
@@ -2004,6 +1864,8 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                 </div>
               </div>
               )}
+
+
             </div>
             ) : (
               <div className="bg-card-bg backdrop-blur-sm border border-border-color rounded-2xl p-8 shadow-xl text-center">
