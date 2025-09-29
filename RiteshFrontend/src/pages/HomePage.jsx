@@ -19,7 +19,7 @@ const HomePage = ({ onSignUpClick }) => {
   const features = [
     { icon: FaChartLine, title: "Ultra-Low Spreads", desc: "on XAU EUR" },
     { icon: FaGlobe, title: "200+ Instruments", desc: "Forex, Crypto & More" },
-    { icon: FaRupeeSign, title: "$40 Minimum", desc: "Start with just $400" },
+    { icon: FaRupeeSign, title: "$40 Minimum", desc: "Start with just $40" },
     { icon: FaShieldAlt, title: "24/7 Support", desc: "Round-the-clock assistance" }
   ];
 
@@ -90,7 +90,7 @@ const HomePage = ({ onSignUpClick }) => {
                 <span className="text-accent-color bg-gradient-to-r from-accent-color to-primary-blue bg-clip-text text-transparent bg-300% animate-gradient">Trade Faster</span>
             </h1>
               <p className="text-xl text-text-secondary">
-                Experience the fastest deposit and withdrawal fastest trade execution fastest support services.
+                Claim your 100% deposit bonus
               </p>
               <div className="flex flex-wrap gap-4">
                 <button 
@@ -301,8 +301,8 @@ const HomePage = ({ onSignUpClick }) => {
               </div>
             </div>
 
-            {/* Card 3 - Referral */}
-            <div className="bg-gradient-to-br from-card-bg to-card-bg/80 backdrop-blur-sm border border-border-color/50 shadow-2xl rounded-3xl p-6 w-96 h-80 transition-all duration-700 hover:-translate-y-3 hover:shadow-2xl hover:shadow-accent-color/30 group relative overflow-visible flex flex-col justify-center">
+            {/* Card 3 - Referral - Hidden */}
+            <div className="hidden bg-gradient-to-br from-card-bg to-card-bg/80 backdrop-blur-sm border border-border-color/50 shadow-2xl rounded-3xl p-6 w-96 h-80 transition-all duration-700 hover:-translate-y-3 hover:shadow-2xl hover:shadow-accent-color/30 group relative overflow-visible flex flex-col justify-center">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-accent-color/20 via-primary-blue/20 to-accent-color/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-sm rounded-3xl"></div>
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-accent-color/10 to-transparent rounded-full blur-2xl"></div>
               

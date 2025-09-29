@@ -625,7 +625,7 @@ const SignUpPage = ({ onSignUp, onBackToSignIn }) => {
             Open real account
           </h2>
           <p className="text-text-secondary text-sm">
-            Fill out registration form
+          Claim your 100% deposit bonus
           </p>
         </div>
 

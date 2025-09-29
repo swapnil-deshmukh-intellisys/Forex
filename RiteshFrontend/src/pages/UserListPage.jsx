@@ -230,8 +230,8 @@ const UserListPage = ({ onBack, onSignOut, onProfileClick, onUserSelect, onAdmin
                   </div>
                 </div>
 
-                {/* Filter Dropdown */}
-                <div className="relative">
+                {/* Filter Dropdown - Hidden on small screens */}
+                <div className="relative hidden sm:block">
                   <select
                     value={selectedFilter}
                     onChange={(e) => setSelectedFilter(e.target.value)}
