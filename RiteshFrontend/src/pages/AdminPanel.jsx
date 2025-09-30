@@ -26,7 +26,10 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
     balance: '0.00',
     equity: '0.00',
     margin: '0.00',
-    currency: '₹'
+    currency: '₹',
+    mt5Id: '',
+    mt5Password: '',
+    mt5Server: ''
   });
   const [showProfileSection, setShowProfileSection] = useState(false);
   const [apiStatus, setApiStatus] = useState({
@@ -179,14 +182,20 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
           balance: userAccount.balance?.toString() || '0.00',
           equity: userAccount.equity?.toString() || '0.00',
           margin: userAccount.margin?.toString() || '0.00',
-          currency: userAccount.currency || '₹'
+          currency: userAccount.currency || '₹',
+          mt5Id: userAccount.mt5Id || '',
+          mt5Password: userAccount.mt5Password || '',
+          mt5Server: userAccount.mt5Server || ''
         });
       } else {
         setEditData({
           balance: '0.00',
           equity: '0.00',
           margin: '0.00',
-          currency: '₹'
+          currency: '₹',
+          mt5Id: '',
+          mt5Password: '',
+          mt5Server: ''
         });
       }
     }
@@ -324,7 +333,10 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
       balance: userAccount?.balance?.toString() || '0.00',
       equity: userAccount?.equity?.toString() || '0.00',
       margin: userAccount?.margin?.toString() || '0.00',
-      currency: userAccount?.currency || '₹'
+      currency: userAccount?.currency || '₹',
+      mt5Id: userAccount?.mt5Id || '',
+      mt5Password: userAccount?.mt5Password || '',
+      mt5Server: userAccount?.mt5Server || ''
     });
   };
 
@@ -362,7 +374,10 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                 balance: parseFloat(editData.balance),
                 currency: editData.currency,
                 equity: parseFloat(editData.equity),
-                margin: parseFloat(editData.margin)
+                margin: parseFloat(editData.margin),
+                mt5Id: editData.mt5Id,
+                mt5Password: editData.mt5Password,
+                mt5Server: editData.mt5Server
               };
             }
             return acc;
@@ -380,7 +395,10 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
         balance: parseFloat(editData.balance),
         currency: editData.currency,
         equity: parseFloat(editData.equity),
-        margin: parseFloat(editData.margin)
+        margin: parseFloat(editData.margin),
+        mt5Id: editData.mt5Id,
+        mt5Password: editData.mt5Password,
+        mt5Server: editData.mt5Server
       };
 
       // Call account update API
@@ -413,7 +431,10 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
       balance: userAccount?.balance?.toString() || '0.00',
       equity: userAccount?.equity?.toString() || '0.00',
       margin: userAccount?.margin?.toString() || '0.00',
-      currency: userAccount?.currency || '₹'
+      currency: userAccount?.currency || '₹',
+      mt5Id: userAccount?.mt5Id || '',
+      mt5Password: userAccount?.mt5Password || '',
+      mt5Server: userAccount?.mt5Server || ''
     });
     setIsEditing(false);
   };
@@ -1094,6 +1115,78 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                     ) : (
                       <div className="text-lg font-semibold text-text-primary">{data.accountTypesData[data.selectedAccountType]?.margin || '0.00'} ₹</div>
                     )}
+                  </div>
+                </div>
+
+                {/* MT5 Trading Platform Details */}
+                <div className="bg-hover-bg border border-border-color rounded-xl p-4 mb-6">
+                  <h3 className="text-lg font-semibold text-text-primary mb-4 text-center">MT5 Trading Platform</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* MT5 ID */}
+                    <div className="text-center">
+                      <div className="text-text-secondary text-sm mb-2">MT5 ID</div>
+                      {isEditing ? (
+                        <input
+                          type="text"
+                          value={editData.mt5Id}
+                          onChange={(e) => handleInputChange('mt5Id', e.target.value)}
+                          className="text-sm font-semibold text-text-primary bg-transparent border-b border-accent-color text-center w-full focus:outline-none focus:border-primary-blue"
+                          placeholder="Enter MT5 ID"
+                        />
+                      ) : (
+                        <div className="text-sm font-semibold text-text-primary break-all">
+                          {(() => {
+                            const userAccount = data.createdAccounts.find(acc => acc.type === data.selectedAccountType);
+                            return userAccount?.mt5Id || 'Not assigned';
+                          })()}
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* MT5 Password */}
+                    <div className="text-center">
+                      <div className="text-text-secondary text-sm mb-2">Password</div>
+                      {isEditing ? (
+                        <input
+                          type="password"
+                          value={editData.mt5Password}
+                          onChange={(e) => handleInputChange('mt5Password', e.target.value)}
+                          className="text-sm font-semibold text-text-primary bg-transparent border-b border-accent-color text-center w-full focus:outline-none focus:border-primary-blue"
+                          placeholder="Enter MT5 Password"
+                        />
+                      ) : (
+                        <div className="text-sm font-semibold text-text-primary break-all">
+                          {(() => {
+                            const userAccount = data.createdAccounts.find(acc => acc.type === data.selectedAccountType);
+                            return userAccount?.mt5Password ? '••••••••' : 'Not assigned';
+                          })()}
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* MT5 Server */}
+                    <div className="text-center">
+                      <div className="text-text-secondary text-sm mb-2">Server</div>
+                      {isEditing ? (
+                        <input
+                          type="text"
+                          value={editData.mt5Server}
+                          onChange={(e) => handleInputChange('mt5Server', e.target.value)}
+                          className="text-sm font-semibold text-text-primary bg-transparent border-b border-accent-color text-center w-full focus:outline-none focus:border-primary-blue"
+                          placeholder="Enter MT5 Server"
+                        />
+                      ) : (
+                        <div className="text-sm font-semibold text-text-primary break-all">
+                          {(() => {
+                            const userAccount = data.createdAccounts.find(acc => acc.type === data.selectedAccountType);
+                            return userAccount?.mt5Server || 'Not assigned';
+                          })()}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="text-center text-text-secondary text-xs mt-3">
+                    {isEditing ? 'Update MT5 credentials for this account' : 'MT5 credentials are managed by admin'}
                   </div>
                 </div>
 

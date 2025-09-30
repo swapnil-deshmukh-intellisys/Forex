@@ -17,6 +17,11 @@ const accountSchema = new mongoose.Schema(
     margin: { type: Number, default: 0.00 },
     leverage: { type: String, default: '1:500' },
     
+    // MT5 Trading Platform Details
+    mt5Id: { type: String, default: '' },
+    mt5Password: { type: String, default: '' },
+    mt5Server: { type: String, default: '' },
+    
     // Account settings
     initialDeposit: { type: Number, required: true },
     isActive: { type: Boolean, default: true },

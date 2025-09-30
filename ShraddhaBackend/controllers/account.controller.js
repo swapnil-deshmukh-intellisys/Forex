@@ -120,7 +120,10 @@ export const getUserAccounts = async (req, res) => {
         balance: account.balance,
         currency: account.currency,
         equity: account.equity,
-        margin: account.margin
+        margin: account.margin,
+        mt5Id: account.mt5Id,
+        mt5Password: account.mt5Password,
+        mt5Server: account.mt5Server
       };
     });
 
@@ -152,7 +155,10 @@ export const getAccountById = async (req, res) => {
       balance: account.balance,
       currency: account.currency,
       equity: account.equity,
-      margin: account.margin
+      margin: account.margin,
+      mt5Id: account.mt5Id,
+      mt5Password: account.mt5Password,
+      mt5Server: account.mt5Server
     };
 
     res.status(200).json({
@@ -169,7 +175,7 @@ export const getAccountById = async (req, res) => {
 export const updateAccount = async (req, res) => {
   try {
     const { accountId } = req.params;
-    const { balance, currency, equity, margin } = req.body;
+    const { balance, currency, equity, margin, mt5Id, mt5Password, mt5Server } = req.body;
 
     // Find and update the account
     const account = await Account.findOneAndUpdate(
@@ -178,7 +184,10 @@ export const updateAccount = async (req, res) => {
         balance: balance || 0,
         currency: currency || '₹',
         equity: equity || 0,
-        margin: margin || 0
+        margin: margin || 0,
+        mt5Id: mt5Id || '',
+        mt5Password: mt5Password || '',
+        mt5Server: mt5Server || ''
       },
       { new: true }
     );

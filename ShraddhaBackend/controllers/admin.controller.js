@@ -203,7 +203,10 @@ export const getUserById = async (req, res) => {
         balance: account.balance,
         currency: account.currency,
         equity: account.equity,
-        margin: account.margin
+        margin: account.margin,
+        mt5Id: account.mt5Id,
+        mt5Password: account.mt5Password,
+        mt5Server: account.mt5Server
       };
     });
 

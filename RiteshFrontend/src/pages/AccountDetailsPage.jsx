@@ -9,7 +9,10 @@ const AccountDetailsPage = ({ account, onBack, onSignOut, onProfileClick }) => {
     balance: '0.00',
     equity: '0.00',
     margin: '0.00',
-    currency: '₹'
+    currency: '₹',
+    mt5Id: '',
+    mt5Password: '',
+    mt5Server: ''
   });
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
@@ -102,7 +105,10 @@ const AccountDetailsPage = ({ account, onBack, onSignOut, onProfileClick }) => {
             balance: account.balance || 0,
             currency: account.currency || '₹',
             equity: account.equity || 0,
-            margin: account.margin || 0
+            margin: account.margin || 0,
+            mt5Id: account.mt5Id || '',
+            mt5Password: account.mt5Password || '',
+            mt5Server: account.mt5Server || ''
           });
         }
         return;
@@ -115,7 +121,10 @@ const AccountDetailsPage = ({ account, onBack, onSignOut, onProfileClick }) => {
             balance: response.account.balance,
             currency: response.account.currency,
             equity: response.account.equity,
-            margin: response.account.margin
+            margin: response.account.margin,
+            mt5Id: response.account.mt5Id || '',
+            mt5Password: response.account.mt5Password || '',
+            mt5Server: response.account.mt5Server || ''
           });
         }
       } catch (error) {
@@ -126,7 +135,10 @@ const AccountDetailsPage = ({ account, onBack, onSignOut, onProfileClick }) => {
             balance: account.balance || 0,
             currency: account.currency || '₹',
             equity: account.equity || 0,
-            margin: account.margin || 0
+            margin: account.margin || 0,
+            mt5Id: account.mt5Id || '',
+            mt5Password: account.mt5Password || '',
+            mt5Server: account.mt5Server || ''
           });
         }
       }
@@ -294,6 +306,34 @@ const AccountDetailsPage = ({ account, onBack, onSignOut, onProfileClick }) => {
                 <div className="text-text-secondary">Equity: <span className="font-semibold text-text-primary">{adminData.equity} ₹</span></div>
                 <div className="hidden sm:block h-4 w-px bg-border-color" />
                 <div className="text-text-secondary">Margin: <span className="font-semibold text-text-primary">{adminData.margin} ₹</span></div>
+              </div>
+
+              {/* MT5 Trading Platform Details */}
+              <div className="bg-hover-bg border border-border-color rounded-xl p-4 mb-6">
+                <h3 className="text-lg font-semibold text-text-primary mb-4 text-center">MT5 Trading Platform</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="text-center">
+                    <div className="text-text-secondary text-sm mb-1">MT5 ID</div>
+                    <div className="font-semibold text-text-primary break-all">
+                      {adminData.mt5Id || 'Not assigned'}
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-text-secondary text-sm mb-1">Password</div>
+                    <div className="font-semibold text-text-primary break-all">
+                      {adminData.mt5Password ? '••••••••' : 'Not assigned'}
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-text-secondary text-sm mb-1">Server</div>
+                    <div className="font-semibold text-text-primary break-all">
+                      {adminData.mt5Server || 'Not assigned'}
+                    </div>
+                  </div>
+                </div>
+                <div className="text-center text-text-secondary text-xs mt-3">
+                  Contact admin to update your MT5 credentials
+                </div>
               </div>
 
               <div className="text-center text-text-secondary mb-6">
