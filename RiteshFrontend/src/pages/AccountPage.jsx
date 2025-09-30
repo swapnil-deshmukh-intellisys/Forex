@@ -635,7 +635,7 @@ const AccountPage = ({ userEmail, onSignOut, onProfileClick, onBack, onShowAccou
                       {/* Account Details */}
                       <div className="space-y-2 mb-4">
                         <div className="text-center">
-                          <div className="text-text-secondary text-xs">Account: {account.id}, {account.type}</div>
+                          <div className="text-text-secondary text-xs">Account: {account.id} {account.type}</div>
                         </div>
                       </div>
 

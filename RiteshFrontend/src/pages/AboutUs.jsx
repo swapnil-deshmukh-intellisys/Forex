@@ -152,7 +152,7 @@ const AboutUs = ({ onSignUpClick }) => {
   ];
 
   return (
-    <div className="pt-24 bg-bg-primary min-h-screen overflow-hidden">
+    <div className="pt-32 bg-bg-primary min-h-screen overflow-hidden">
       {/* Animated background elements */}
       <div className="fixed top-0 left-0 w-full h-full -z-10 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-accent-color/5 rounded-full blur-3xl animate-pulse"></div>
@@ -167,8 +167,8 @@ const AboutUs = ({ onSignUpClick }) => {
         
         <div className="container-custom relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
-              <div className="inline-flex items-center bg-gradient-to-r from-accent-color/20 to-primary-blue/20 text-accent-color px-4 py-2 rounded-full shadow-lg animate-pulse">
+            <div className="space-y-8 text-center md:text-left">
+              <div className="inline-flex items-center bg-gradient-to-r from-accent-color/20 to-primary-blue/20 text-accent-color px-4 py-2 rounded-full shadow-lg animate-pulse mx-auto md:mx-0">
                 <span>🌟 Trusted Since 2010</span>
               </div>
               <h1 className="text-5xl md:text-6xl font-bold">
@@ -179,7 +179,7 @@ const AboutUs = ({ onSignUpClick }) => {
               <p className="text-xl text-text-secondary">
                 Express Forex was founded with a simple goal: to make professional trading tools and resources accessible to everyone, regardless of experience level.
               </p>
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-4 justify-center md:justify-start">
                 <button 
                   onClick={onSignUpClick}
                   className="bg-accent-color text-text-quaternary font-semibold px-8 py-4 rounded-xl hover:bg-accent-color/90 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-accent-color/30"
@@ -241,7 +241,7 @@ const AboutUs = ({ onSignUpClick }) => {
         
         <div className="container-custom">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
+            <div className="space-y-6 text-center md:text-left">
               <h2 className="text-4xl font-bold mb-4">
                 <span className="text-text-primary">Our</span> <span className="text-accent-color bg-gradient-to-r from-accent-color to-primary-blue bg-clip-text text-transparent">Story</span>
               </h2>
@@ -317,7 +317,7 @@ const AboutUs = ({ onSignUpClick }) => {
         
         <div className="container-custom">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
+            <div className="space-y-8 text-center md:text-left">
               <h2 className="text-4xl font-bold text-text-primary">
                 <span className="text-text-primary">Cutting-Edge</span> <span className="text-accent-color bg-gradient-to-r from-accent-color to-primary-blue bg-clip-text text-transparent">Technology</span>
               </h2>

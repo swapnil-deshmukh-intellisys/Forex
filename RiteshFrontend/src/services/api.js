@@ -246,6 +246,18 @@ export const adminAPI = {
   getUserWithdrawalRequests: async (userId) => {
     return adminApiRequest(`/admin/users/${userId}/withdrawals`);
   },
+
+  // Get all deposit requests (admin)
+  getAllDepositRequests: async (status = null) => {
+    const query = status ? `?status=${status}` : '';
+    return adminApiRequest(`/admin/deposits${query}`);
+  },
+
+  // Get all withdrawal requests (admin)
+  getAllWithdrawalRequests: async (status = null) => {
+    const query = status ? `?status=${status}` : '';
+    return adminApiRequest(`/admin/withdrawals${query}`);
+  },
 };
 
 // =============== WITHDRAWAL API ===============

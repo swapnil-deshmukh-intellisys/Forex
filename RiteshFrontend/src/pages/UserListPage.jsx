@@ -1,12 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
-import { adminAPI, authAPI } from '../services/api';
+import { adminAPI, authAPI, depositAPI, withdrawalAPI } from '../services/api';
 
 const UserListPage = ({ onBack, onSignOut, onProfileClick, onUserSelect, onAdminLogin, adminEmail }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('all');
+  const [pendingRequests, setPendingRequests] = useState({ deposits: [], withdrawals: [] });
+
+  // Load pending requests
+  const loadPendingRequests = async () => {
+    try {
+      const [depositsResponse, withdrawalsResponse] = await Promise.all([
+        depositAPI.getDepositRequests('pending'),
+        withdrawalAPI.getWithdrawalRequests('pending')
+      ]);
+
+      const newPendingRequests = {
+        deposits: depositsResponse.success ? depositsResponse.depositRequests || [] : [],
+        withdrawals: withdrawalsResponse.success ? withdrawalsResponse.withdrawalRequests || [] : []
+      };
+      
+      setPendingRequests(newPendingRequests);
+    } catch (error) {
+      console.error('Error loading pending requests:', error);
+      setPendingRequests({ deposits: [], withdrawals: [] });
+    }
+  };
 
   // Load users from API
   useEffect(() => {
@@ -37,6 +58,7 @@ const UserListPage = ({ onBack, onSignOut, onProfileClick, onUserSelect, onAdmin
     };
 
     loadUsers();
+    loadPendingRequests();
   }, [adminEmail]);
 
   // Listen for custom admin logout event
@@ -106,6 +128,23 @@ const UserListPage = ({ onBack, onSignOut, onProfileClick, onUserSelect, onAdmin
     } catch (error) {
       return '0.00';
     }
+  };
+
+  // Check if user has pending requests
+  const hasPendingRequests = (userId) => {
+    const userDeposits = pendingRequests.deposits.filter(req => req.user === userId || req.user?._id === userId);
+    const userWithdrawals = pendingRequests.withdrawals.filter(req => req.userId === userId || req.userId?._id === userId);
+    const hasPending = userDeposits.length > 0 || userWithdrawals.length > 0;
+    
+    
+    return hasPending;
+  };
+
+  // Get pending request count for user
+  const getPendingRequestCount = (userId) => {
+    const userDeposits = pendingRequests.deposits.filter(req => req.user === userId || req.user?._id === userId);
+    const userWithdrawals = pendingRequests.withdrawals.filter(req => req.userId === userId || req.userId?._id === userId);
+    return userDeposits.length + userWithdrawals.length;
   };
 
   if (loading) {
@@ -258,17 +297,17 @@ const UserListPage = ({ onBack, onSignOut, onProfileClick, onUserSelect, onAdmin
                   <div className="text-2xl font-bold text-text-primary">{users?.length || 0}</div>
                   <div className="text-text-secondary text-sm">Total Users</div>
                 </div>
-                <div className="bg-gradient-to-r from-success-color/10 to-green-600/10 rounded-lg p-4 text-center">
-                  <div className="text-2xl font-bold text-success-color">{(users || []).filter(u => u?.status === 'Active').length}</div>
-                  <div className="text-text-secondary text-sm">Active Users</div>
+                <div className="bg-gradient-to-r from-accent-color/10 to-primary-blue/10 rounded-lg p-4 text-center">
+                  <div className="text-2xl font-bold text-accent-color mb-1">{pendingRequests.deposits.length}</div>
+                  <div className="text-text-secondary text-sm">Pending Deposits</div>
                 </div>
-                <div className="bg-gradient-to-r from-warning-color/10 to-yellow-600/10 rounded-lg p-4 text-center">
-                  <div className="text-2xl font-bold text-warning-color">{(users || []).filter(u => u?.status === 'Inactive').length}</div>
-                  <div className="text-text-secondary text-sm">Inactive Users</div>
+                <div className="bg-gradient-to-r from-accent-color/10 to-primary-blue/10 rounded-lg p-4 text-center">
+                  <div className="text-2xl font-bold text-primary-blue mb-1">{pendingRequests.withdrawals.length}</div>
+                  <div className="text-text-secondary text-sm">Pending Withdrawals</div>
                 </div>
-                <div className="bg-gradient-to-r from-info-color/10 to-blue-600/10 rounded-lg p-4 text-center">
-                  <div className="text-2xl font-bold text-info-color">{filteredUsers.length}</div>
-                  <div className="text-text-secondary text-sm">Filtered Results</div>
+                <div className="bg-gradient-to-r from-accent-color/10 to-primary-blue/10 rounded-lg p-4 text-center">
+                  <div className="text-2xl font-bold text-warning-color mb-1">{pendingRequests.deposits.length + pendingRequests.withdrawals.length}</div>
+                  <div className="text-text-secondary text-sm">Total Pending</div>
                 </div>
               </div>
             </div>
@@ -285,12 +324,29 @@ const UserListPage = ({ onBack, onSignOut, onProfileClick, onUserSelect, onAdmin
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {filteredUsers.filter(user => user && typeof user === 'object').map((user, index) => (
+                  {filteredUsers.filter(user => user && typeof user === 'object').map((user, index) => {
+                    const userId = user?.id || user?._id;
+                    const hasPending = hasPendingRequests(userId);
+                    const pendingCount = getPendingRequestCount(userId);
+                    
+                    
+                    return (
                     <div 
-                      key={user?.id || `user-₹{index}`}
+                      key={user?.id || `user-${index}`}
                       onClick={() => handleUserSelect(user)}
-                      className="bg-hover-bg border border-border-color rounded-lg p-4 hover:border-accent-color/50 transition-all duration-300 cursor-pointer hover:shadow-lg group"
+                      className={`bg-hover-bg border rounded-lg p-4 transition-all duration-300 cursor-pointer hover:shadow-lg group relative ${
+                        hasPending 
+                          ? 'border-accent-color/70 bg-accent-color/5 shadow-lg shadow-accent-color/20' 
+                          : 'border-border-color hover:border-accent-color/50'
+                      }`}
                     >
+                      {/* Notification Dot */}
+                      {hasPending && (
+                        <div className="absolute -top-2 -right-2 bg-accent-color text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center animate-pulse shadow-lg">
+                          {pendingCount}
+                        </div>
+                      )}
+                      
                       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                         <div className="flex-1">
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -332,7 +388,8 @@ const UserListPage = ({ onBack, onSignOut, onProfileClick, onUserSelect, onAdmin
                         </div>
                       </div>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>

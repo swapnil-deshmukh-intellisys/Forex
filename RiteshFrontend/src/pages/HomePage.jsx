@@ -81,9 +81,9 @@ const HomePage = ({ onSignUpClick }) => {
         <div className="container-custom relative z-10">
           
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
+            <div className="space-y-6 text-center md:text-left">
               
-              <div className="inline-flex items-center bg-gradient-to-r SCALPER MODEfrom-accent-color/20 to-primary-blue/20 text-accent-color px-4 py-2 rounded-full shadow-lg animate-pulse">
+              <div className="inline-flex items-center bg-gradient-to-r SCALPER MODEfrom-accent-color/20 to-primary-blue/20 text-accent-color px-4 py-2 rounded-full shadow-lg animate-pulse mx-auto md:mx-0">
                 <FaBolt className="mr-2" />
                 <span>Trusted by 12,400+ Traders</span>
             </div>
@@ -95,7 +95,7 @@ const HomePage = ({ onSignUpClick }) => {
               <p className="text-xl text-text-secondary">
                 Claim your 100% deposit bonus
               </p>
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-4 justify-center md:justify-start">
                 <button 
                   onClick={onSignUpClick}
                   className="bg-accent-color text-text-quaternary font-semibold px-8 py-4 rounded-xl hover:bg-accent-color/90 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-accent-color/30 flex items-center space-x-2 group"
@@ -368,7 +368,7 @@ const HomePage = ({ onSignUpClick }) => {
       </section>
 
       {/* Download Platform Section */}
-      <section className="py-16 bg-gradient-to-br from-bg-primary via-bg-secondary to-bg-primary relative overflow-hidden">
+      <section className="py-12 bg-gradient-to-br from-bg-primary via-bg-secondary to-bg-primary relative overflow-hidden">
         {/* Background Effects */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-accent-color/5 rounded-full blur-3xl animate-pulse"></div>
@@ -376,15 +376,11 @@ const HomePage = ({ onSignUpClick }) => {
           <div className="absolute top-2/3 left-1/3 w-64 h-64 bg-accent-color/10 rounded-full blur-3xl animate-pulse delay-500"></div>
         </div>
 
-        <div className="px-4 sm:px-6 lg:px-8">
+        <div className="container-custom">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-text-primary">
               Download Our <span className="text-accent-color bg-gradient-to-r from-accent-color to-primary-blue bg-clip-text text-transparent">Trading Platform</span>
             </h2>
-            <p className="text-xl text-text-secondary max-w-3xl mx-auto">
-              Trade on the go with our powerful mobile app. Access all your trading tools, 
-              real-time charts, and market data from anywhere in the world.
-            </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 items-center">
@@ -394,36 +390,34 @@ const HomePage = ({ onSignUpClick }) => {
               <h3 className="text-2xl font-bold text-text-primary mb-4">
                 Trade Anywhere, Anytime
               </h3>
-              <p className="text-text-secondary text-lg leading-relaxed">
-                Our mobile app brings the full power of our trading platform to your fingertips. 
-                Execute trades, monitor markets, and manage your portfolio with professional-grade tools.
-              </p>
             </div>
             
-            <div className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-r from-accent-color to-primary-blue rounded-full flex items-center justify-center">
-                  <FaCheck className="text-white text-sm" />
+            <div className="bg-card-bg backdrop-blur-sm border border-border-color rounded-2xl p-8 shadow-xl w-fit max-w-sm mx-auto md:mx-0">
+              <div className="space-y-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-gradient-to-r from-accent-color to-primary-blue rounded-full flex items-center justify-center">
+                    <FaCheck className="text-white text-sm" />
+                  </div>
+                  <span className="text-text-primary font-medium">Real-time market data</span>
                 </div>
-                <span className="text-text-primary font-medium">Real-time market data</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-r from-accent-color to-primary-blue rounded-full flex items-center justify-center">
-                  <FaCheck className="text-white text-sm" />
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-gradient-to-r from-accent-color to-primary-blue rounded-full flex items-center justify-center">
+                    <FaCheck className="text-white text-sm" />
+                  </div>
+                  <span className="text-text-primary font-medium">Advanced charting tools</span>
                 </div>
-                <span className="text-text-primary font-medium">Advanced charting tools</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-r from-accent-color to-primary-blue rounded-full flex items-center justify-center">
-                  <FaCheck className="text-white text-sm" />
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-gradient-to-r from-accent-color to-primary-blue rounded-full flex items-center justify-center">
+                    <FaCheck className="text-white text-sm" />
+                  </div>
+                  <span className="text-text-primary font-medium">Secure trading environment</span>
                 </div>
-                <span className="text-text-primary font-medium">Secure trading environment</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-r from-accent-color to-primary-blue rounded-full flex items-center justify-center">
-                  <FaCheck className="text-white text-sm" />
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-gradient-to-r from-accent-color to-primary-blue rounded-full flex items-center justify-center">
+                    <FaCheck className="text-white text-sm" />
+                  </div>
+                  <span className="text-text-primary font-medium">24/7 customer support</span>
                 </div>
-                <span className="text-text-primary font-medium">24/7 customer support</span>
               </div>
             </div>
           </div>
@@ -435,25 +429,25 @@ const HomePage = ({ onSignUpClick }) => {
               <p className="text-text-secondary">Download our app and start trading in minutes</p>
             </div>
             
-            <div className="space-y-4">
-              {/* Android Download Button */}
+            <div className="flex flex-row md:flex-col gap-4 justify-center items-center">
+              {/* Android Download Image */}
               <a 
                 href="https://play.google.com/store/apps/details?id=net.metaquotes.metatrader5" 
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center justify-center bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-4 px-8 rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-green-500/30 w-full max-w-sm mx-auto"
+                className="block md:mb-4"
               >
-                <img src={PlayStoreSvg} alt="Google Play Store" className="w-full h-full object-contain" />
+                <img src={PlayStoreSvg} alt="Google Play Store" className="w-full max-w-sm mx-auto" />
               </a>
 
-              {/* iOS Download Button */}
+              {/* iOS Download Image */}
               <a 
                 href="https://apps.apple.com/ca/app/metatrader-5/id413251709" 
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center justify-center bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white font-semibold py-4 px-8 rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-gray-800/30 w-full max-w-sm mx-auto"
+                className="block"
               >
-                <img src={IosStoreSvg} alt="Apple App Store" className="w-full h-full object-contain" />
+                <img src={IosStoreSvg} alt="Apple App Store" className="w-full max-w-sm mx-auto" />
               </a>
             </div>
 

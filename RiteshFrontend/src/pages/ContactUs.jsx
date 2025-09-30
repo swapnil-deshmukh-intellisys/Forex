@@ -90,7 +90,7 @@ const ContactUs = ({ onSignUpClick }) => {
   ];
 
   return (
-    <div className="pt-24 bg-bg-primary min-h-screen overflow-hidden">
+    <div className="pt-32 bg-bg-primary min-h-screen overflow-hidden">
       {/* Animated background elements */}
       <div className="fixed top-0 left-0 w-full h-full -z-10 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-accent-color/5 rounded-full blur-3xl animate-pulse"></div>
@@ -98,21 +98,17 @@ const ContactUs = ({ onSignUpClick }) => {
         <div className="absolute top-2/3 left-1/3 w-64 h-64 bg-accent-color/10 rounded-full blur-3xl animate-pulse delay-500"></div>
       </div>
 
-      {/* Header Section */}
-      <section className="py-12 bg-bg-secondary relative">
-        <div className="container-custom max-w-xs sm:max-w-sm md:max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-text-primary">
-            Get in <span className="text-accent-color bg-gradient-to-r from-accent-color to-primary-blue bg-clip-text text-transparent">Touch</span>
-          </h1>
-          <p className="text-xl text-text-secondary max-w-2xl mx-auto">
-            Have questions or need assistance? Our team is here to help you with any inquiries.
-          </p>
-        </div>
-      </section>
-
       {/* Contact Methods */}
       <section className="py-16 bg-bg-primary relative">
         <div className="container-custom max-w-xs sm:max-w-sm md:max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-text-primary">
+              Get in <span className="text-accent-color bg-gradient-to-r from-accent-color to-primary-blue bg-clip-text text-transparent">Touch</span>
+            </h1>
+            <p className="text-xl text-text-secondary max-w-2xl mx-auto">
+              Have questions or need assistance? Our team is here to help you with any inquiries.
+            </p>
+          </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {contactMethods.map((method, index) => (
               <div 
@@ -141,7 +137,7 @@ const ContactUs = ({ onSignUpClick }) => {
 
       {/* Contact Form & FAQ */}
       <section className="py-16 bg-bg-secondary relative">
-        <div className="container-custom max-w-xs sm:max-w-sm md:max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto">
+        <div className="container-custom max-w-[90vw] sm:max-w-sm md:max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Contact Form */}
             <div className="bg-card-bg backdrop-blur-sm border border-border-color p-6 rounded-2xl flex flex-col justify-center min-h-fit">
