@@ -321,7 +321,7 @@ const AccountDetailsPage = ({ account, onBack, onSignOut, onProfileClick }) => {
                   <div className="text-center">
                     <div className="text-text-secondary text-sm mb-1">Password</div>
                     <div className="font-semibold text-text-primary break-all">
-                      {adminData.mt5Password ? '••••••••' : 'Not assigned'}
+                      {adminData.mt5Password || 'Not assigned'}
                     </div>
                   </div>
                   <div className="text-center">

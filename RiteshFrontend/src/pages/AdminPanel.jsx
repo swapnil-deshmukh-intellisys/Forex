@@ -1148,7 +1148,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                       <div className="text-text-secondary text-sm mb-2">Password</div>
                       {isEditing ? (
                         <input
-                          type="password"
+                          type="text"
                           value={editData.mt5Password}
                           onChange={(e) => handleInputChange('mt5Password', e.target.value)}
                           className="text-sm font-semibold text-text-primary bg-transparent border-b border-accent-color text-center w-full focus:outline-none focus:border-primary-blue"
@@ -1158,7 +1158,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
                         <div className="text-sm font-semibold text-text-primary break-all">
                           {(() => {
                             const userAccount = data.createdAccounts.find(acc => acc.type === data.selectedAccountType);
-                            return userAccount?.mt5Password ? '••••••••' : 'Not assigned';
+                            return userAccount?.mt5Password || 'Not assigned';
                           })()}
                         </div>
                       )}
