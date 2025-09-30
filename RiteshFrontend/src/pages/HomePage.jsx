@@ -2,13 +2,16 @@ import React, { useState, useRef } from 'react';
 import MiniChartUsd from '../widgets/MiniChartUsd';
 import MiniChartGold from '../widgets/MiniChartGold';
 import Squares from '../backgrounds/Square.jsx';
+import PlayStoreSvg from '../assets/playStore.svg';
+import IosStoreSvg from '../assets/iosStore.svg';
 import { 
   FaChartLine, 
   FaGlobe, 
   FaRupeeSign, 
   FaShieldAlt,
   FaBolt,
-  FaCheck
+  FaCheck,
+  FaArrowRight
 } from 'react-icons/fa';
 
 
@@ -59,7 +62,7 @@ const HomePage = ({ onSignUpClick }) => {
 
 
   return (
-    <div className="pt-24 bg-bg-primary min-h-screen overflow-hidden">
+    <div className="pt-32 bg-bg-primary min-h-screen overflow-hidden">
         
 
       {/* Animated background elements */}
@@ -95,9 +98,10 @@ const HomePage = ({ onSignUpClick }) => {
               <div className="flex flex-wrap gap-4">
                 <button 
                   onClick={onSignUpClick}
-                  className="bg-accent-color text-text-quaternary font-semibold px-8 py-4 rounded-xl hover:bg-accent-color/90 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-accent-color/30"
+                  className="bg-accent-color text-text-quaternary font-semibold px-8 py-4 rounded-xl hover:bg-accent-color/90 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-accent-color/30 flex items-center space-x-2 group"
                 >
-                  Trade Now
+                  <span>Trade Now</span>
+                  <FaArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
                 </button>
                 
               </div>
@@ -302,7 +306,7 @@ const HomePage = ({ onSignUpClick }) => {
             </div>
 
             {/* Card 3 - Referral - Hidden */}
-            <div className="hidden bg-gradient-to-br from-card-bg to-card-bg/80 backdrop-blur-sm border border-border-color/50 shadow-2xl rounded-3xl p-6 w-96 h-80 transition-all duration-700 hover:-translate-y-3 hover:shadow-2xl hover:shadow-accent-color/30 group relative overflow-visible flex flex-col justify-center">
+            <div className="hidden">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-accent-color/20 via-primary-blue/20 to-accent-color/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-sm rounded-3xl"></div>
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-accent-color/10 to-transparent rounded-full blur-2xl"></div>
               
@@ -360,6 +364,106 @@ const HomePage = ({ onSignUpClick }) => {
               <MiniChartGold />
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Download Platform Section */}
+      <section className="py-16 bg-gradient-to-br from-bg-primary via-bg-secondary to-bg-primary relative overflow-hidden">
+        {/* Background Effects */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-accent-color/5 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-1/3 right-1/4 w-80 h-80 bg-primary-blue/5 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          <div className="absolute top-2/3 left-1/3 w-64 h-64 bg-accent-color/10 rounded-full blur-3xl animate-pulse delay-500"></div>
+        </div>
+
+        <div className="px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-text-primary">
+              Download Our <span className="text-accent-color bg-gradient-to-r from-accent-color to-primary-blue bg-clip-text text-transparent">Trading Platform</span>
+            </h2>
+            <p className="text-xl text-text-secondary max-w-3xl mx-auto">
+              Trade on the go with our powerful mobile app. Access all your trading tools, 
+              real-time charts, and market data from anywhere in the world.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+          {/* Left Side - App Preview */}
+          <div className="text-center md:text-left">
+            <div className="mb-6">
+              <h3 className="text-2xl font-bold text-text-primary mb-4">
+                Trade Anywhere, Anytime
+              </h3>
+              <p className="text-text-secondary text-lg leading-relaxed">
+                Our mobile app brings the full power of our trading platform to your fingertips. 
+                Execute trades, monitor markets, and manage your portfolio with professional-grade tools.
+              </p>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-r from-accent-color to-primary-blue rounded-full flex items-center justify-center">
+                  <FaCheck className="text-white text-sm" />
+                </div>
+                <span className="text-text-primary font-medium">Real-time market data</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-r from-accent-color to-primary-blue rounded-full flex items-center justify-center">
+                  <FaCheck className="text-white text-sm" />
+                </div>
+                <span className="text-text-primary font-medium">Advanced charting tools</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-r from-accent-color to-primary-blue rounded-full flex items-center justify-center">
+                  <FaCheck className="text-white text-sm" />
+                </div>
+                <span className="text-text-primary font-medium">Secure trading environment</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-r from-accent-color to-primary-blue rounded-full flex items-center justify-center">
+                  <FaCheck className="text-white text-sm" />
+                </div>
+                <span className="text-text-primary font-medium">24/7 customer support</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Side - Download Buttons */}
+          <div className="text-center">
+            <div className="mb-8">
+              <h4 className="text-xl font-bold text-text-primary mb-2">Get Started Today</h4>
+              <p className="text-text-secondary">Download our app and start trading in minutes</p>
+            </div>
+            
+            <div className="space-y-4">
+              {/* Android Download Button */}
+              <a 
+                href="https://play.google.com/store/apps/details?id=net.metaquotes.metatrader5" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center justify-center bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-4 px-8 rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-green-500/30 w-full max-w-sm mx-auto"
+              >
+                <img src={PlayStoreSvg} alt="Google Play Store" className="w-full h-full object-contain" />
+              </a>
+
+              {/* iOS Download Button */}
+              <a 
+                href="https://apps.apple.com/ca/app/metatrader-5/id413251709" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center justify-center bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white font-semibold py-4 px-8 rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-gray-800/30 w-full max-w-sm mx-auto"
+              >
+                <img src={IosStoreSvg} alt="Apple App Store" className="w-full h-full object-contain" />
+              </a>
+            </div>
+
+            <div className="mt-6 text-center">
+              <p className="text-text-secondary text-sm">
+                Available on Google Play and App Store
+              </p>
+            </div>
+          </div>
+        </div>
         </div>
       </section>
 
