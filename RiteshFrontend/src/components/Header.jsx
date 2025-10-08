@@ -9,14 +9,18 @@ const Header = ({
   showBackButton = false,
   isAdmin = false,
   onHomeClick,
-  onAccountsClick
+  onAccountsClick,
+  pendingRequests = { deposits: [], withdrawals: [] },
+  onNotificationClick = null
 }) => {
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
   const [isHamburgerMenuOpen, setIsHamburgerMenuOpen] = useState(false);
+  const [isNotificationDropdownOpen, setIsNotificationDropdownOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('ENGLISH');
   const [showEmail, setShowEmail] = useState(false);
   const languageButtonRef = useRef(null);
   const hamburgerButtonRef = useRef(null);
+  const notificationButtonRef = useRef(null);
 
   const languages = [
     { code: 'ENGLISH', name: 'ENGLISH', flag: '🇺🇸' },
@@ -58,6 +62,14 @@ const Header = ({
       }
     }
 
+    // Check if click is outside notification dropdown
+    if (isNotificationDropdownOpen && notificationButtonRef.current && !notificationButtonRef.current.contains(event.target)) {
+      const notificationDropdown = document.querySelector('[data-dropdown="notification"]');
+      if (!notificationDropdown || !notificationDropdown.contains(event.target)) {
+        setIsNotificationDropdownOpen(false);
+      }
+    }
+
     // Close email popup when clicking outside
     if (showEmail) {
       const userInfoContainer = event.target.closest('.text-center.flex-1.px-2');
@@ -73,7 +85,7 @@ const Header = ({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isLanguageDropdownOpen, isHamburgerMenuOpen, showEmail]);
+  }, [isLanguageDropdownOpen, isHamburgerMenuOpen, isNotificationDropdownOpen, showEmail]);
 
   return (
     <>
@@ -107,7 +119,7 @@ const Header = ({
                 <div className="hidden sm:flex items-center space-x-2">
                   <button 
                     onClick={onProfileClick}
-                    className={`font-semibold text-sm transition-colors cursor-pointer ₹{
+                    className={`font-semibold text-sm transition-colors cursor-pointer ${
                       isAdmin 
                         ? 'text-accent-color hover:text-primary-blue' 
                         : 'text-text-primary hover:text-accent-color'
@@ -115,12 +127,12 @@ const Header = ({
                   >
                     {userEmail}
                   </button>
-                  <div className={`rounded-full px-1.5 py-0.5 flex items-center ₹{
+                  <div className={`rounded-full px-1.5 py-0.5 flex items-center ${
                     isAdmin 
                       ? 'bg-accent-color/10 border border-accent-color/20' 
                       : 'bg-danger-color/10 border border-danger-color/10'
                   }`}>
-                    <span className={`text-[0.6rem] font-medium ₹{
+                    <span className={`text-[0.6rem] font-medium ${
                       isAdmin ? 'text-accent-color' : 'text-danger-color'
                     }`}>
                       {isAdmin ? 'ADMIN' : 'UNVERIFIED'}
@@ -135,7 +147,7 @@ const Header = ({
                         onProfileClick();
                         setShowEmail(false);
                       }}
-                      className={`text-xs font-medium mb-1 transition-colors cursor-pointer w-full text-left ₹{
+                      className={`text-xs font-medium mb-1 transition-colors cursor-pointer w-full text-left ${
                         isAdmin 
                           ? 'text-accent-color hover:text-primary-blue' 
                           : 'text-text-primary hover:text-accent-color'
@@ -143,12 +155,12 @@ const Header = ({
                     >
                       {userEmail}
                     </button>
-                    <div className={`rounded-full px-1.5 py-0.5 flex items-center justify-center ₹{
+                    <div className={`rounded-full px-1.5 py-0.5 flex items-center justify-center ${
                       isAdmin 
                         ? 'bg-accent-color/10 border border-accent-color/20' 
                         : 'bg-danger-color/10 border border-danger-color/10'
                     }`}>
-                      <span className={`text-[0.5rem] font-medium ₹{
+                      <span className={`text-[0.5rem] font-medium ${
                         isAdmin ? 'text-accent-color' : 'text-danger-color'
                       }`}>
                         {isAdmin ? 'ADMIN' : 'UNVERIFIED'}
@@ -186,11 +198,32 @@ const Header = ({
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
                   </svg>
                   <span className="text-text-secondary group-hover:text-text-primary transition-colors text-xs font-medium">{selectedLanguage}</span>
-                  <svg className={`w-2.5 h-2.5 transition-transform ₹{isLanguageDropdownOpen ? 'rotate-180' : ''} text-text-secondary group-hover:text-text-primary`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className={`w-2.5 h-2.5 transition-transform ${isLanguageDropdownOpen ? 'rotate-180' : ''} text-text-secondary group-hover:text-text-primary`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
               </div>
+
+              {/* Notification Icon - Only for Admin */}
+              {isAdmin && (
+                <div className="relative">
+                  <button
+                    ref={notificationButtonRef}
+                    onClick={() => setIsNotificationDropdownOpen(!isNotificationDropdownOpen)}
+                    className="group bg-accent-color/10 hover:bg-accent-color/20 p-2 rounded-lg transition-all duration-300 hover:scale-105 relative"
+                  >
+                    <svg className="w-5 h-5 text-text-secondary group-hover:text-text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    {/* Notification Badge */}
+                    {(pendingRequests.deposits.length > 0 || pendingRequests.withdrawals.length > 0) && (
+                      <div className="absolute -top-1 -right-1 bg-danger-color text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
+                        {pendingRequests.deposits.length + pendingRequests.withdrawals.length}
+                      </div>
+                    )}
+                  </button>
+                </div>
+              )}
 
               {/* Hamburger Menu */}
               <div className="relative">
@@ -228,8 +261,8 @@ const Header = ({
                 setSelectedLanguage(language.code);
                 setIsLanguageDropdownOpen(false);
               }}
-              className={`w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-accent-color/20 transition-all duration-300 ₹{selectedLanguage === language.code ? 'bg-gradient-to-r from-accent-color/30 to-primary-blue/30 text-accent-color' : 'text-text-secondary hover:text-text-primary'
-                } ₹{language.code === languages[0].code ? 'rounded-t-2xl' : ''} ₹{language.code === languages[languages.length - 1].code ? 'rounded-b-2xl' : ''}`}
+              className={`w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-accent-color/20 transition-all duration-300 ${selectedLanguage === language.code ? 'bg-gradient-to-r from-accent-color/30 to-primary-blue/30 text-accent-color' : 'text-text-secondary hover:text-text-primary'
+                } ${language.code === languages[0].code ? 'rounded-t-2xl' : ''} ${language.code === languages[languages.length - 1].code ? 'rounded-b-2xl' : ''}`}
             >
               <span className="text-lg">{language.flag}</span>
               <span className="font-medium">{language.name}</span>
@@ -301,7 +334,7 @@ const Header = ({
             <div className="border-t border-border-color my-2 mx-4"></div>
             <button
               onClick={onSignOut}
-              className={`w-full text-left px-6 py-3 transition-all duration-300 hover:scale-105 rounded-xl flex items-center space-x-2 ₹{
+              className={`w-full text-left px-6 py-3 transition-all duration-300 hover:scale-105 rounded-xl flex items-center space-x-2 ${
                 isAdmin 
                   ? 'text-accent-color hover:bg-accent-color/10' 
                   : 'text-text-primary hover:bg-danger-color/10'
@@ -312,6 +345,109 @@ const Header = ({
               </svg>
               <span>{isAdmin ? 'Admin Logout' : 'Sign Out'}</span>
             </button>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Notification Dropdown Portal - Only for Admin */}
+      {isAdmin && isNotificationDropdownOpen && notificationButtonRef.current && createPortal(
+        <div 
+          data-dropdown="notification"
+          className="fixed z-[999999] w-80 sm:w-96 bg-gradient-to-br from-card-bg to-card-bg/95 rounded-2xl shadow-2xl border border-border-color max-h-96 overflow-y-auto backdrop-blur-md"
+          style={{
+            top: notificationButtonRef.current.getBoundingClientRect().bottom + 12,
+            left: Math.max(8, notificationButtonRef.current.getBoundingClientRect().right - 384),
+            right: Math.max(8, window.innerWidth - notificationButtonRef.current.getBoundingClientRect().left - 80),
+          }}
+        >
+          <div className="p-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-text-primary">Notifications</h3>
+              <div className="text-sm text-text-secondary">
+                {pendingRequests.deposits.length + pendingRequests.withdrawals.length} pending
+              </div>
+            </div>
+            
+            <div className="space-y-3">
+              {/* Deposit Requests */}
+              {pendingRequests.deposits.map((request, index) => (
+                <div 
+                  key={`deposit-${request._id || request.id || index}`} 
+                  className="bg-gradient-to-r from-success-color/10 to-success-color/5 border border-success-color/20 rounded-lg p-3 cursor-pointer hover:from-success-color/20 hover:to-success-color/10 hover:border-success-color/40 transition-all duration-300 hover:scale-[1.02]"
+                  onClick={() => {
+                    if (onNotificationClick) {
+                      onNotificationClick(request, 'deposit');
+                    }
+                    setIsNotificationDropdownOpen(false);
+                  }}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="bg-success-color/20 text-success-color px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                      </svg>
+                      DEPOSIT
+                    </div>
+                    <div className="text-xs text-text-secondary">
+                      {new Date(request.submittedAt || request.createdAt).toLocaleDateString()}
+                    </div>
+                  </div>
+                  <div className="text-sm font-semibold text-text-primary mb-1">
+                    {request.userName || request.user?.fullName || request.user?.email || 'Unknown User'}
+                  </div>
+                  <div className="text-sm text-text-secondary">
+                    Amount: <span className="font-semibold text-success-color">₹{request.amount}</span>
+                  </div>
+                  <div className="text-xs text-text-tertiary">
+                    Account: {request.accountType || 'N/A'}
+                  </div>
+                </div>
+              ))}
+
+              {/* Withdrawal Requests */}
+              {pendingRequests.withdrawals.map((request, index) => (
+                <div 
+                  key={`withdrawal-${request._id || request.id || index}`} 
+                  className="bg-gradient-to-r from-warning-color/10 to-warning-color/5 border border-warning-color/20 rounded-lg p-3 cursor-pointer hover:from-warning-color/20 hover:to-warning-color/10 hover:border-warning-color/40 transition-all duration-300 hover:scale-[1.02]"
+                  onClick={() => {
+                    if (onNotificationClick) {
+                      onNotificationClick(request, 'withdrawal');
+                    }
+                    setIsNotificationDropdownOpen(false);
+                  }}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="bg-warning-color/20 text-warning-color px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                      </svg>
+                      WITHDRAWAL
+                    </div>
+                    <div className="text-xs text-text-secondary">
+                      {new Date(request.submittedAt || request.createdAt).toLocaleDateString()}
+                    </div>
+                  </div>
+                  <div className="text-sm font-semibold text-text-primary mb-1">
+                    {request.userName || request.user?.fullName || request.user?.email || 'Unknown User'}
+                  </div>
+                  <div className="text-sm text-text-secondary">
+                    Amount: <span className="font-semibold text-warning-color">₹{request.amount}</span>
+                  </div>
+                  <div className="text-xs text-text-tertiary">
+                    Account: {request.accountType || 'N/A'}
+                  </div>
+                </div>
+              ))}
+
+              {/* No notifications */}
+              {pendingRequests.deposits.length === 0 && pendingRequests.withdrawals.length === 0 && (
+                <div className="text-center py-6">
+                  <div className="text-4xl mb-2">🔔</div>
+                  <div className="text-text-secondary text-sm">No pending requests</div>
+                </div>
+              )}
+            </div>
           </div>
         </div>,
         document.body

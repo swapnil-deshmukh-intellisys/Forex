@@ -2,7 +2,7 @@
 import Header from '../components/Header';
 import { adminAPI, depositAPI, withdrawalAPI, getUploadUrl, getApiBaseUrl } from '../services/api';
 
-const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
+const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick, onUserSelect = null }) => {
   // Consolidated data state
   const [data, setData] = useState({
     selectedAccountType: '',
@@ -903,9 +903,47 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick }) => {
       }
   };
 
+  // Handle notification click - navigate to user management or handle request
+  const handleNotificationClick = (request, requestType) => {
+    // If we have a selectedUser and the request belongs to them, we can handle it directly
+    if (selectedUser) {
+      const userId = requestType === 'deposit' ? request.user || request.user?._id : request.userId || request.userId?._id;
+      if (userId === selectedUser.id || userId === selectedUser._id) {
+        // Request belongs to current user, we can handle it directly
+        console.log('Request belongs to current user, handling directly...');
+        // You could scroll to the specific request or highlight it
+        return;
+      }
+    }
+
+    // If request belongs to a different user, navigate to that user
+    if (onUserSelect) {
+      // We need to find the user for this request
+      // This would require loading user data or having access to user list
+      console.log('Request belongs to different user, navigating...');
+      // For now, we'll show an alert and suggest going back to user list
+      alert('This request belongs to a different user. Please go back to the user list and select the correct user.');
+    } else {
+      alert('Please go back to the user list to manage this request.');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-bg-primary via-bg-secondary to-bg-primary">
-      <Header userEmail={'admin@forex.com'} onSignOut={onSignOut} onProfileClick={onProfileClick} onBack={onBack} showBackButton={true} isAdmin={true} onHomeClick={() => window.location.href = '/'} />
+      <Header 
+        userEmail={'admin@forex.com'} 
+        onSignOut={onSignOut} 
+        onProfileClick={onProfileClick} 
+        onBack={onBack} 
+        showBackButton={true} 
+        isAdmin={true} 
+        onHomeClick={() => window.location.href = '/'}
+        pendingRequests={{
+          deposits: data.depositRequests.filter(req => req.status === 'pending'),
+          withdrawals: data.withdrawalRequests.filter(req => req.status === 'pending')
+        }}
+        onNotificationClick={handleNotificationClick}
+      />
       
       <main className="py-6">
         <div className="container-custom">

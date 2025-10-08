@@ -287,7 +287,7 @@ function App() {
       case 'userlist':
         return <UserListPage onBack={handleAdminBack} onSignOut={handleAdminLogout} onProfileClick={handleProfileClick} onUserSelect={handleUserSelect} onAdminLogin={() => setCurrentPage('adminlogin')} adminEmail={adminEmail} />;
       case 'admin':
-        return <AdminPanel selectedUser={selectedUser} onBack={handleBackToUserList} onSignOut={handleAdminLogout} onProfileClick={handleProfileClick} />;
+        return <AdminPanel selectedUser={selectedUser} onBack={handleBackToUserList} onSignOut={handleAdminLogout} onProfileClick={handleProfileClick} onUserSelect={handleUserSelect} />;
 
       default:
         return (

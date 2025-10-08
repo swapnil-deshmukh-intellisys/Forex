@@ -637,6 +637,17 @@ const AccountPage = ({ userEmail, onSignOut, onProfileClick, onBack, onShowAccou
                         <div className="text-center">
                           <div className="text-text-secondary text-xs">Account: {account.id} {account.type}</div>
                         </div>
+                        {/* MT5 Credentials */}
+                        {account.mt5Id && (
+                          <div className="text-center">
+                            <div className="text-text-secondary text-xs">MT5 ID: {account.mt5Id}</div>
+                          </div>
+                        )}
+                        {account.mt5Password && (
+                          <div className="text-center">
+                            <div className="text-text-secondary text-xs">MT5 Password: {account.mt5Password}</div>
+                          </div>
+                        )}
                       </div>
 
                       {/* Action Buttons */}

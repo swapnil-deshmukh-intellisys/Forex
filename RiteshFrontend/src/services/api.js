@@ -190,12 +190,12 @@ export const depositAPI = {
   // Get all deposit requests (admin)
   getDepositRequests: async (status = null) => {
     const query = status ? `?status=${status}` : '';
-    return apiRequest(`/deposits/admin${query}`);
+    return adminApiRequest(`/deposits/admin${query}`);
   },
 
   // Verify deposit request (admin)
   verifyDepositRequest: async (requestId, action, data = {}) => {
-    return apiRequest(`/deposits/admin/${requestId}/verify`, {
+    return adminApiRequest(`/deposits/admin/${requestId}/verify`, {
       method: 'PUT',
       body: JSON.stringify({ action, ...data }),
     });

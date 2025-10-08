@@ -37,13 +37,19 @@ const UserListPage = ({ onBack, onSignOut, onProfileClick, onUserSelect, onAdmin
         
         const response = await adminAPI.getAllUsers();
         if (response.success && response.users && Array.isArray(response.users)) {
-          // Ensure each user has required properties
-          const validUsers = response.users.filter(user => 
-            user && 
-            typeof user === 'object' && 
-            (user.id || user._id) && 
-            user.email
-          );
+          // Ensure each user has required properties and normalize id
+          const validUsers = response.users
+            .filter(user => 
+              user && 
+              typeof user === 'object' && 
+              (user.id || user._id) && 
+              user.email
+            )
+            .map(user => ({
+              // normalize id for consistent downstream usage
+              id: user.id || user._id,
+              ...user,
+            }));
           setUsers(validUsers);
         } else {
           console.error('Failed to load users:', response.message || 'Unknown error');
@@ -94,8 +100,9 @@ const UserListPage = ({ onBack, onSignOut, onProfileClick, onUserSelect, onAdmin
   });
 
   const handleUserSelect = (user) => {
-    if (user && user.id) {
-      onUserSelect(user);
+    if (user && (user.id || user._id)) {
+      const normalized = user.id ? user : { id: user._id, ...user };
+      onUserSelect(normalized);
     } else {
       console.error('Invalid user object:', user);
     }
@@ -112,11 +119,11 @@ const UserListPage = ({ onBack, onSignOut, onProfileClick, onUserSelect, onAdmin
         // Reload users after creating admin user
         window.location.reload();
       } else {
-        alert(`❌ Failed to create admin user: ₹{response.message}`);
+        alert(`❌ Failed to create admin user: ${response.message}`);
       }
     } catch (error) {
       console.error('Error creating admin user:', error);
-      alert(`❌ Error creating admin user: ₹{error.message}`);
+      alert(`❌ Error creating admin user: ${error.message}`);
     }
   };
 
@@ -145,6 +152,50 @@ const UserListPage = ({ onBack, onSignOut, onProfileClick, onUserSelect, onAdmin
     const userDeposits = pendingRequests.deposits.filter(req => req.user === userId || req.user?._id === userId);
     const userWithdrawals = pendingRequests.withdrawals.filter(req => req.userId === userId || req.userId?._id === userId);
     return userDeposits.length + userWithdrawals.length;
+  };
+
+  // Handle notification click - navigate to user management
+  const handleNotificationClick = async (request, requestType) => {
+    // Extract user id reliably from request shapes
+    const extractUserId = () => {
+      if (!request) return null;
+      if (requestType === 'deposit') {
+        if (typeof request.user === 'string') return request.user;
+        if (request.user && (request.user.id || request.user._id)) return request.user.id || request.user._id;
+      } else if (requestType === 'withdrawal') {
+        if (typeof request.userId === 'string') return request.userId;
+        if (request.userId && (request.userId.id || request.userId._id)) return request.userId.id || request.userId._id;
+      }
+      return null;
+    };
+
+    const userId = extractUserId();
+
+    if (!userId) {
+      alert('Unable to identify user for this request.');
+      return;
+    }
+
+    // Try local list first
+    const localUser = users.find(u => (u.id || u._id) === userId);
+    if (localUser) {
+      handleUserSelect(localUser);
+      return;
+    }
+
+    console.log('User not found in current list, attempting to load user data...');
+    try {
+      const response = await adminAPI.getUserById(userId);
+      if (response && response.success && response.user) {
+        const normalized = { id: response.user.id || response.user._id, ...response.user };
+        handleUserSelect(normalized);
+      } else {
+        alert('User not found. Please refresh the page and try again.');
+      }
+    } catch (err) {
+      console.error('Failed to load user by id:', err);
+      alert('Failed to load user details. Please try again.');
+    }
   };
 
   if (loading) {
@@ -238,6 +289,8 @@ const UserListPage = ({ onBack, onSignOut, onProfileClick, onUserSelect, onAdmin
         showBackButton={true}
         isAdmin={true}
         onHomeClick={() => window.location.href = '/'}
+        pendingRequests={pendingRequests}
+        onNotificationClick={handleNotificationClick}
       />
       
       <main className="py-6">
@@ -367,7 +420,7 @@ const UserListPage = ({ onBack, onSignOut, onProfileClick, onUserSelect, onAdmin
                             <div>
                               <div className="text-sm text-text-secondary">Status & Balance</div>
                               <div className="flex items-center gap-2">
-                                <span className={`inline-block w-2 h-2 rounded-full ₹{(user.status || '') === 'Active' ? 'bg-success-color' : 'bg-warning-color'}`}></span>
+                                <span className={`inline-block w-2 h-2 rounded-full ${(user.status || '') === 'Active' ? 'bg-success-color' : 'bg-warning-color'}`}></span>
                                 <span className="font-semibold text-text-primary">{user.status || 'Unknown'}</span>
                               </div>
                               <div className="text-sm font-semibold text-accent-color">₹{formatBalance(user.totalBalance)}</div>

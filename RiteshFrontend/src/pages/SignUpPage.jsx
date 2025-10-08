@@ -640,7 +640,7 @@ const SignUpPage = ({ onSignUp, onBackToSignIn }) => {
               {steps.map((_, index) => (
                 <div
                   key={index}
-                  className={`h-1 flex-1 rounded ₹{
+                  className={`h-1 flex-1 rounded ${
                     index <= currentStep ? 'bg-accent-color' : 'bg-border-color'
                   }`}
                 />
