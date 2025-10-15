@@ -1,6 +1,7 @@
  import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Header from '../components/Header';
 import { adminAPI, depositAPI, withdrawalAPI, getUploadUrl, getApiBaseUrl } from '../services/api';
+import { validateAdminAccess, clearAdminSession } from '../utils/authUtils';
 
 const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick, onUserSelect = null }) => {
   // Consolidated data state
@@ -37,6 +38,31 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick, onUserSel
     depositRequests: 'loading',
     userAccounts: 'loading'
   });
+
+  // Validate admin access on component mount - TEMPORARILY DISABLED
+  // useEffect(() => {
+  //   const validateAccess = async () => {
+  //     try {
+  //       const isValidAdmin = await validateAdminAccess();
+  //       if (!isValidAdmin) {
+  //         console.log('Invalid admin session, redirecting to login');
+  //         clearAdminSession();
+  //         // Redirect to admin login or home
+  //         if (onBack) {
+  //           onBack();
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.error('Error validating admin access:', error);
+  //       clearAdminSession();
+  //       if (onBack) {
+  //         onBack();
+  //       }
+  //     }
+  //   };
+
+  //   validateAccess();
+  // }, [onBack]);
 
   // Standardized error handling helper
   const handleApiError = (error, context, fallbackMessage = 'An unexpected error occurred') => {

@@ -11,6 +11,7 @@ import {
   FaMoneyBillWave,
   FaCoins
 } from 'react-icons/fa';
+import QRCode from '../assets/QR.png';
 
 const DepositModal = ({ isOpen, onClose, accountType, onDepositRequest }) => {
   const [amount, setAmount] = useState('');
@@ -200,9 +201,11 @@ const DepositModal = ({ isOpen, onClose, accountType, onDepositRequest }) => {
             
             <div className="bg-white p-6 rounded-lg mb-6 flex justify-center">
               <div className="w-64 h-64 bg-white rounded-lg flex items-center justify-center border-2 border-gray-200">
-                <div className="w-full h-full bg-white rounded-lg flex items-center justify-center">
-                  <span className="text-gray-400 text-sm">QR Code Placeholder</span>
-                </div>
+                <img 
+                  src={QRCode} 
+                  alt="UPI Payment QR Code" 
+                  className="w-full h-full object-contain rounded-lg"
+                />
               </div>
             </div>
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import { adminAPI, authAPI, depositAPI, withdrawalAPI } from '../services/api';
+import { validateAdminAccess, clearAdminSession } from '../utils/authUtils';
 
 const UserListPage = ({ onBack, onSignOut, onProfileClick, onUserSelect, onAdminLogin, adminEmail }) => {
   const [users, setUsers] = useState([]);
@@ -77,6 +78,37 @@ const UserListPage = ({ onBack, onSignOut, onProfileClick, onUserSelect, onAdmin
     
     return () => window.removeEventListener('adminLogout', handleAdminLogout);
   }, []);
+
+  // Validate admin access on component mount - TEMPORARILY DISABLED
+  // useEffect(() => {
+  //   const validateAccess = async () => {
+  //     const adminToken = sessionStorage.getItem('adminToken');
+  //     const adminUser = sessionStorage.getItem('adminUser');
+  //     const isAdminLoggedIn = adminToken && adminUser;
+      
+  //     if (isAdminLoggedIn) {
+  //       try {
+  //         const isValidAdmin = await validateAdminAccess();
+  //         if (!isValidAdmin) {
+  //           console.log('Invalid admin session, redirecting to login');
+  //           clearAdminSession();
+  //           // Redirect to admin login
+  //           if (onAdminLogin) {
+  //             onAdminLogin();
+  //           }
+  //         }
+  //       } catch (error) {
+  //         console.error('Error validating admin access:', error);
+  //         clearAdminSession();
+  //         if (onAdminLogin) {
+  //           onAdminLogin();
+  //         }
+  //       }
+  //     }
+  //   };
+
+  //   validateAccess();
+  // }, [onAdminLogin]);
 
   // Filter users based on search term and filter
   const filteredUsers = (users || []).filter(user => {

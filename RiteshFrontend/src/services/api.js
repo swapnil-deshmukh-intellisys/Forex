@@ -88,6 +88,14 @@ export const authAPI = {
     });
   },
 
+  // Admin Login
+  adminLogin: async (email, password) => {
+    return apiRequest('/auth/admin-login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+    });
+  },
+
   // Get profile
   getProfile: async () => {
     return apiRequest('/auth/profile');

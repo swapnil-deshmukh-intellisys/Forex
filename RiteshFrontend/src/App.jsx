@@ -107,18 +107,18 @@ function App() {
     }
   }, [selectedUser]);
 
-  // Admin panel access via keyboard shortcut (Ctrl + Shift + A)
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.ctrlKey && event.shiftKey && event.key === 'A') {
-        event.preventDefault();
-        handleAdminClick();
-      }
-    };
+  // Admin panel access via keyboard shortcut (Ctrl + Shift + A) - REMOVED FOR SECURITY
+  // useEffect(() => {
+  //   const handleKeyDown = (event) => {
+  //     if (event.ctrlKey && event.shiftKey && event.key === 'A') {
+  //       event.preventDefault();
+  //       handleAdminClick();
+  //     }
+  //   };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  //   window.addEventListener('keydown', handleKeyDown);
+  //   return () => window.removeEventListener('keydown', handleKeyDown);
+  // }, []);
 
   const handleSignIn = (email) => {
     setUserEmail(email);

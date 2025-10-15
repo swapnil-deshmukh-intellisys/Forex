@@ -16,8 +16,8 @@ const AdminLogin = ({ onAdminLogin, onBack }) => {
 
     try {
       console.log('Attempting admin login with:', email.trim());
-      // Use the real authentication API
-      const response = await authAPI.login(email.trim(), password);
+      // Use the admin-specific authentication API
+      const response = await authAPI.adminLogin(email.trim(), password);
       console.log('Admin login response:', response);
       
       if (response.success) {

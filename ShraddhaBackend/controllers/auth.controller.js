@@ -147,33 +147,12 @@ export const login = async (req, res) => {
       return res.status(400).json({ success: false, message: "Please enter all fields" });
     }
 
-    // First check if it's an admin user
+    // Check if it's an admin user trying to use user login
     const admin = await Admin.findOne({ email, isActive: true });
     if (admin) {
-      const isMatch = await admin.matchPassword(password);
-      if (!isMatch) {
-        return res.status(401).json({ success: false, message: "Invalid email or password" });
-      }
-
-      // Update last login
-      admin.lastLogin = new Date();
-      await admin.save();
-
-      // Generate token for admin
-      const token = jwt.sign({ id: admin._id, role: 'admin' }, process.env.JWT_SECRET || "mySuperSecretKey", {
-        expiresIn: "1d",
-      });
-
-      return res.status(200).json({
-        success: true,
-        message: "Admin login successful",
-        token,
-        user: {
-          id: admin._id,
-          fullName: admin.fullName,
-          email: admin.email,
-          role: admin.role,
-        },
+      return res.status(403).json({ 
+        success: false, 
+        message: "Admin account detected. Please use admin login." 
       });
     }
 
@@ -208,6 +187,61 @@ export const login = async (req, res) => {
   } catch (error) {
     console.error("Login Error:", error);
     return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// =============== ADMIN LOGIN ===============
+export const adminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: "Please enter all fields" });
+    }
+
+    // Check if it's a regular user trying to use admin login
+    const user = await User.findOne({ email });
+    if (user) {
+      return res.status(403).json({ 
+        success: false, 
+        message: "Regular user account detected. Please use user login." 
+      });
+    }
+
+    // Check admin users only
+    const admin = await Admin.findOne({ email, isActive: true });
+    if (!admin) {
+      return res.status(401).json({ success: false, message: "Admin account not found" });
+    }
+
+    const isMatch = await admin.matchPassword(password);
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: "Invalid email or password" });
+    }
+
+    // Update last login
+    admin.lastLogin = new Date();
+    await admin.save();
+
+    // Generate token for admin
+    const token = jwt.sign({ id: admin._id, role: 'admin' }, process.env.JWT_SECRET || "mySuperSecretKey", {
+      expiresIn: "1d",
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Admin login successful",
+      token,
+      user: {
+        id: admin._id,
+        fullName: admin.fullName,
+        email: admin.email,
+        role: admin.role,
+      },
+    });
+  } catch (error) {
+    console.error("Admin Login Error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
@@ -322,6 +356,50 @@ export const createAdminUser = async (req, res) => {
 };
 
 // =============== FORGOT PASSWORD ===============
+// =============== VALIDATE ADMIN ACCESS ===============
+export const validateAdminAccess = async (req, res) => {
+  try {
+    const { email, role } = req.body;
+    
+    if (!email || role !== 'admin') {
+      return res.status(403).json({ 
+        success: false, 
+        message: "Access denied. Admin privileges required.",
+        isAdmin: false 
+      });
+    }
+
+    // Check if admin exists and is active
+    const admin = await Admin.findOne({ email, isActive: true });
+    if (!admin) {
+      return res.status(403).json({ 
+        success: false, 
+        message: "Admin account not found or inactive.",
+        isAdmin: false 
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Admin access validated",
+      isAdmin: true,
+      admin: {
+        id: admin._id,
+        email: admin.email,
+        fullName: admin.fullName,
+        role: admin.role
+      }
+    });
+  } catch (error) {
+    console.error("Validate Admin Access Error:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Server error",
+      isAdmin: false 
+    });
+  }
+};
+
 export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
