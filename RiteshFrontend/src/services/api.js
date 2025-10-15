@@ -286,12 +286,14 @@ export const withdrawalAPI = {
   // Get all withdrawal requests (admin)
   getWithdrawalRequests: async (status = null) => {
     const query = status ? `?status=${status}` : '';
-    // Make direct API call without authentication
+    const adminToken = getAdminAuthToken();
+    
     try {
       const response = await fetch(`${API_BASE_URL}/withdrawals/admin${query}`, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          ...(adminToken && { Authorization: `Bearer ${adminToken}` })
         }
       });
       const data = await response.json();
