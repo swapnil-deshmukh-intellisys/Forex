@@ -629,7 +629,7 @@ const AccountPage = ({ userEmail, onSignOut, onProfileClick, onBack, onShowAccou
 
                       {/* Balance */}
                       <div className="text-center mb-4">
-                        <div className="text-2xl font-bold text-text-primary mb-1">{getAccountDisplayData(account).balance} {getAccountDisplayData(account).currency}</div>
+                        <div className="text-2xl font-bold text-text-primary mb-1">{getAccountDisplayData(account).currency}{getAccountDisplayData(account).balance}</div>
                       </div>
 
                       {/* Account Details */}
@@ -646,6 +646,11 @@ const AccountPage = ({ userEmail, onSignOut, onProfileClick, onBack, onShowAccou
                         {account.mt5Password && (
                           <div className="text-center">
                             <div className="text-text-secondary text-xs">MT5 Password: {account.mt5Password}</div>
+                          </div>
+                        )}
+                        {account.mt5Server && (
+                          <div className="text-center">
+                            <div className="text-text-secondary text-xs">Server: {account.mt5Server}</div>
                           </div>
                         )}
                       </div>
@@ -666,10 +671,6 @@ const AccountPage = ({ userEmail, onSignOut, onProfileClick, onBack, onShowAccou
                         </button>
               </div>
 
-                      {/* No Transactions Message */}
-                      <div className="text-center mt-4">
-                        <p className="text-text-secondary text-xs">No transactions found. Please make a deposit to trade.</p>
-                      </div>
 
                       {/* Show Account Details Button */}
                       <button

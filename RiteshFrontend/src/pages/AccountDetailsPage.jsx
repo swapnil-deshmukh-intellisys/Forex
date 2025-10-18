@@ -299,13 +299,13 @@ const AccountDetailsPage = ({ account, onBack, onSignOut, onProfileClick }) => {
             <div className="relative z-10">
               <div className="text-center mb-6">
                 <div className="text-text-secondary uppercase tracking-widest text-xs mb-2">Balance</div>
-                <div className="text-5xl sm:text-6xl font-extrabold text-text-primary">{adminData.balance} {adminData.currency}</div>
+                <div className="text-5xl sm:text-6xl font-extrabold text-text-primary">{adminData.currency}{adminData.balance}</div>
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-center gap-4 sm:gap-10 mb-6">
-                <div className="text-text-secondary">Equity: <span className="font-semibold text-text-primary">{adminData.equity} ₹</span></div>
+                <div className="text-text-secondary">Equity: <span className="font-semibold text-text-primary">₹{adminData.equity}</span></div>
                 <div className="hidden sm:block h-4 w-px bg-border-color" />
-                <div className="text-text-secondary">Margin: <span className="font-semibold text-text-primary">{adminData.margin} ₹</span></div>
+                <div className="text-text-secondary">Margin: <span className="font-semibold text-text-primary">₹{adminData.margin}</span></div>
               </div>
 
               {/* MT5 Trading Platform Details */}

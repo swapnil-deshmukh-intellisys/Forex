@@ -4,8 +4,6 @@ import {
   FaGoogle, 
   FaCreditCard, 
   FaUniversity, 
-  FaGem, 
-  FaBolt,
   FaPhone,
   FaWallet,
   FaMoneyBillWave,
@@ -47,20 +45,6 @@ const DepositModal = ({ isOpen, onClose, accountType, onDepositRequest }) => {
       icon: FaUniversity, 
       color: 'from-green-500 to-green-600',
       bgColor: 'bg-green-500'
-    },
-    { 
-      id: 'mobikwik', 
-      name: 'MobiKwik', 
-      icon: FaGem, 
-      color: 'from-pink-500 to-pink-600',
-      bgColor: 'bg-pink-500'
-    },
-    { 
-      id: 'freecharge', 
-      name: 'FreeCharge', 
-      icon: FaBolt, 
-      color: 'from-yellow-500 to-orange-500',
-      bgColor: 'bg-yellow-500'
     }
   ];
 

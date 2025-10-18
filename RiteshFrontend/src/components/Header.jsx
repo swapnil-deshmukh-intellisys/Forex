@@ -18,9 +18,23 @@ const Header = ({
   const [isNotificationDropdownOpen, setIsNotificationDropdownOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('ENGLISH');
   const [showEmail, setShowEmail] = useState(false);
+  const [readNotifications, setReadNotifications] = useState(new Set());
   const languageButtonRef = useRef(null);
   const hamburgerButtonRef = useRef(null);
   const notificationButtonRef = useRef(null);
+
+  // Mark notifications as read when dropdown is opened
+  const handleNotificationDropdownToggle = () => {
+    if (!isNotificationDropdownOpen) {
+      // Opening dropdown - mark all current notifications as read
+      const allNotificationIds = [
+        ...pendingRequests.deposits.map(req => `deposit-${req._id || req.id}`),
+        ...pendingRequests.withdrawals.map(req => `withdrawal-${req._id || req.id}`)
+      ];
+      setReadNotifications(new Set(allNotificationIds));
+    }
+    setIsNotificationDropdownOpen(!isNotificationDropdownOpen);
+  };
 
   const languages = [
     { code: 'ENGLISH', name: 'ENGLISH', flag: '🇺🇸' },
@@ -209,18 +223,28 @@ const Header = ({
                 <div className="relative">
                   <button
                     ref={notificationButtonRef}
-                    onClick={() => setIsNotificationDropdownOpen(!isNotificationDropdownOpen)}
+                    onClick={handleNotificationDropdownToggle}
                     className="group bg-accent-color/10 hover:bg-accent-color/20 p-2 rounded-lg transition-all duration-300 hover:scale-105 relative"
                   >
                     <svg className="w-5 h-5 text-text-secondary group-hover:text-text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                     </svg>
-                    {/* Notification Badge */}
-                    {(pendingRequests.deposits.length > 0 || pendingRequests.withdrawals.length > 0) && (
-                      <div className="absolute -top-1 -right-1 bg-danger-color text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
-                        {pendingRequests.deposits.length + pendingRequests.withdrawals.length}
-                      </div>
-                    )}
+                    {/* Notification Badge - Only show unread notifications */}
+                    {(() => {
+                      const unreadDeposits = pendingRequests.deposits.filter(req => 
+                        !readNotifications.has(`deposit-${req._id || req.id}`)
+                      );
+                      const unreadWithdrawals = pendingRequests.withdrawals.filter(req => 
+                        !readNotifications.has(`withdrawal-${req._id || req.id}`)
+                      );
+                      const unreadCount = unreadDeposits.length + unreadWithdrawals.length;
+                      
+                      return unreadCount > 0 && (
+                        <div className="absolute -top-1 -right-1 bg-danger-color text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
+                          {unreadCount}
+                        </div>
+                      );
+                    })()}
                   </button>
                 </div>
               )}
@@ -365,23 +389,38 @@ const Header = ({
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-text-primary">Notifications</h3>
               <div className="text-sm text-text-secondary">
-                {pendingRequests.deposits.length + pendingRequests.withdrawals.length} pending
+                {(() => {
+                  const unreadDeposits = pendingRequests.deposits.filter(req => 
+                    !readNotifications.has(`deposit-${req._id || req.id}`)
+                  );
+                  const unreadWithdrawals = pendingRequests.withdrawals.filter(req => 
+                    !readNotifications.has(`withdrawal-${req._id || req.id}`)
+                  );
+                  const unreadCount = unreadDeposits.length + unreadWithdrawals.length;
+                  return `${unreadCount} unread`;
+                })()}
               </div>
             </div>
             
             <div className="space-y-3">
               {/* Deposit Requests */}
-              {pendingRequests.deposits.map((request, index) => (
-                <div 
-                  key={`deposit-${request._id || request.id || index}`} 
-                  className="bg-gradient-to-r from-success-color/10 to-success-color/5 border border-success-color/20 rounded-lg p-3 cursor-pointer hover:from-success-color/20 hover:to-success-color/10 hover:border-success-color/40 transition-all duration-300 hover:scale-[1.02]"
-                  onClick={() => {
-                    if (onNotificationClick) {
-                      onNotificationClick(request, 'deposit');
-                    }
-                    setIsNotificationDropdownOpen(false);
-                  }}
-                >
+              {pendingRequests.deposits.map((request, index) => {
+                const isRead = readNotifications.has(`deposit-${request._id || request.id}`);
+                return (
+                  <div 
+                    key={`deposit-${request._id || request.id || index}`} 
+                    className={`${
+                      isRead 
+                        ? 'bg-gradient-to-r from-gray-100/10 to-gray-100/5 border border-gray-300/20 opacity-60' 
+                        : 'bg-gradient-to-r from-success-color/10 to-success-color/5 border border-success-color/20'
+                    } rounded-lg p-3 cursor-pointer hover:from-success-color/20 hover:to-success-color/10 hover:border-success-color/40 transition-all duration-300 hover:scale-[1.02]`}
+                    onClick={() => {
+                      if (onNotificationClick) {
+                        onNotificationClick(request, 'deposit');
+                      }
+                      setIsNotificationDropdownOpen(false);
+                    }}
+                  >
                   <div className="flex items-center gap-2 mb-2">
                     <div className="bg-success-color/20 text-success-color px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
                       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -399,24 +438,31 @@ const Header = ({
                   <div className="text-sm text-text-secondary">
                     Amount: <span className="font-semibold text-success-color">₹{request.amount}</span>
                   </div>
-                  <div className="text-xs text-text-tertiary">
-                    Account: {request.accountType || 'N/A'}
+                    <div className="text-xs text-text-tertiary">
+                      Account: {request.accountType || 'N/A'}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
 
               {/* Withdrawal Requests */}
-              {pendingRequests.withdrawals.map((request, index) => (
-                <div 
-                  key={`withdrawal-${request._id || request.id || index}`} 
-                  className="bg-gradient-to-r from-warning-color/10 to-warning-color/5 border border-warning-color/20 rounded-lg p-3 cursor-pointer hover:from-warning-color/20 hover:to-warning-color/10 hover:border-warning-color/40 transition-all duration-300 hover:scale-[1.02]"
-                  onClick={() => {
-                    if (onNotificationClick) {
-                      onNotificationClick(request, 'withdrawal');
-                    }
-                    setIsNotificationDropdownOpen(false);
-                  }}
-                >
+              {pendingRequests.withdrawals.map((request, index) => {
+                const isRead = readNotifications.has(`withdrawal-${request._id || request.id}`);
+                return (
+                  <div 
+                    key={`withdrawal-${request._id || request.id || index}`} 
+                    className={`${
+                      isRead 
+                        ? 'bg-gradient-to-r from-gray-100/10 to-gray-100/5 border border-gray-300/20 opacity-60' 
+                        : 'bg-gradient-to-r from-warning-color/10 to-warning-color/5 border border-warning-color/20'
+                    } rounded-lg p-3 cursor-pointer hover:from-warning-color/20 hover:to-warning-color/10 hover:border-warning-color/40 transition-all duration-300 hover:scale-[1.02]`}
+                    onClick={() => {
+                      if (onNotificationClick) {
+                        onNotificationClick(request, 'withdrawal');
+                      }
+                      setIsNotificationDropdownOpen(false);
+                    }}
+                  >
                   <div className="flex items-center gap-2 mb-2">
                     <div className="bg-warning-color/20 text-warning-color px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
                       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -434,11 +480,12 @@ const Header = ({
                   <div className="text-sm text-text-secondary">
                     Amount: <span className="font-semibold text-warning-color">₹{request.amount}</span>
                   </div>
-                  <div className="text-xs text-text-tertiary">
-                    Account: {request.accountType || 'N/A'}
+                    <div className="text-xs text-text-tertiary">
+                      Account: {request.accountType || 'N/A'}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
 
               {/* No notifications */}
               {pendingRequests.deposits.length === 0 && pendingRequests.withdrawals.length === 0 && (

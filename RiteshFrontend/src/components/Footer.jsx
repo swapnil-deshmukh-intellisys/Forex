@@ -1,5 +1,4 @@
 import React from 'react';
-import LogoPng from '../assets/Logo.png';
 
 const Footer = ({ onAboutUsClick, onContactUsClick }) => {
   const footerLinks = {
@@ -80,7 +79,9 @@ const Footer = ({ onAboutUsClick, onContactUsClick }) => {
           {/* Company Info */}
           <div className="md:col-span-2 lg:col-span-2 text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start space-x-3 mb-6">
-              <img src={LogoPng} alt="Express Forex" className="w-36 h-auto object-contain" />
+              <div className="text-3xl font-bold bg-gradient-to-r from-accent-color to-primary-blue bg-clip-text text-transparent">
+                Zerofx.club
+              </div>
             </div>
             <p className="text-white/80 mb-6 leading-relaxed">
               Experience the future of forex trading with cutting-edge technology, 
@@ -155,7 +156,7 @@ const Footer = ({ onAboutUsClick, onContactUsClick }) => {
         <div className="container-custom py-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-white/80 text-sm">
-              <p>© 2025 Express Forex. All rights reserved.</p>
+              <p>© 2025 Zerofx.club. All rights reserved.</p>
               <p className="mt-1">Regulated by Financial Services Authority</p>
             </div>
             

@@ -225,7 +225,7 @@ const ContactUs = ({ onSignUpClick }) => {
         <div className="container-custom max-w-xs sm:max-w-sm md:max-w-4xl lg:max-w-6xl xl:max-w-7xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-4 text-text-primary">Ready to Start Trading?</h2>
           <p className="text-xl text-text-secondary mb-8 max-w-2xl mx-auto">
-            Join thousands of successful traders who have chosen Express Forex as their trading partner.
+            Join thousands of successful traders who have chosen Zerofx.club as their trading partner.
           </p>
           <button 
             onClick={onSignUpClick}

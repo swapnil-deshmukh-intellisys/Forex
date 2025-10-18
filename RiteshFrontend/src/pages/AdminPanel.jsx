@@ -1136,10 +1136,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick, onUserSel
                     <div className="text-5xl sm:text-6xl font-extrabold text-text-primary">
                       {(() => {
                         const userAccount = data.createdAccounts.find(acc => acc.type === data.selectedAccountType);
-                        return userAccount?.balance || '0.00';
-                      })()} {(() => {
-                        const userAccount = data.createdAccounts.find(acc => acc.type === data.selectedAccountType);
-                        return userAccount?.currency || '₹';
+                        return (userAccount?.currency || '₹') + (userAccount?.balance || '0.00');
                       })()}
                     </div>
                   )}
@@ -1159,7 +1156,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick, onUserSel
                         className="text-lg font-semibold text-text-primary bg-transparent border-b border-accent-color text-center w-32 focus:outline-none focus:border-primary-blue"
                       />
                     ) : (
-                      <div className="text-lg font-semibold text-text-primary">{data.accountTypesData[data.selectedAccountType]?.equity || '0.00'} ₹</div>
+                      <div className="text-lg font-semibold text-text-primary">₹{data.accountTypesData[data.selectedAccountType]?.equity || '0.00'}</div>
                     )}
                   </div>
                   
@@ -1177,7 +1174,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick, onUserSel
                         className="text-lg font-semibold text-text-primary bg-transparent border-b border-accent-color text-center w-32 focus:outline-none focus:border-primary-blue"
                       />
                     ) : (
-                      <div className="text-lg font-semibold text-text-primary">{data.accountTypesData[data.selectedAccountType]?.margin || '0.00'} ₹</div>
+                      <div className="text-lg font-semibold text-text-primary">₹{data.accountTypesData[data.selectedAccountType]?.margin || '0.00'}</div>
                     )}
                   </div>
                 </div>

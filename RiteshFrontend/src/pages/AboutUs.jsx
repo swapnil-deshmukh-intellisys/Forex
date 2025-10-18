@@ -177,7 +177,7 @@ const AboutUs = ({ onSignUpClick }) => {
                 <span className="text-accent-color bg-gradient-to-r from-accent-color to-primary-blue bg-clip-text text-transparent bg-300% animate-gradient">Empowering Traders</span>
               </h1>
               <p className="text-xl text-text-secondary">
-                Express Forex was founded with a simple goal: to make professional trading tools and resources accessible to everyone, regardless of experience level.
+                Zerofx.club was founded with a simple goal: to make professional trading tools and resources accessible to everyone, regardless of experience level.
               </p>
               <div className="flex flex-wrap gap-4 justify-center md:justify-start">
                 <button 
@@ -246,7 +246,7 @@ const AboutUs = ({ onSignUpClick }) => {
                 <span className="text-text-primary">Our</span> <span className="text-accent-color bg-gradient-to-r from-accent-color to-primary-blue bg-clip-text text-transparent">Story</span>
               </h2>
               <p className="text-text-secondary text-lg">
-                Founded in 2010 by a team of seasoned traders and technologists, Express Forex emerged from a simple observation: the forex trading industry was dominated by platforms that either catered exclusively to professionals or oversimplified the experience for beginners.
+                Founded in 2010 by a team of seasoned traders and technologists, Zerofx.club emerged from a simple observation: the forex trading industry was dominated by platforms that either catered exclusively to professionals or oversimplified the experience for beginners.
               </p>
               <p className="text-text-secondary text-lg">
                 We set out to create a platform that would democratize professional trading tools, making them accessible and understandable for traders at all levels while maintaining the sophistication that experienced traders demand.
@@ -359,9 +359,9 @@ const AboutUs = ({ onSignUpClick }) => {
                 <div className="absolute -top-8 -left-8 w-32 h-32 bg-accent-color/10 rounded-full blur-xl"></div>
                 <div className="text-center space-y-4 relative z-10">
                   <div className="mb-4 transform hover:scale-110 transition-transform duration-300">
-                    <img src={videoConferenceGif} alt="Express Forex Platform" className="w-16 h-16 mx-auto rounded-xl" />
+                    <img src={videoConferenceGif} alt="Zerofx.club Platform" className="w-16 h-16 mx-auto rounded-xl" />
                   </div>
-                  <h3 className="text-2xl font-bold text-accent-color">Express Forex Platform</h3>
+                  <h3 className="text-2xl font-bold text-accent-color">Zerofx.club Platform</h3>
                   <p className="text-text-secondary">Advanced yet intuitive</p>
                   <div className="w-full h-80 min-h-80">
                     <MiniChartUsd />

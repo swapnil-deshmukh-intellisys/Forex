@@ -128,7 +128,7 @@ const HomePage = ({ onSignUpClick }) => {
         <div className="container-custom">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4 text-text-primary">
-              Why Choose <span className="text-accent-color bg-gradient-to-r from-accent-color to-primary-blue bg-clip-text text-transparent">Express Forex</span>
+              Why Choose <span className="text-accent-color bg-gradient-to-r from-accent-color to-primary-blue bg-clip-text text-transparent">Zerofx.club</span>
             </h2>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">

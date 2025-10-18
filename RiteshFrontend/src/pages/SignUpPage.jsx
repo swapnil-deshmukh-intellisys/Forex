@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import LogoPng from '../assets/Logo.png';
 import { authAPI } from '../services/api';
 
 const SignUpPage = ({ onSignUp, onBackToSignIn }) => {
@@ -534,7 +533,7 @@ const SignUpPage = ({ onSignUp, onBackToSignIn }) => {
               <h3 className="text-lg font-semibold text-text-primary mb-4">Terms and Conditions</h3>
               <div className="text-sm text-text-secondary space-y-4 max-h-64 overflow-y-auto">
                 <p>
-                  By creating an account with Express Forex, you agree to the following terms and conditions:
+                  By creating an account with Zerofx.club, you agree to the following terms and conditions:
                 </p>
                 <p>
                   1. You must be at least 18 years old to create an account and use our services.
@@ -546,7 +545,7 @@ const SignUpPage = ({ onSignUp, onBackToSignIn }) => {
                   3. You agree to provide accurate and complete information during registration.
                 </p>
                 <p>
-                  4. Express Forex reserves the right to modify these terms at any time.
+                  4. Zerofx.club reserves the right to modify these terms at any time.
                 </p>
                 <p>
                   5. Trading involves substantial risk and may not be suitable for all investors.
@@ -618,7 +617,9 @@ const SignUpPage = ({ onSignUp, onBackToSignIn }) => {
             <div className="relative flex items-center justify-center">
               {/* Soft blurred white background behind logo */}
               <div className="absolute -inset-2 rounded-2xl bg-white blur-md" />
-              <img src={LogoPng} alt="Express Forex" className="relative w-32 h-auto object-contain" />
+              <div className="relative text-3xl font-bold bg-gradient-to-r from-accent-color to-primary-blue bg-clip-text text-transparent">
+                Zerofx.club
+              </div>
             </div>
           </div>
           <h2 className="text-2xl font-bold text-accent-color mb-2">
@@ -737,7 +738,7 @@ const SignUpPage = ({ onSignUp, onBackToSignIn }) => {
         {/* Footer */}
         <div className="text-center space-y-2">
           <p className="text-text-primary text-sm">
-            © Express Forex
+            © Zerofx.club
           </p>
           <p className="text-text-secondary text-xs">
             Contact us at{' '}

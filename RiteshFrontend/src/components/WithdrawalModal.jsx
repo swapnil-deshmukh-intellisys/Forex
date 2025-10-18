@@ -184,6 +184,15 @@ const WithdrawalModal = ({ isOpen, onClose, accountType, currentBalance, onWithd
           </button>
         </div>
 
+        {/* Balance Update Note */}
+        <div className="bg-warning-color/10 border border-warning-color/20 rounded-lg p-3 mb-6">
+          <div className="text-center text-text-secondary text-sm">
+            This balance will be updated after withdrawal and deposit request
+            <br />
+            For 2 minute instant withdrawal please take MT5/ odd-hub amount
+          </div>
+        </div>
+
         {/* Step 1: Amount */}
         {step === 1 && (
           <div>
