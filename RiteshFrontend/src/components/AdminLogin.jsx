@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { authAPI } from '../services/api';
+import LogozPng from '../assets/Logoz.png';
 
 const AdminLogin = ({ onAdminLogin, onBack }) => {
   const [email, setEmail] = useState('');
@@ -71,9 +72,7 @@ const AdminLogin = ({ onAdminLogin, onBack }) => {
           <div className="flex justify-center mb-6">
             <div className="relative flex items-center justify-center">
               <div className="absolute -inset-2 rounded-2xl bg-white blur-md" />
-              <div className="relative text-3xl font-bold bg-gradient-to-r from-accent-color to-primary-blue bg-clip-text text-transparent">
-                Zerofx.club
-              </div>
+              <img src={LogozPng} alt="Zerofx.club" className="relative h-12 w-auto object-contain" />
             </div>
           </div>
           <h2 className="text-3xl font-bold text-text-primary mb-2">Admin Access</h2>

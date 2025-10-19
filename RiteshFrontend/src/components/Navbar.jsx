@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import TickerTape from '../widgets/TickerTape';
+import LogozPng from '../assets/Logoz.png';
 
 const Navbar = ({ onSignInClick, onAboutUsClick, onContactUsClick, onHomeClick, onAdminClick, onAccountsClick, currentPage, userEmail, adminEmail }) => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -42,9 +43,7 @@ const Navbar = ({ onSignInClick, onAboutUsClick, onContactUsClick, onHomeClick, 
           <div className="flex items-center justify-between py-3">
             {/* Logo */}
             <div className="flex items-center space-x-3 cursor-pointer" onClick={handleHomeClick}>
-              <div className="text-2xl font-bold bg-gradient-to-r from-accent-color to-primary-blue bg-clip-text text-transparent">
-                Zerofx.club
-              </div>
+              <img src={LogozPng} alt="Zerofx.club" className="h-10 w-auto object-contain" />
             </div>
 
             {/* Desktop Navigation */}

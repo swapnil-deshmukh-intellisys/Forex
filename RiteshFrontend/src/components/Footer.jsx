@@ -1,4 +1,5 @@
 import React from 'react';
+import LogozPng from '../assets/Logoz.png';
 
 const Footer = ({ onAboutUsClick, onContactUsClick }) => {
   const footerLinks = {
@@ -79,9 +80,7 @@ const Footer = ({ onAboutUsClick, onContactUsClick }) => {
           {/* Company Info */}
           <div className="md:col-span-2 lg:col-span-2 text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start space-x-3 mb-6">
-              <div className="text-3xl font-bold bg-gradient-to-r from-accent-color to-primary-blue bg-clip-text text-transparent">
-                Zerofx.club
-              </div>
+              <img src={LogozPng} alt="Zerofx.club" className="h-12 w-auto object-contain" />
             </div>
             <p className="text-white/80 mb-6 leading-relaxed">
               Experience the future of forex trading with cutting-edge technology, 

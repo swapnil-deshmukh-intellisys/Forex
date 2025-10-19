@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { authAPI } from '../services/api';
+import LogozPng from '../assets/Logoz.png';
 
 const SignUpPage = ({ onSignUp, onBackToSignIn }) => {
    const [isLoading, setIsLoading] = useState(false);
@@ -617,9 +618,7 @@ const SignUpPage = ({ onSignUp, onBackToSignIn }) => {
             <div className="relative flex items-center justify-center">
               {/* Soft blurred white background behind logo */}
               <div className="absolute -inset-2 rounded-2xl bg-white blur-md" />
-              <div className="relative text-3xl font-bold bg-gradient-to-r from-accent-color to-primary-blue bg-clip-text text-transparent">
-                Zerofx.club
-              </div>
+              <img src={LogozPng} alt="Zerofx.club" className="relative h-12 w-auto object-contain" />
             </div>
           </div>
           <h2 className="text-2xl font-bold text-accent-color mb-2">
