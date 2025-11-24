@@ -9,7 +9,7 @@ import {
   FaMoneyBillWave,
   FaCoins
 } from 'react-icons/fa';
-import QRCode from '../assets/QR.png';
+import QRCode from '../assets/QR2.jpg';
 
 const DepositModal = ({ isOpen, onClose, accountType, onDepositRequest }) => {
   const [amount, setAmount] = useState('');
@@ -181,6 +181,10 @@ const DepositModal = ({ isOpen, onClose, accountType, onDepositRequest }) => {
               <h3 className="text-xl font-bold text-text-primary mb-2">Scan QR Code to Pay</h3>
               <p className="text-text-secondary mb-2">Amount: <span className="font-semibold text-accent-color">₹{amount}</span></p>
               <p className="text-text-secondary text-sm">Using: <span className="font-semibold text-text-primary">{upiApps.find(app => app.id === selectedUPI)?.name}</span></p>
+            </div>
+            
+            <div className="text-center mb-3">
+              <p className="text-text-secondary text-xs">For amount over 2000 please use another device to scan the QR code from</p>
             </div>
             
             <div className="bg-white p-6 rounded-lg mb-6 flex justify-center">
