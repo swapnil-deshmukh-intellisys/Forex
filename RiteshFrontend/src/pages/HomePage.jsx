@@ -224,7 +224,10 @@ const HomePage = ({ onSignUpClick }) => {
                     </div>
                   ))}
                 </div>
-                <button className="w-full bg-accent-color text-text-quaternary font-semibold px-6 py-3 rounded-xl hover:bg-accent-color/90 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-accent-color/30">
+                <button 
+                  onClick={onSignUpClick}
+                  className="w-full bg-accent-color text-text-quaternary font-semibold px-6 py-3 rounded-xl hover:bg-accent-color/90 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-accent-color/30"
+                >
                   Trade Now
                 </button>
               </div>

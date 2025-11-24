@@ -147,7 +147,7 @@ const UserListPage = ({ onBack, onSignOut, onProfileClick, onUserSelect, onAdmin
       console.log('Admin user creation response:', response);
       
       if (response.success) {
-        alert('✅ Admin user created successfully! You can now login with:\nEmail: admin@forex.com\nPassword: admin123');
+        alert('✅ Admin user created successfully! You can now login');
         // Reload users after creating admin user
         window.location.reload();
       } else {

@@ -537,25 +537,22 @@ const SignUpPage = ({ onSignUp, onBackToSignIn }) => {
                   By creating an account with Zerofx.club, you agree to the following terms and conditions:
                 </p>
                 <p>
-                  1. You must be at least 18 years old to create an account and use our services.
+                  1. You are responsible for maintaining the confidentiality of your account credentials.
                 </p>
                 <p>
-                  2. You are responsible for maintaining the confidentiality of your account credentials.
+                  2. You agree to provide accurate and complete information during registration.
                 </p>
                 <p>
-                  3. You agree to provide accurate and complete information during registration.
+                  3. Zerofx.club reserves the right to modify these terms at any time.
                 </p>
                 <p>
-                  4. Zerofx.club reserves the right to modify these terms at any time.
+                  4. Trading involves substantial risk and may not be suitable for all investors.
                 </p>
                 <p>
-                  5. Trading involves substantial risk and may not be suitable for all investors.
+                  5. Past performance does not guarantee future results.
                 </p>
                 <p>
-                  6. Past performance does not guarantee future results.
-                </p>
-                <p>
-                  7. You acknowledge that you have read and understood our risk disclosure statement.
+                  6. You acknowledge that you have read and understood our risk disclosure statement.
                 </p>
               </div>
             </div>
@@ -570,7 +567,7 @@ const SignUpPage = ({ onSignUp, onBackToSignIn }) => {
                   className="mt-1 h-4 w-4 text-accent-color focus:ring-accent-color border-gray-300 rounded"
                 />
                 <label htmlFor="termsAccepted" className="text-sm text-white-700">
-                  I have read and agree to the <span className="text-accent-color font-medium">Terms and Conditions</span>
+                  <span className="text-accent-color font-medium">I have read and agree to the Terms and Conditions</span>
                 </label>
               </div>
               {errors.termsAccepted && <p className="text-red-500 text-sm">{errors.termsAccepted}</p>}
@@ -584,7 +581,7 @@ const SignUpPage = ({ onSignUp, onBackToSignIn }) => {
                   className="mt-1 h-4 w-4 text-accent-color focus:ring-accent-color border-gray-300 rounded"
                 />
                 <label htmlFor="privacyAccepted" className="text-sm text-white-700">
-                  I have read and agree to the <span className="text-accent-color font-medium">Privacy Policy</span>
+                   <span className="text-accent-color font-medium">I have read and agree to the Privacy Policy</span>
                 </label>
               </div>
               {errors.privacyAccepted && <p className="text-red-500 text-sm">{errors.privacyAccepted}</p>}

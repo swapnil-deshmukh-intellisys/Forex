@@ -30,7 +30,7 @@ const Navbar = ({ onSignInClick, onAboutUsClick, onContactUsClick, onHomeClick, 
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled ? 'bg-white/95 backdrop-blur-md shadow-md' : 'bg-white'
+      isScrolled ? 'bg-bg-primary/95 backdrop-blur-md shadow-md' : 'bg-bg-primary'
     }`}>
       {/* Market Data Ticker */}
       <div className="bg-black">
@@ -38,7 +38,7 @@ const Navbar = ({ onSignInClick, onAboutUsClick, onContactUsClick, onHomeClick, 
       </div>
 
       {/* Main Navigation */}
-      <div className="bg-white/95 backdrop-blur-md border-b border-gray-200">
+      <div className="bg-bg-primary/95 backdrop-blur-md border-b border-border-color">
         <div className="container-custom">
           <div className="flex items-center justify-between py-3">
             {/* Logo */}
@@ -51,46 +51,46 @@ const Navbar = ({ onSignInClick, onAboutUsClick, onContactUsClick, onHomeClick, 
               <button 
                 onClick={handleHomeClick}
                 className={`font-semibold relative ${
-                  currentPage === 'home' ? 'text-gray-900' : 'text-gray-600 hover:text-gray-900'
+                  currentPage === 'home' ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
                 } transition-colors`}
               >
                 Home
                 {currentPage === 'home' && (
-                  <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gray-900"></div>
+                  <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-accent-color"></div>
                 )}
               </button>
               <button 
                 onClick={onAboutUsClick}
                 className={`font-medium relative ${
-                  currentPage === 'aboutus' ? 'text-gray-900' : 'text-gray-600 hover:text-gray-900'
+                  currentPage === 'aboutus' ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
                 } transition-colors`}
               >
                 About Us
                 {currentPage === 'aboutus' && (
-                  <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gray-900"></div>
+                  <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-accent-color"></div>
                 )}
               </button>
               <button 
                 onClick={onContactUsClick}
                 className={`font-medium relative ${
-                  currentPage === 'contactus' ? 'text-gray-900' : 'text-gray-600 hover:text-gray-900'
+                  currentPage === 'contactus' ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
                 } transition-colors`}
               >
                 Contact
                 {currentPage === 'contactus' && (
-                  <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gray-900"></div>
+                  <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-accent-color"></div>
                 )}
               </button>
               {/* Always visible admin link */}
                 <button 
                   onClick={onAdminClick}
                   className={`font-medium relative ${
-                  currentPage === 'admin' || currentPage === 'adminlogin' ? 'text-gray-900' : 'text-gray-600 hover:text-gray-900'
+                  currentPage === 'admin' || currentPage === 'adminlogin' ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
                   } transition-colors`}
                 >
                   Admin
                 {(currentPage === 'admin' || currentPage === 'adminlogin') && (
-                    <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gray-900"></div>
+                    <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-accent-color"></div>
                   )}
                 </button>
             </div>
@@ -101,7 +101,7 @@ const Navbar = ({ onSignInClick, onAboutUsClick, onContactUsClick, onHomeClick, 
                 onClick={userEmail ? onAccountsClick : onSignInClick}
                 className={`font-semibold px-6 py-3 rounded-xl transition-colors ${
                   userEmail 
-                    ? 'bg-gray-100 text-gray-900 hover:bg-gray-200' 
+                    ? 'bg-card-bg text-text-primary hover:bg-hover-bg border border-border-color' 
                     : 'bg-accent-color text-text-quaternary hover:bg-accent-color/90'
                 }`}
               >
@@ -111,10 +111,10 @@ const Navbar = ({ onSignInClick, onAboutUsClick, onContactUsClick, onHomeClick, 
 
             {/* Mobile Menu Button */}
             <button
-              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              className="lg:hidden p-2 rounded-lg hover:bg-hover-bg transition-colors"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
-              <svg className="w-6 h-6 text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {isMobileMenuOpen ? (
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 ) : (
@@ -126,7 +126,7 @@ const Navbar = ({ onSignInClick, onAboutUsClick, onContactUsClick, onHomeClick, 
 
           {/* Mobile Menu */}
           {isMobileMenuOpen && (
-            <div className="lg:hidden py-4 border-t border-gray-200 bg-white">
+            <div className="lg:hidden py-4 border-t border-border-color bg-bg-primary">
               <div className="flex flex-col space-y-4">
                 <button 
                   onClick={() => {
@@ -134,7 +134,7 @@ const Navbar = ({ onSignInClick, onAboutUsClick, onContactUsClick, onHomeClick, 
                     setIsMobileMenuOpen(false);
                   }}
                   className={`text-left font-semibold ${
-                    currentPage === 'home' ? 'text-gray-900' : 'text-gray-600'
+                    currentPage === 'home' ? 'text-text-primary' : 'text-text-secondary'
                   }`}
                 >
                   Home
@@ -145,7 +145,7 @@ const Navbar = ({ onSignInClick, onAboutUsClick, onContactUsClick, onHomeClick, 
                     setIsMobileMenuOpen(false);
                   }}
                   className={`text-left font-medium ${
-                    currentPage === 'aboutus' ? 'text-gray-900' : 'text-gray-600'
+                    currentPage === 'aboutus' ? 'text-text-primary' : 'text-text-secondary'
                   }`}
                 >
                   About Us
@@ -156,7 +156,7 @@ const Navbar = ({ onSignInClick, onAboutUsClick, onContactUsClick, onHomeClick, 
                     setIsMobileMenuOpen(false);
                   }}
                   className={`text-left font-medium ${
-                    currentPage === 'contactus' ? 'text-gray-900' : 'text-gray-600'
+                    currentPage === 'contactus' ? 'text-text-primary' : 'text-text-secondary'
                   }`}
                 >
                   Contact
@@ -168,7 +168,7 @@ const Navbar = ({ onSignInClick, onAboutUsClick, onContactUsClick, onHomeClick, 
                       setIsMobileMenuOpen(false);
                     }}
                     className={`text-left font-medium ${
-                    currentPage === 'admin' || currentPage === 'adminlogin' ? 'text-gray-900' : 'text-gray-600'
+                    currentPage === 'admin' || currentPage === 'adminlogin' ? 'text-text-primary' : 'text-text-secondary'
                     }`}
                   >
                     Admin
@@ -184,8 +184,8 @@ const Navbar = ({ onSignInClick, onAboutUsClick, onContactUsClick, onHomeClick, 
                   }}
                   className={`font-semibold px-6 py-3 rounded-xl transition-colors w-full mt-4 ${
                     userEmail 
-                      ? 'bg-gray-100 text-gray-900 hover:bg-gray-200' 
-                      : 'bg-gray-900 text-white hover:bg-gray-800'
+                      ? 'bg-card-bg text-text-primary hover:bg-hover-bg border border-border-color' 
+                      : 'bg-accent-color text-text-quaternary hover:bg-accent-color/90'
                   }`}
                 >
                   {userEmail ? 'Accounts' : 'Sign In'}

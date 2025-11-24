@@ -58,7 +58,7 @@ const ContactUs = ({ onSignUpClick }) => {
       icon: phoneCallGif,
       isGif: true,
       title: "Call Us",
-      details: "+91 8446519926",
+      details: "",
       description: "Mon-Fri from 8am to 5pm"
     },
     {
