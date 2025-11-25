@@ -1,15 +1,9 @@
 import React, { useState } from 'react';
-import { 
-  FaMobile, 
-  FaGoogle, 
-  FaCreditCard, 
-  FaUniversity, 
-  FaPhone,
-  FaWallet,
-  FaMoneyBillWave,
-  FaCoins
-} from 'react-icons/fa';
 import QRCode from '../assets/QR2.jpg';
+import PhonepeLogo from '../assets/Phonepe.png';
+import GpayLogo from '../assets/Gpay.png';
+import PytmLogo from '../assets/Pytm.png';
+import BpayLogo from '../assets/bpay.png';
 
 const DepositModal = ({ isOpen, onClose, accountType, onDepositRequest }) => {
   const [amount, setAmount] = useState('');
@@ -21,28 +15,28 @@ const DepositModal = ({ isOpen, onClose, accountType, onDepositRequest }) => {
     { 
       id: 'phonepe', 
       name: 'PhonePe', 
-      icon: FaPhone, 
+      logo: PhonepeLogo, 
       color: 'from-purple-500 to-purple-600',
       bgColor: 'bg-purple-500'
     },
     { 
       id: 'gpay', 
       name: 'Google Pay', 
-      icon: FaGoogle, 
+      logo: GpayLogo, 
       color: 'from-blue-500 to-blue-600',
       bgColor: 'bg-blue-500'
     },
     { 
       id: 'paytm', 
       name: 'Paytm', 
-      icon: FaWallet, 
+      logo: PytmLogo, 
       color: 'from-blue-600 to-indigo-600',
       bgColor: 'bg-blue-600'
     },
     { 
       id: 'bharatpe', 
       name: 'BharatPe', 
-      icon: FaUniversity, 
+      logo: BpayLogo, 
       color: 'from-green-500 to-green-600',
       bgColor: 'bg-green-500'
     }
@@ -150,15 +144,18 @@ const DepositModal = ({ isOpen, onClose, accountType, onDepositRequest }) => {
             
             <div className="grid grid-cols-2 gap-3 mb-6">
               {upiApps.map((app) => {
-                const IconComponent = app.icon;
                 return (
                   <button
                     key={app.id}
                     onClick={() => handleUPISelection(app.id)}
                     className={`bg-gradient-to-r ${app.color} hover:scale-105 text-white font-semibold py-4 px-4 rounded-lg transition-all duration-300 shadow-lg flex flex-col items-center gap-2 hover:shadow-xl`}
                   >
-                    <div className="text-2xl">
-                      <IconComponent />
+                    <div className="w-12 h-12 flex items-center justify-center">
+                      <img 
+                        src={app.logo} 
+                        alt={app.name}
+                        className="w-full h-full object-contain"
+                      />
                     </div>
                     <div className="text-sm font-medium">{app.name}</div>
                   </button>
