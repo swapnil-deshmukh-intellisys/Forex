@@ -44,7 +44,7 @@ const ContactUs = ({ onSignUpClick }) => {
       icon: messageGif,
       isGif: true,
       title: "Email Us",
-      details: "abhangvishal12777@gmail.com",
+      details: "support@zerofx.club",
       description: "Send us an email anytime"
     },
     {

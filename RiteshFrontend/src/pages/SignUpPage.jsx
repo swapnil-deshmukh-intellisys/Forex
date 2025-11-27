@@ -738,8 +738,8 @@ const SignUpPage = ({ onSignUp, onBackToSignIn }) => {
           </p>
           <p className="text-text-secondary text-xs">
             Contact us at{' '}
-            <a href="mailto:abhangvishal12777@gmail.com" className="text-accent-color hover:text-accent-color/80">
-              abhangvishal12777@gmail.com
+            <a href="mailto:support@zerofx.club" className="text-accent-color hover:text-accent-color/80">
+              support@zerofx.club
             </a>{' '}
             if you encounter any problems. Version: v.1.13.0-828
           </p>
