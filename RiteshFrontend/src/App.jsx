@@ -12,6 +12,7 @@ import AdminPanel from './pages/AdminPanel';
 import UserListPage from './pages/UserListPage';
 import AdminLogin from './components/AdminLogin';
 import Footer from './components/Footer';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 import './App.css';
 
@@ -303,22 +304,24 @@ function App() {
   };
 
   return (
-    <div className="App">
-      {(currentPage === 'home' || currentPage === 'aboutus' || currentPage === 'contactus') &&
-        <Navbar
-          onSignInClick={handleSignInClick}
-          onAboutUsClick={handleAboutUsClick}
-          onContactUsClick={handleContactUsClick}
-          onHomeClick={handleHomeClick}
-          onAdminClick={handleAdminClick}
-          onAccountsClick={handleAccountsClick}
-          currentPage={currentPage}
-          userEmail={userEmail}
-          adminEmail={adminEmail}
-        />
-      }
-      {renderPage()}
-    </div>
+    <ThemeProvider>
+      <div className="App">
+        {(currentPage === 'home' || currentPage === 'aboutus' || currentPage === 'contactus') &&
+          <Navbar
+            onSignInClick={handleSignInClick}
+            onAboutUsClick={handleAboutUsClick}
+            onContactUsClick={handleContactUsClick}
+            onHomeClick={handleHomeClick}
+            onAdminClick={handleAdminClick}
+            onAccountsClick={handleAccountsClick}
+            currentPage={currentPage}
+            userEmail={userEmail}
+            adminEmail={adminEmail}
+          />
+        }
+        {renderPage()}
+      </div>
+    </ThemeProvider>
   );
 }
 

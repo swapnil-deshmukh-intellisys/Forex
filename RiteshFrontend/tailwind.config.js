@@ -8,20 +8,22 @@ export default {
   theme: {
   	extend: {
   		colors: {
-  			'bg-primary': '#0f172a',
-  			'bg-secondary': '#1e293b',
-  			'card-bg': '#1e1e2e',
-  			'text-primary': '#f8fafc',
-  			'text-secondary': '#cbd5e1',
-  			'text-tertiary': '#94a3b8',
-  			'text-quaternary': '#ffffff',
+  			// Theme colors using CSS variables (will change based on dark/light mode)
+  			'bg-primary': 'var(--bg-primary)',
+  			'bg-secondary': 'var(--bg-secondary)',
+  			'card-bg': 'var(--card-bg)',
+  			'text-primary': 'var(--text-primary)',
+  			'text-secondary': 'var(--text-secondary)',
+  			'text-tertiary': 'var(--text-tertiary)',
+  			'text-quaternary': 'var(--text-quaternary)',
+  			'border-color': 'var(--border-color)',
+  			'hover-bg': 'var(--hover-bg)',
+  			// Static colors (same in both themes)
   			'accent-color': '#14b8a6',
   			'accent-light': '#2dd4bf',
   			'primary-blue': '#7c3aed',
   			golden: '#facc15',
-  			'border-color': '#334155',
   			'shadow-color': 'rgba(124, 58, 237, 0.2)',
-  			'hover-bg': '#334155',
   			'chart-grid': '#475569',
 			'success-color': '#22c55e',
 			'danger-color': '#ef4444',

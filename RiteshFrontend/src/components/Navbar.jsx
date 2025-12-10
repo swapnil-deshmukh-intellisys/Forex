@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import TickerTape from '../widgets/TickerTape';
 import LogozPng from '../assets/Logoz.png';
+import { useTheme } from '../contexts/ThemeContext';
+import { FaMoon, FaSun } from 'react-icons/fa';
 
 const Navbar = ({ onSignInClick, onAboutUsClick, onContactUsClick, onHomeClick, onAdminClick, onAccountsClick, currentPage, userEmail, adminEmail }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -95,8 +98,22 @@ const Navbar = ({ onSignInClick, onAboutUsClick, onContactUsClick, onHomeClick, 
                 </button>
             </div>
 
-            {/* CTA Button - Shows Sign In when logged out, Accounts when logged in */}
-            <div className="hidden lg:block">
+            {/* Theme Toggle and CTA Button */}
+            <div className="hidden lg:flex items-center space-x-4">
+              {/* Theme Toggle Button */}
+              <button
+                onClick={toggleTheme}
+                className="p-2.5 rounded-lg hover:bg-hover-bg transition-colors text-text-primary"
+                aria-label="Toggle theme"
+              >
+                {theme === 'dark' ? (
+                  <FaSun className="w-5 h-5" />
+                ) : (
+                  <FaMoon className="w-5 h-5" />
+                )}
+              </button>
+              
+              {/* CTA Button - Shows Sign In when logged out, Accounts when logged in */}
               <button 
                 onClick={userEmail ? onAccountsClick : onSignInClick}
                 className={`font-semibold px-6 py-3 rounded-xl transition-colors ${
@@ -173,6 +190,27 @@ const Navbar = ({ onSignInClick, onAboutUsClick, onContactUsClick, onHomeClick, 
                   >
                     Admin
                   </button>
+                {/* Theme Toggle in Mobile Menu */}
+                <button
+                  onClick={() => {
+                    toggleTheme();
+                  }}
+                  className="flex items-center justify-center space-x-2 p-3 rounded-lg hover:bg-hover-bg transition-colors w-full mt-4 text-text-primary"
+                  aria-label="Toggle theme"
+                >
+                  {theme === 'dark' ? (
+                    <>
+                      <FaSun className="w-5 h-5" />
+                      <span>Light Mode</span>
+                    </>
+                  ) : (
+                    <>
+                      <FaMoon className="w-5 h-5" />
+                      <span>Dark Mode</span>
+                    </>
+                  )}
+                </button>
+                
                 <button 
                   onClick={() => {
                     if (userEmail) {
