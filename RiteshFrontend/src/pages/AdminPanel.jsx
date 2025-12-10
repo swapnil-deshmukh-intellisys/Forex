@@ -3,7 +3,7 @@ import Header from '../components/Header';
 import { adminAPI, depositAPI, withdrawalAPI, getUploadUrl, getApiBaseUrl } from '../services/api';
 import { validateAdminAccess, clearAdminSession } from '../utils/authUtils';
 
-const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick, onUserSelect = null }) => {
+const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick, onUserSelect = null, onReferralLinksClick = null }) => {
   // Consolidated data state
   const [data, setData] = useState({
     selectedAccountType: '',
@@ -969,6 +969,7 @@ const AdminPanel = ({ selectedUser, onBack, onSignOut, onProfileClick, onUserSel
           withdrawals: data.withdrawalRequests.filter(req => req.status === 'pending')
         }}
         onNotificationClick={handleNotificationClick}
+        onReferralLinksClick={onReferralLinksClick}
       />
       
       <main className="py-6">

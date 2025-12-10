@@ -1,9 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import MiniChartUsd from '../widgets/MiniChartUsd';
 import MiniChartGold from '../widgets/MiniChartGold';
 import Squares from '../backgrounds/Square.jsx';
 import PlayStoreSvg from '../assets/playStore.svg';
 import IosStoreSvg from '../assets/iosStore.svg';
+import { referralAPI } from '../services/api';
 import { 
   FaChartLine, 
   FaGlobe, 
@@ -18,6 +19,28 @@ import {
 const HomePage = ({ onSignUpClick }) => {
   const [currentPromoIndex, setCurrentPromoIndex] = useState(0);
   const carouselRef = useRef(null);
+  const [referralError, setReferralError] = useState('');
+
+  // Track visitor if referral code is present
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const refCode = urlParams.get('ref');
+    
+    if (refCode) {
+      // Validate and track visitor
+      referralAPI.validateReferralCode(refCode)
+        .then(() => {
+          // Valid code, track visitor
+          referralAPI.trackVisitor(refCode).catch(err => {
+            console.error('Error tracking visitor:', err);
+          });
+        })
+        .catch(() => {
+          // Invalid code, show error
+          setReferralError('Invalid referral code. Please check the link and try again.');
+        });
+    }
+  }, []);
 
   const features = [
     { icon: FaChartLine, title: "Ultra-Low Spreads", desc: "on XAU EUR" },
@@ -63,7 +86,20 @@ const HomePage = ({ onSignUpClick }) => {
 
   return (
     <div className="pt-32 bg-bg-primary min-h-screen overflow-hidden">
-        
+      {/* Referral Error Message */}
+      {referralError && (
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-danger-color text-text-quaternary px-6 py-3 rounded-lg shadow-lg max-w-md">
+          <div className="flex items-center justify-between">
+            <span>{referralError}</span>
+            <button
+              onClick={() => setReferralError('')}
+              className="ml-4 text-text-quaternary hover:text-white"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Animated background elements */}
       <div className="fixed top-0 left-0 w-full h-full -z-10 overflow-hidden pointer-events-none">

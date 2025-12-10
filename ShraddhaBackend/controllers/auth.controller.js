@@ -4,6 +4,7 @@ import Account from "../models/Account.js";
 import AdminData from "../models/AdminData.js";
 import Profile from "../models/Profile.js";
 import OTP from "../models/OTP.js";
+import ReferralLink from "../models/ReferralLink.js";
 // Using mock email service for production testing
 // For production with real emails, use: import { sendOTPEmail, sendPasswordResetSuccessEmail } from "../services/emailService.js";
 import { sendOTPEmail, sendPasswordResetSuccessEmail } from "../services/mockEmailService.js";
@@ -31,7 +32,8 @@ export const signup = async (req, res) => {
       postalCode,
       streetAddress,
       termsAccepted,
-      privacyAccepted
+      privacyAccepted,
+      referralCode
     } = req.body;
 
     if (!accountType || !email || !password || !repeatPassword || !fullName || !termsAccepted || !privacyAccepted) {
@@ -46,6 +48,22 @@ export const signup = async (req, res) => {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(409).json({ success: false, message: "User already exists" });
+    }
+
+    // Handle referral code if provided
+    let referralLinkId = null;
+    if (referralCode && referralCode.trim() !== "") {
+      const referralLink = await ReferralLink.findOne({
+        customId: referralCode.trim(),
+        isActive: true
+      });
+      
+      if (referralLink) {
+        referralLinkId = referralLink._id;
+        // Increment signup count
+        referralLink.signupCount += 1;
+        await referralLink.save();
+      }
     }
 
     // ✅ Save raw password — hashing is handled by schema
@@ -67,6 +85,7 @@ export const signup = async (req, res) => {
       streetAddress,
       termsAccepted,
       privacyAccepted,
+      referredBy: referralLinkId
     });
 
     // ✅ Automatically create account for the selected account type

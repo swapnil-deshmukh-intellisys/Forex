@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { authAPI } from '../services/api';
+import React, { useState, useEffect } from 'react';
+import { authAPI, referralAPI } from '../services/api';
 import LogozPng from '../assets/Logoz.png';
 
 const SignUpPage = ({ onSignUp, onBackToSignIn }) => {
@@ -7,6 +7,8 @@ const SignUpPage = ({ onSignUp, onBackToSignIn }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [currentStep, setCurrentStep] = useState(0);
+  const [referralCode, setReferralCode] = useState('');
+  const [referralError, setReferralError] = useState('');
   const [formData, setFormData] = useState({
     // Step 1: Account type
     accountType: 'Standard',
@@ -38,6 +40,28 @@ const SignUpPage = ({ onSignUp, onBackToSignIn }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
   const [errors, setErrors] = useState({});
+
+  // Check for referral code in URL and track visitor
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const refCode = urlParams.get('ref');
+    
+    if (refCode) {
+      setReferralCode(refCode);
+      // Validate and track visitor
+      referralAPI.validateReferralCode(refCode)
+        .then(() => {
+          // Valid code, track visitor
+          referralAPI.trackVisitor(refCode).catch(err => {
+            console.error('Error tracking visitor:', err);
+          });
+        })
+        .catch(() => {
+          // Invalid code, show error
+          setReferralError('Invalid referral code. Please check the link and try again.');
+        });
+    }
+  }, []);
 
 
   const steps = [
@@ -186,7 +210,12 @@ const SignUpPage = ({ onSignUp, onBackToSignIn }) => {
     setSuccessMessage("");
 
     try {
-      const data = await authAPI.signup(formData);
+      // Include referral code in signup data if present
+      const signupData = {
+        ...formData,
+        ...(referralCode && { referralCode })
+      };
+      const data = await authAPI.signup(signupData);
       setSuccessMessage("🎉 Registered Successfully!");
       setTimeout(() => {
         onBackToSignIn();
@@ -665,6 +694,23 @@ const SignUpPage = ({ onSignUp, onBackToSignIn }) => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
                 {errorMessage}
+              </div>
+            )}
+
+            {referralError && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg flex items-center justify-between">
+                <div className="flex items-center">
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  {referralError}
+                </div>
+                <button
+                  onClick={() => setReferralError('')}
+                  className="ml-4 text-red-700 hover:text-red-900"
+                >
+                  ×
+                </button>
               </div>
             )}
 

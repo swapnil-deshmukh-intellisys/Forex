@@ -21,6 +21,11 @@ const userSchema = new mongoose.Schema(
     termsAccepted: { type: Boolean, required: true },
     privacyAccepted: { type: Boolean, required: true },
     verified: { type: Boolean, default: false },
+    referredBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "ReferralLink",
+      default: null
+    }
   },
   { timestamps: true }
 );

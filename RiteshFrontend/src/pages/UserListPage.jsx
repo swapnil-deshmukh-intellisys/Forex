@@ -3,7 +3,7 @@ import Header from '../components/Header';
 import { adminAPI, authAPI, depositAPI, withdrawalAPI } from '../services/api';
 import { validateAdminAccess, clearAdminSession } from '../utils/authUtils';
 
-const UserListPage = ({ onBack, onSignOut, onProfileClick, onUserSelect, onAdminLogin, adminEmail }) => {
+const UserListPage = ({ onBack, onSignOut, onProfileClick, onUserSelect, onAdminLogin, adminEmail, onReferralLinksClick = null }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -323,6 +323,7 @@ const UserListPage = ({ onBack, onSignOut, onProfileClick, onUserSelect, onAdmin
         onHomeClick={() => window.location.href = '/'}
         pendingRequests={pendingRequests}
         onNotificationClick={handleNotificationClick}
+        onReferralLinksClick={onReferralLinksClick}
       />
       
       <main className="py-6">

@@ -12,6 +12,7 @@ import AdminPanel from './pages/AdminPanel';
 import UserListPage from './pages/UserListPage';
 import AdminLogin from './components/AdminLogin';
 import Footer from './components/Footer';
+import ReferralLinksPage from './pages/ReferralLinksPage';
 import { ThemeProvider } from './contexts/ThemeContext';
 
 import './App.css';
@@ -267,6 +268,11 @@ function App() {
   const handleAdminBack = () => {
     setCurrentPage('home');
   };
+
+  const handleReferralLinksClick = () => {
+    setCurrentPage('referrallinks');
+  };
+
   const renderPage = () => {
     switch (currentPage) {
       case 'signin':
@@ -286,9 +292,11 @@ function App() {
       case 'adminlogin':
         return <AdminLogin onAdminLogin={handleAdminLogin} onBack={handleAdminBack} />;
       case 'userlist':
-        return <UserListPage onBack={handleAdminBack} onSignOut={handleAdminLogout} onProfileClick={handleProfileClick} onUserSelect={handleUserSelect} onAdminLogin={() => setCurrentPage('adminlogin')} adminEmail={adminEmail} />;
+        return <UserListPage onBack={handleAdminBack} onSignOut={handleAdminLogout} onProfileClick={handleProfileClick} onUserSelect={handleUserSelect} onAdminLogin={() => setCurrentPage('adminlogin')} adminEmail={adminEmail} onReferralLinksClick={handleReferralLinksClick} />;
       case 'admin':
-        return <AdminPanel selectedUser={selectedUser} onBack={handleBackToUserList} onSignOut={handleAdminLogout} onProfileClick={handleProfileClick} onUserSelect={handleUserSelect} />;
+        return <AdminPanel selectedUser={selectedUser} onBack={handleBackToUserList} onSignOut={handleAdminLogout} onProfileClick={handleProfileClick} onUserSelect={handleUserSelect} onReferralLinksClick={handleReferralLinksClick} />;
+      case 'referrallinks':
+        return <ReferralLinksPage onBack={handleAdminBack} onSignOut={handleAdminLogout} onProfileClick={handleProfileClick} onReferralLinksClick={handleReferralLinksClick} />;
 
       default:
         return (

@@ -362,6 +362,94 @@ export const profileAPI = {
   },
 };
 
+// =============== REFERRAL API ===============
+export const referralAPI = {
+  // Create referral link
+  createReferralLink: async (customId) => {
+    return adminApiRequest('/referrals', {
+      method: 'POST',
+      body: JSON.stringify({ customId }),
+    });
+  },
+
+  // Get all referral links
+  getAllReferralLinks: async () => {
+    return adminApiRequest('/referrals');
+  },
+
+  // Get referral link by ID (with user details)
+  getReferralLinkById: async (id) => {
+    return adminApiRequest(`/referrals/${id}`);
+  },
+
+  // Update referral link
+  updateReferralLink: async (id, customId) => {
+    return adminApiRequest(`/referrals/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ customId }),
+    });
+  },
+
+  // Delete referral link
+  deleteReferralLink: async (id) => {
+    return adminApiRequest(`/referrals/${id}`, {
+      method: 'DELETE',
+    });
+  },
+
+  // Toggle referral link status
+  toggleReferralLinkStatus: async (id) => {
+    return adminApiRequest(`/referrals/${id}/toggle`, {
+      method: 'PATCH',
+    });
+  },
+
+  // Track visitor (public)
+  trackVisitor: async (customId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/referrals/track-visitor`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ customId }),
+      });
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to track visitor');
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Track Visitor Error:', error);
+      throw error;
+    }
+  },
+
+  // Validate referral code (public)
+  validateReferralCode: async (customId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/referrals/validate/${customId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Invalid referral code');
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Validate Referral Code Error:', error);
+      throw error;
+    }
+  },
+};
+
 // Helper function to get upload URL
 export const getUploadUrl = (filename) => {
   if (!filename) return null;
@@ -379,6 +467,7 @@ export default {
   withdrawalAPI,
   adminAPI,
   profileAPI,
+  referralAPI,
   getUploadUrl,
   getApiBaseUrl,
 };
