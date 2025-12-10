@@ -1,9 +1,11 @@
 // TradingViewWidget.jsx
 import React, { useEffect, useRef, memo } from 'react';
+import { useTheme } from '../contexts/ThemeContext';
 
 function Usd() {
   const container = useRef();
   const scriptRef = useRef(null);
+  const { theme } = useTheme();
 
   useEffect(() => {
     if (!container.current) return;
@@ -26,7 +28,7 @@ function Usd() {
           "chartOnly": false,
           "dateRange": "12M",
           "noTimeScale": false,
-          "colorTheme": "dark",
+          "colorTheme": theme === 'dark' ? 'dark' : 'light',
       "isTransparent": true,
           "locale": "en",
           "width": "100%",
@@ -57,7 +59,7 @@ function Usd() {
       }
       scriptRef.current = null;
     };
-  }, []);
+  }, [theme]);
 
   return (
     <div className="tradingview-widget-container" ref={container} style={{ height: '300px' }}>
