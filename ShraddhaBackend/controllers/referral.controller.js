@@ -23,7 +23,7 @@ export const createReferralLink = async (req, res) => {
     }
 
     // Generate the full referral link
-    const baseUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+    const baseUrl = process.env.FRONTEND_URL || "https://www.zerofx.club";
     const link = `${baseUrl}/?ref=${customId.trim()}`;
 
     const referralLink = await ReferralLink.create({
@@ -128,7 +128,7 @@ export const updateReferralLink = async (req, res) => {
     }
 
     // Update customId and regenerate link
-    const baseUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+    const baseUrl = process.env.FRONTEND_URL || "https://www.zerofx.club";
     referralLink.customId = customId.trim();
     referralLink.link = `${baseUrl}/?ref=${customId.trim()}`;
     await referralLink.save();
