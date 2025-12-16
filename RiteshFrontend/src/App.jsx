@@ -15,6 +15,10 @@ import Footer from './components/Footer';
 import ReferralLinksPage from './pages/ReferralLinksPage';
 import TradingHistoryPage from './pages/TradingHistoryPage';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import TradingJournalPage from './pages/TradingJournalPage';
+import RiskManagementPage from './pages/RiskManagementPage';
+import SocialTradingPage from './pages/SocialTradingPage';
+import EducationPage from './pages/EducationPage';
 import { ThemeProvider } from './contexts/ThemeContext';
 
 import './App.css';
@@ -293,6 +297,42 @@ function App() {
     setCurrentPage('account');
   };
 
+  const handleJournalClick = () => {
+    setPreviousPage('account');
+    setCurrentPage('journal');
+  };
+
+  const handleJournalBack = () => {
+    setCurrentPage('account');
+  };
+
+  const handleRiskManagementClick = () => {
+    setPreviousPage('account');
+    setCurrentPage('riskManagement');
+  };
+
+  const handleRiskManagementBack = () => {
+    setCurrentPage('account');
+  };
+
+  const handleSocialTradingClick = () => {
+    setPreviousPage('account');
+    setCurrentPage('socialTrading');
+  };
+
+  const handleSocialTradingBack = () => {
+    setCurrentPage('account');
+  };
+
+  const handleEducationClick = () => {
+    setPreviousPage('account');
+    setCurrentPage('education');
+  };
+
+  const handleEducationBack = () => {
+    setCurrentPage('account');
+  };
+
   const renderPage = () => {
     switch (currentPage) {
       case 'signin':
@@ -300,7 +340,19 @@ function App() {
       case 'signup':
         return <SignUpPage onSignUp={handleSignIn} onBackToSignIn={handleSignInClick} />;
       case 'account':
-        return <AccountPage userEmail={userEmail} onSignOut={handleSignOut} onProfileClick={handleProfileClick} onBack={handleAccountBackClick} onShowAccountDetails={handleShowAccountDetails} onTradingHistoryClick={handleTradingHistoryClick} onAnalyticsClick={handleAnalyticsClick} />;
+        return <AccountPage 
+          userEmail={userEmail} 
+          onSignOut={handleSignOut} 
+          onProfileClick={handleProfileClick} 
+          onBack={handleAccountBackClick} 
+          onShowAccountDetails={handleShowAccountDetails} 
+          onTradingHistoryClick={handleTradingHistoryClick} 
+          onAnalyticsClick={handleAnalyticsClick}
+          onJournalClick={handleJournalClick}
+          onRiskManagementClick={handleRiskManagementClick}
+          onSocialTradingClick={handleSocialTradingClick}
+          onEducationClick={handleEducationClick}
+        />;
       case 'accountDetails':
         return <AccountDetailsPage account={selectedAccount} onBack={handleAccountDetailsBack} onSignOut={handleSignOut} onProfileClick={handleProfileClick} />;
       case 'profile':
@@ -321,6 +373,14 @@ function App() {
         return <TradingHistoryPage userEmail={userEmail} onBack={handleTradingHistoryBack} onSignOut={handleSignOut} onProfileClick={handleProfileClick} />;
       case 'analytics':
         return <AnalyticsDashboard userEmail={userEmail} onBack={handleAnalyticsBack} onSignOut={handleSignOut} onProfileClick={handleProfileClick} />;
+      case 'journal':
+        return <TradingJournalPage userEmail={userEmail} onBack={handleJournalBack} onSignOut={handleSignOut} onProfileClick={handleProfileClick} />;
+      case 'riskManagement':
+        return <RiskManagementPage userEmail={userEmail} onBack={handleRiskManagementBack} onSignOut={handleSignOut} onProfileClick={handleProfileClick} />;
+      case 'socialTrading':
+        return <SocialTradingPage userEmail={userEmail} onBack={handleSocialTradingBack} onSignOut={handleSignOut} onProfileClick={handleProfileClick} />;
+      case 'education':
+        return <EducationPage userEmail={userEmail} onBack={handleEducationBack} onSignOut={handleSignOut} onProfileClick={handleProfileClick} />;
 
       default:
         return (

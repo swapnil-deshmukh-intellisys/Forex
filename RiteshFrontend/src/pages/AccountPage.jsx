@@ -4,7 +4,7 @@ import DepositModal from '../components/DepositModal';
 import WithdrawalModal from '../components/WithdrawalModal';
 import { accountAPI, adminAPI, depositAPI, withdrawalAPI } from '../services/api';
 
-const AccountPage = ({ userEmail, onSignOut, onProfileClick, onBack, onShowAccountDetails, onTradingHistoryClick, onAnalyticsClick }) => {
+const AccountPage = ({ userEmail, onSignOut, onProfileClick, onBack, onShowAccountDetails, onTradingHistoryClick, onAnalyticsClick, onJournalClick, onRiskManagementClick, onSocialTradingClick, onEducationClick }) => {
   // Check authentication
   const token = sessionStorage.getItem('token');
   const user = JSON.parse(sessionStorage.getItem('user') || '{}');
@@ -529,7 +529,7 @@ const AccountPage = ({ userEmail, onSignOut, onProfileClick, onBack, onShowAccou
                 </h1>
               </div>
 
-              {/* Quick Access Navigation */}
+              {/* Quick Access Navigation - Hidden but code preserved
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 {onTradingHistoryClick && (
                   <button
@@ -577,7 +577,72 @@ const AccountPage = ({ userEmail, onSignOut, onProfileClick, onBack, onShowAccou
                     <div className="text-xs text-text-secondary">Create new account</div>
                   </div>
                 </button>
+                {onJournalClick && (
+                  <button
+                    onClick={onJournalClick}
+                    className="bg-card-bg border border-border-color rounded-xl p-4 hover:border-accent-color transition-all hover:scale-105 flex items-center space-x-3 group"
+                  >
+                    <div className="bg-purple-500/10 p-3 rounded-lg group-hover:bg-purple-500/20 transition-colors">
+                      <svg className="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    </div>
+                    <div className="text-left">
+                      <div className="font-semibold text-text-primary">Trading Journal</div>
+                      <div className="text-xs text-text-secondary">Track your trades</div>
+                    </div>
+                  </button>
+                )}
+                {onRiskManagementClick && (
+                  <button
+                    onClick={onRiskManagementClick}
+                    className="bg-card-bg border border-border-color rounded-xl p-4 hover:border-accent-color transition-all hover:scale-105 flex items-center space-x-3 group"
+                  >
+                    <div className="bg-red-500/10 p-3 rounded-lg group-hover:bg-red-500/20 transition-colors">
+                      <svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                    </div>
+                    <div className="text-left">
+                      <div className="font-semibold text-text-primary">Risk Management</div>
+                      <div className="text-xs text-text-secondary">Manage your risk</div>
+                    </div>
+                  </button>
+                )}
+                {onSocialTradingClick && (
+                  <button
+                    onClick={onSocialTradingClick}
+                    className="bg-card-bg border border-border-color rounded-xl p-4 hover:border-accent-color transition-all hover:scale-105 flex items-center space-x-3 group"
+                  >
+                    <div className="bg-blue-500/10 p-3 rounded-lg group-hover:bg-blue-500/20 transition-colors">
+                      <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                    </div>
+                    <div className="text-left">
+                      <div className="font-semibold text-text-primary">Social Trading</div>
+                      <div className="text-xs text-text-secondary">Copy top traders</div>
+                    </div>
+                  </button>
+                )}
+                {onEducationClick && (
+                  <button
+                    onClick={onEducationClick}
+                    className="bg-card-bg border border-border-color rounded-xl p-4 hover:border-accent-color transition-all hover:scale-105 flex items-center space-x-3 group"
+                  >
+                    <div className="bg-green-500/10 p-3 rounded-lg group-hover:bg-green-500/20 transition-colors">
+                      <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                      </svg>
+                    </div>
+                    <div className="text-left">
+                      <div className="font-semibold text-text-primary">Education</div>
+                      <div className="text-xs text-text-secondary">Learn & improve</div>
+                    </div>
+                  </button>
+                )}
               </div>
+              */}
 
               {/* Tabs */}
               <div className="flex justify-center mb-6 sm:mb-8">

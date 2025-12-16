@@ -13,6 +13,12 @@ import withdrawalRoutes from "./routes/withdrawal.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import referralRoutes from "./routes/referral.routes.js";
 import analyticsRoutes from "./routes/analytics.routes.js";
+import journalRoutes from "./routes/journal.routes.js";
+import watchlistRoutes from "./routes/watchlist.routes.js";
+import riskManagementRoutes from "./routes/riskManagement.routes.js";
+import socialTradingRoutes from "./routes/socialTrading.routes.js";
+import educationRoutes from "./routes/education.routes.js";
+import technicalAnalysisRoutes from "./routes/technicalAnalysis.routes.js";
 
 // Error handling middleware
 import { notFound, errorHandler } from "./middleware/errorHandler.js";
@@ -82,6 +88,12 @@ app.use("/api/withdrawals", withdrawalRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/referrals", referralRoutes);
 app.use("/api/analytics", analyticsRoutes);
+app.use("/api/journal", journalRoutes);
+app.use("/api/watchlist", watchlistRoutes);
+app.use("/api/risk", riskManagementRoutes);
+app.use("/api/social", socialTradingRoutes);
+app.use("/api/education", educationRoutes);
+app.use("/api/technical", technicalAnalysisRoutes);
 
 // Serve static uploads
 app.use("/uploads", express.static("uploads"));
