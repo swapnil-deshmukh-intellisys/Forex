@@ -12,7 +12,9 @@ const Header = ({
   onAccountsClick,
   pendingRequests = { deposits: [], withdrawals: [] },
   onNotificationClick = null,
-  onReferralLinksClick = null
+  onReferralLinksClick = null,
+  onTradingHistoryClick = null,
+  onAnalyticsClick = null
 }) => {
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
   const [isHamburgerMenuOpen, setIsHamburgerMenuOpen] = useState(false);
@@ -336,6 +338,30 @@ const Header = ({
                 >
                   Accounts
                 </button>
+                {onTradingHistoryClick && (
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onTradingHistoryClick();
+                      setIsHamburgerMenuOpen(false);
+                    }}
+                    className="w-full text-left px-6 py-3 text-text-primary hover:bg-hover-bg transition-all duration-300 hover:scale-105 rounded-xl"
+                  >
+                    Trading History
+                  </button>
+                )}
+                {onAnalyticsClick && (
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onAnalyticsClick();
+                      setIsHamburgerMenuOpen(false);
+                    }}
+                    className="w-full text-left px-6 py-3 text-text-primary hover:bg-hover-bg transition-all duration-300 hover:scale-105 rounded-xl"
+                  >
+                    Analytics
+                  </button>
+                )}
               </>
             )}
             

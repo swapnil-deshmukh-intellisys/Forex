@@ -4,7 +4,7 @@ import DepositModal from '../components/DepositModal';
 import WithdrawalModal from '../components/WithdrawalModal';
 import { accountAPI, adminAPI, depositAPI, withdrawalAPI } from '../services/api';
 
-const AccountPage = ({ userEmail, onSignOut, onProfileClick, onBack, onShowAccountDetails }) => {
+const AccountPage = ({ userEmail, onSignOut, onProfileClick, onBack, onShowAccountDetails, onTradingHistoryClick, onAnalyticsClick }) => {
   // Check authentication
   const token = sessionStorage.getItem('token');
   const user = JSON.parse(sessionStorage.getItem('user') || '{}');
@@ -510,6 +510,8 @@ const AccountPage = ({ userEmail, onSignOut, onProfileClick, onBack, onShowAccou
         isAdmin={false}
         onHomeClick={() => window.location.href = '/'}
         onAccountsClick={onBack}
+        onTradingHistoryClick={onTradingHistoryClick}
+        onAnalyticsClick={onAnalyticsClick}
       />
 
       {/* Main Content */}
@@ -525,6 +527,56 @@ const AccountPage = ({ userEmail, onSignOut, onProfileClick, onBack, onShowAccou
                 <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-text-primary via-text-secondary to-accent-color bg-clip-text text-transparent mb-3">
                   Accounts
                 </h1>
+              </div>
+
+              {/* Quick Access Navigation */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                {onTradingHistoryClick && (
+                  <button
+                    onClick={onTradingHistoryClick}
+                    className="bg-card-bg border border-border-color rounded-xl p-4 hover:border-accent-color transition-all hover:scale-105 flex items-center space-x-3 group"
+                  >
+                    <div className="bg-accent-color/10 p-3 rounded-lg group-hover:bg-accent-color/20 transition-colors">
+                      <svg className="w-6 h-6 text-accent-color" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div className="text-left">
+                      <div className="font-semibold text-text-primary">Trading History</div>
+                      <div className="text-xs text-text-secondary">View all transactions</div>
+                    </div>
+                  </button>
+                )}
+                {onAnalyticsClick && (
+                  <button
+                    onClick={onAnalyticsClick}
+                    className="bg-card-bg border border-border-color rounded-xl p-4 hover:border-accent-color transition-all hover:scale-105 flex items-center space-x-3 group"
+                  >
+                    <div className="bg-primary-blue/10 p-3 rounded-lg group-hover:bg-primary-blue/20 transition-colors">
+                      <svg className="w-6 h-6 text-primary-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                    </div>
+                    <div className="text-left">
+                      <div className="font-semibold text-text-primary">Analytics</div>
+                      <div className="text-xs text-text-secondary">Performance dashboard</div>
+                    </div>
+                  </button>
+                )}
+                <button
+                  onClick={handleAddAccount}
+                  className="bg-card-bg border border-border-color rounded-xl p-4 hover:border-accent-color transition-all hover:scale-105 flex items-center space-x-3 group"
+                >
+                  <div className="bg-success-color/10 p-3 rounded-lg group-hover:bg-success-color/20 transition-colors">
+                    <svg className="w-6 h-6 text-success-color" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                  </div>
+                  <div className="text-left">
+                    <div className="font-semibold text-text-primary">Add Account</div>
+                    <div className="text-xs text-text-secondary">Create new account</div>
+                  </div>
+                </button>
               </div>
 
               {/* Tabs */}
