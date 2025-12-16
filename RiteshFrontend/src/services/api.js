@@ -469,6 +469,280 @@ export const analyticsAPI = {
   },
 };
 
+// =============== JOURNAL API ===============
+export const journalAPI = {
+  // Get journal entries
+  getEntries: async (filters = {}) => {
+    const queryParams = new URLSearchParams(filters).toString();
+    return apiRequest(`/journal?${queryParams}`);
+  },
+
+  // Get single entry
+  getEntry: async (id) => {
+    return apiRequest(`/journal/${id}`);
+  },
+
+  // Create entry
+  createEntry: async (entryData) => {
+    return apiRequest('/journal', {
+      method: 'POST',
+      body: JSON.stringify(entryData),
+    });
+  },
+
+  // Update entry
+  updateEntry: async (id, entryData) => {
+    return apiRequest(`/journal/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(entryData),
+    });
+  },
+
+  // Delete entry
+  deleteEntry: async (id) => {
+    return apiRequest(`/journal/${id}`, {
+      method: 'DELETE',
+    });
+  },
+
+  // Get journal stats
+  getStats: async (filters = {}) => {
+    const queryParams = new URLSearchParams(filters).toString();
+    return apiRequest(`/journal/stats/summary?${queryParams}`);
+  },
+};
+
+// =============== WATCHLIST API ===============
+export const watchlistAPI = {
+  // Get watchlist
+  getWatchlist: async () => {
+    return apiRequest('/watchlist');
+  },
+
+  // Add instrument
+  addInstrument: async (instrumentData) => {
+    return apiRequest('/watchlist/instruments', {
+      method: 'POST',
+      body: JSON.stringify(instrumentData),
+    });
+  },
+
+  // Remove instrument
+  removeInstrument: async (symbol) => {
+    return apiRequest(`/watchlist/instruments/${symbol}`, {
+      method: 'DELETE',
+    });
+  },
+
+  // Update instrument
+  updateInstrument: async (symbol, data) => {
+    return apiRequest(`/watchlist/instruments/${symbol}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+
+  // Add price alert
+  addPriceAlert: async (symbol, alertData) => {
+    return apiRequest(`/watchlist/instruments/${symbol}/alerts`, {
+      method: 'POST',
+      body: JSON.stringify(alertData),
+    });
+  },
+
+  // Remove price alert
+  removePriceAlert: async (symbol, alertId) => {
+    return apiRequest(`/watchlist/instruments/${symbol}/alerts/${alertId}`, {
+      method: 'DELETE',
+    });
+  },
+};
+
+// =============== RISK MANAGEMENT API ===============
+export const riskManagementAPI = {
+  // Calculate position size
+  calculatePositionSize: async (data) => {
+    return apiRequest('/risk/position-size', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  // Calculate margin
+  calculateMargin: async (data) => {
+    return apiRequest('/risk/margin', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  // Calculate risk/reward
+  calculateRiskReward: async (data) => {
+    return apiRequest('/risk/risk-reward', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  // Get account exposure
+  getAccountExposure: async (accountId = null) => {
+    const query = accountId ? `?accountId=${accountId}` : '';
+    return apiRequest(`/risk/exposure${query}`);
+  },
+
+  // Get risk metrics
+  getRiskMetrics: async (timeRange = '30') => {
+    return apiRequest(`/risk/metrics?timeRange=${timeRange}`);
+  },
+
+  // Get risk analysis
+  getRiskAnalysis: async (accountId = null, timeRange = '30') => {
+    const params = new URLSearchParams({ timeRange });
+    if (accountId) params.append('accountId', accountId);
+    return apiRequest(`/risk/analysis?${params}`);
+  },
+};
+
+// =============== SOCIAL TRADING API ===============
+export const socialTradingAPI = {
+  // Get leaderboard
+  getLeaderboard: async (filters = {}) => {
+    const queryParams = new URLSearchParams(filters).toString();
+    return apiRequest(`/social/leaderboard?${queryParams}`);
+  },
+
+  // Get trader profile
+  getTraderProfile: async (traderId) => {
+    return apiRequest(`/social/trader/${traderId}`);
+  },
+
+  // Create or update trader profile
+  createOrUpdateProfile: async (profileData) => {
+    return apiRequest('/social/trader/profile', {
+      method: 'POST',
+      body: JSON.stringify(profileData),
+    });
+  },
+
+  // Update trader stats
+  updateTraderStats: async () => {
+    return apiRequest('/social/trader/stats', {
+      method: 'PUT',
+    });
+  },
+
+  // Start copy trading
+  startCopyTrading: async (data) => {
+    return apiRequest('/social/copy-trade', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  // Stop copy trading
+  stopCopyTrading: async (copyTradeId) => {
+    return apiRequest(`/social/copy-trade/${copyTradeId}`, {
+      method: 'PUT',
+    });
+  },
+
+  // Get copy trades
+  getCopyTrades: async (type = 'following') => {
+    return apiRequest(`/social/copy-trade?type=${type}`);
+  },
+
+  // Follow trader
+  followTrader: async (traderId) => {
+    return apiRequest(`/social/trader/${traderId}/follow`, {
+      method: 'POST',
+    });
+  },
+};
+
+// =============== EDUCATION API ===============
+export const educationAPI = {
+  // Get resources
+  getResources: async (filters = {}) => {
+    const queryParams = new URLSearchParams(filters).toString();
+    return apiRequest(`/education/resources?${queryParams}`);
+  },
+
+  // Get single resource
+  getResource: async (id) => {
+    return apiRequest(`/education/resources/${id}`);
+  },
+
+  // Get resource progress
+  getResourceProgress: async (id) => {
+    return apiRequest(`/education/resources/${id}/progress`);
+  },
+
+  // Update progress
+  updateProgress: async (id, progressData) => {
+    return apiRequest(`/education/resources/${id}/progress`, {
+      method: 'PUT',
+      body: JSON.stringify(progressData),
+    });
+  },
+
+  // Submit quiz answer
+  submitQuizAnswer: async (id, answerData) => {
+    return apiRequest(`/education/resources/${id}/quiz`, {
+      method: 'POST',
+      body: JSON.stringify(answerData),
+    });
+  },
+
+  // Get user progress
+  getUserProgress: async (filters = {}) => {
+    const queryParams = new URLSearchParams(filters).toString();
+    return apiRequest(`/education/progress?${queryParams}`);
+  },
+
+  // Rate resource
+  rateResource: async (id, rating) => {
+    return apiRequest(`/education/resources/${id}/rate`, {
+      method: 'POST',
+      body: JSON.stringify({ rating }),
+    });
+  },
+};
+
+// =============== TECHNICAL ANALYSIS API ===============
+export const technicalAnalysisAPI = {
+  // Calculate indicators
+  calculateIndicators: async (priceData, indicators = null) => {
+    return apiRequest('/technical/indicators', {
+      method: 'POST',
+      body: JSON.stringify({ priceData, indicators }),
+    });
+  },
+
+  // Get trading signals
+  getTradingSignals: async (priceData) => {
+    return apiRequest('/technical/signals', {
+      method: 'POST',
+      body: JSON.stringify({ priceData }),
+    });
+  },
+
+  // Calculate Fibonacci
+  calculateFibonacci: async (high, low) => {
+    return apiRequest('/technical/fibonacci', {
+      method: 'POST',
+      body: JSON.stringify({ high, low }),
+    });
+  },
+
+  // Get comprehensive analysis
+  getTechnicalAnalysis: async (priceData, symbol) => {
+    return apiRequest('/technical/analysis', {
+      method: 'POST',
+      body: JSON.stringify({ priceData, symbol }),
+    });
+  },
+};
+
 // Helper function to get upload URL
 export const getUploadUrl = (filename) => {
   if (!filename) return null;
@@ -488,6 +762,12 @@ export default {
   profileAPI,
   referralAPI,
   analyticsAPI,
+  journalAPI,
+  watchlistAPI,
+  riskManagementAPI,
+  socialTradingAPI,
+  educationAPI,
+  technicalAnalysisAPI,
   getUploadUrl,
   getApiBaseUrl,
 };
