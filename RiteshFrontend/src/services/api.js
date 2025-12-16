@@ -450,6 +450,25 @@ export const referralAPI = {
   },
 };
 
+// =============== ANALYTICS API ===============
+export const analyticsAPI = {
+  // Get user analytics
+  getUserAnalytics: async (timeRange = 'month') => {
+    return apiRequest(`/analytics/user?timeRange=${timeRange}`);
+  },
+
+  // Get trading history
+  getTradingHistory: async (filters = {}) => {
+    const queryParams = new URLSearchParams(filters).toString();
+    return apiRequest(`/analytics/history?${queryParams}`);
+  },
+
+  // Get performance metrics
+  getPerformanceMetrics: async (timeRange = 'month') => {
+    return apiRequest(`/analytics/performance?timeRange=${timeRange}`);
+  },
+};
+
 // Helper function to get upload URL
 export const getUploadUrl = (filename) => {
   if (!filename) return null;
@@ -468,6 +487,7 @@ export default {
   adminAPI,
   profileAPI,
   referralAPI,
+  analyticsAPI,
   getUploadUrl,
   getApiBaseUrl,
 };

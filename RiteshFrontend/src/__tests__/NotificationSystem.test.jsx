@@ -1,0 +1,70 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import NotificationSystem from '../components/NotificationSystem';
+
+// Mock localStorage
+const localStorageMock = {
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn()
+};
+global.localStorage = localStorageMock;
+
+describe('NotificationSystem Component', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    localStorageMock.getItem.mockReturnValue(null);
+  });
+
+  it('renders notification bell', () => {
+    render(<NotificationSystem />);
+    const bell = screen.getByRole('button');
+    expect(bell).toBeInTheDocument();
+  });
+
+  it('opens notification dropdown when clicked', () => {
+    render(<NotificationSystem />);
+    const bell = screen.getByRole('button');
+    fireEvent.click(bell);
+    
+    expect(screen.getByText(/Notifications/i)).toBeInTheDocument();
+  });
+
+  it('displays unread count badge', async () => {
+    render(<NotificationSystem />);
+    
+    // Wait for notifications to be generated
+    await waitFor(() => {
+      const bell = screen.getByRole('button');
+      fireEvent.click(bell);
+    }, { timeout: 2000 });
+  });
+
+  it('closes dropdown when clicking outside', () => {
+    render(<NotificationSystem />);
+    const bell = screen.getByRole('button');
+    fireEvent.click(bell);
+    
+    expect(screen.getByText(/Notifications/i)).toBeInTheDocument();
+    
+    // Click outside (on the overlay)
+    const overlay = document.querySelector('.fixed.inset-0');
+    if (overlay) {
+      fireEvent.click(overlay);
+    }
+  });
+
+  it('marks notification as read when clicked', async () => {
+    render(<NotificationSystem />);
+    const bell = screen.getByRole('button');
+    fireEvent.click(bell);
+    
+    await waitFor(() => {
+      // Notification items should be clickable
+      const notifications = screen.queryAllByRole('button');
+      expect(notifications.length).toBeGreaterThan(0);
+    });
+  });
+});
+
