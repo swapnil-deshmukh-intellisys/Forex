@@ -1,0 +1,42 @@
+export default {
+  testEnvironment: 'node',
+  transform: {},
+  extensionsToTreatAsEsm: ['.js'],
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1',
+  },
+  moduleFileExtensions: ['js', 'json'],
+  testMatch: ['**/__tests__/**/*.test.js', '**/?(*.)+(spec|test).js'],
+  collectCoverageFrom: [
+    'controllers/**/*.js',
+    'routes/**/*.js',
+    'middleware/**/*.js',
+    'services/**/*.js',
+    'models/**/*.js',
+    '!**/node_modules/**',
+    '!**/coverage/**',
+    '!**/*.config.js',
+    '!**/tests/**',
+    '!server.js',
+  ],
+  coverageDirectory: 'coverage',
+  coverageReporters: ['text', 'lcov', 'html', 'json'],
+  coverageThreshold: {
+    global: {
+      branches: 60,
+      functions: 70,
+      lines: 70,
+      statements: 70,
+    },
+  },
+  testTimeout: 15000,
+  setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
+  maxWorkers: '50%',
+  testSequencer: '@jest/test-sequencer',
+  verbose: true,
+  forceExit: true,
+  clearMocks: true,
+  resetMocks: true,
+  restoreMocks: true,
+};
+

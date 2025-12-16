@@ -1,0 +1,130 @@
+name: Run Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  frontend-tests:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.13.1
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        working-directory: ./RiteshFrontend
+        run: pnpm install --frozen-lockfile
+      
+      - name: Run tests
+        working-directory: ./RiteshFrontend
+        run: pnpm test:coverage
+      
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./RiteshFrontend/coverage/coverage-final.json
+          flags: frontend
+          name: frontend-coverage
+          fail_ci_if_error: false
+      
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: frontend-test-results
+          path: ./RiteshFrontend/coverage
+
+  backend-tests:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand(\"ping\")'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10.13.1
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        working-directory: ./ShraddhaBackend
+        run: pnpm install --frozen-lockfile
+      
+      - name: Create test environment file
+        working-directory: ./ShraddhaBackend
+        run: |
+          echo "NODE_ENV=test" > .env.test
+          echo "TEST_DATABASE_URL=mongodb://localhost:27017/forex_test" >> .env.test
+          echo "JWT_SECRET=test_jwt_secret_key_for_ci" >> .env.test
+          echo "ALLOWED_ORIGINS=http://localhost:5173" >> .env.test
+      
+      - name: Run tests
+        working-directory: ./ShraddhaBackend
+        run: pnpm test
+        env:
+          NODE_ENV: test
+      
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./ShraddhaBackend/coverage/coverage-final.json
+          flags: backend
+          name: backend-coverage
+          fail_ci_if_error: false
+      
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: backend-test-results
+          path: ./ShraddhaBackend/coverage
+
+  test-summary:
+    name: Test Summary
+    runs-on: ubuntu-latest
+    needs: [frontend-tests, backend-tests]
+    if: always()
+    
+    steps:
+      - name: Check test results
+        run: |
+          echo "Frontend tests: ${{ needs.frontend-tests.result }}"
+          echo "Backend tests: ${{ needs.backend-tests.result }}"
+          if [ "${{ needs.frontend-tests.result }}" != "success" ] || [ "${{ needs.backend-tests.result }}" != "success" ]; then
+            echo "Some tests failed"
+            exit 1
+          fi
+
