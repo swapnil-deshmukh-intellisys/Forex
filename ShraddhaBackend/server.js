@@ -12,6 +12,7 @@ import depositRoutes from "./routes/deposit.routes.js";
 import withdrawalRoutes from "./routes/withdrawal.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import referralRoutes from "./routes/referral.routes.js";
+import analyticsRoutes from "./routes/analytics.routes.js";
 
 // Error handling middleware
 import { notFound, errorHandler } from "./middleware/errorHandler.js";
@@ -80,6 +81,7 @@ app.use("/api/deposits", depositRoutes);
 app.use("/api/withdrawals", withdrawalRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/referrals", referralRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 // Serve static uploads
 app.use("/uploads", express.static("uploads"));

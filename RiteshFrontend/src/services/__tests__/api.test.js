@@ -94,14 +94,14 @@ describe('API Service', () => {
   });
 
   describe('Account API', () => {
-    it('calls getAccounts endpoint correctly', async () => {
+    it('calls getUserAccounts endpoint correctly', async () => {
       sessionStorage.setItem('token', createMockToken());
       global.fetch.mockResolvedValueOnce({
         ok: true,
         json: async () => ({ success: true, accounts: [] }),
       });
 
-      await api.accountAPI.getAccounts();
+      await api.accountAPI.getUserAccounts();
 
       expect(global.fetch).toHaveBeenCalledWith(
         expect.stringContaining('/api/accounts'),

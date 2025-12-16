@@ -13,6 +13,8 @@ import UserListPage from './pages/UserListPage';
 import AdminLogin from './components/AdminLogin';
 import Footer from './components/Footer';
 import ReferralLinksPage from './pages/ReferralLinksPage';
+import TradingHistoryPage from './pages/TradingHistoryPage';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import { ThemeProvider } from './contexts/ThemeContext';
 
 import './App.css';
@@ -273,6 +275,24 @@ function App() {
     setCurrentPage('referrallinks');
   };
 
+  const handleTradingHistoryClick = () => {
+    setPreviousPage('account');
+    setCurrentPage('tradingHistory');
+  };
+
+  const handleAnalyticsClick = () => {
+    setPreviousPage('account');
+    setCurrentPage('analytics');
+  };
+
+  const handleTradingHistoryBack = () => {
+    setCurrentPage('account');
+  };
+
+  const handleAnalyticsBack = () => {
+    setCurrentPage('account');
+  };
+
   const renderPage = () => {
     switch (currentPage) {
       case 'signin':
@@ -280,7 +300,7 @@ function App() {
       case 'signup':
         return <SignUpPage onSignUp={handleSignIn} onBackToSignIn={handleSignInClick} />;
       case 'account':
-        return <AccountPage userEmail={userEmail} onSignOut={handleSignOut} onProfileClick={handleProfileClick} onBack={handleAccountBackClick} onShowAccountDetails={handleShowAccountDetails} />;
+        return <AccountPage userEmail={userEmail} onSignOut={handleSignOut} onProfileClick={handleProfileClick} onBack={handleAccountBackClick} onShowAccountDetails={handleShowAccountDetails} onTradingHistoryClick={handleTradingHistoryClick} onAnalyticsClick={handleAnalyticsClick} />;
       case 'accountDetails':
         return <AccountDetailsPage account={selectedAccount} onBack={handleAccountDetailsBack} onSignOut={handleSignOut} onProfileClick={handleProfileClick} />;
       case 'profile':
@@ -297,6 +317,10 @@ function App() {
         return <AdminPanel selectedUser={selectedUser} onBack={handleBackToUserList} onSignOut={handleAdminLogout} onProfileClick={handleProfileClick} onUserSelect={handleUserSelect} onReferralLinksClick={handleReferralLinksClick} />;
       case 'referrallinks':
         return <ReferralLinksPage onBack={handleAdminBack} onSignOut={handleAdminLogout} onProfileClick={handleProfileClick} onReferralLinksClick={handleReferralLinksClick} />;
+      case 'tradingHistory':
+        return <TradingHistoryPage userEmail={userEmail} onBack={handleTradingHistoryBack} onSignOut={handleSignOut} onProfileClick={handleProfileClick} />;
+      case 'analytics':
+        return <AnalyticsDashboard userEmail={userEmail} onBack={handleAnalyticsBack} onSignOut={handleSignOut} onProfileClick={handleProfileClick} />;
 
       default:
         return (
