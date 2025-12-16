@@ -90,18 +90,24 @@ app.use("/uploads", express.static("uploads"));
 app.use(notFound);
 app.use(errorHandler);
 
+// Export app for testing
+export { app };
+
 // ----------------------
 // Start Server After DB Connection
 // ----------------------
-const PORT = process.env.PORT || 5000;
+// Only start server if not in test environment
+if (process.env.NODE_ENV !== 'test') {
+  const PORT = process.env.PORT || 5000;
 
-connectDB()
-  .then(() => {
-    app.listen(PORT, () =>
-      console.log(`🚀 Server running in ${process.env.NODE_ENV} mode on port ${PORT}`)
-    );
-  })
-  .catch(err => {
-    console.error("❌ Failed to connect to MongoDB. Server not started.", err);
-    process.exit(1);
-  });
+  connectDB()
+    .then(() => {
+      app.listen(PORT, () =>
+        console.log(`🚀 Server running in ${process.env.NODE_ENV} mode on port ${PORT}`)
+      );
+    })
+    .catch(err => {
+      console.error("❌ Failed to connect to MongoDB. Server not started.", err);
+      process.exit(1);
+    });
+}

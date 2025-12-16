@@ -1,2 +1,11 @@
 node_modules/
 .env
+.env.test
+
+# Test coverage
+coverage/
+*.lcov
+.nyc_output
+
+# Test results
+test-results/
