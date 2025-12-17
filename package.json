@@ -3,10 +3,6 @@
   "version": "1.0.0",
   "description": "Forex trading platform with frontend and backend",
   "private": true,
-  "workspaces": [
-    "RiteshFrontend",
-    "ShraddhaBackend"
-  ],
   "scripts": {
     "test": "npm run test:frontend && npm run test:backend",
     "test:frontend": "cd RiteshFrontend && pnpm test --run",
