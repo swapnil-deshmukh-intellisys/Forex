@@ -25,6 +25,7 @@ jobs:
         with:
           node-version: '18'
           cache: 'pnpm'
+          cache-dependency-path: './RiteshFrontend/pnpm-lock.yaml'
       
       - name: Install dependencies
         working-directory: ./RiteshFrontend
@@ -78,6 +79,7 @@ jobs:
         with:
           node-version: '18'
           cache: 'pnpm'
+          cache-dependency-path: './ShraddhaBackend/pnpm-lock.yaml'
       
       - name: Install dependencies
         working-directory: ./ShraddhaBackend
