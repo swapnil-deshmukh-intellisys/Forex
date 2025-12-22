@@ -198,12 +198,8 @@ const Footer = ({ onAboutUsClick, onContactUsClick }) => {
       <div className="border-t border-white/20 bg-gradient-to-r from-teal-900/50 to-purple-900/50">
         <div className="container-custom py-4">
           <div className="text-center">
-            <p className="text-white/70 text-sm">
-              © 2025 Designed and developed by{' '}
-              <span className="text-accent-color font-semibold">
-                Intellisys IT Solutions Private Limited
-              </span>
-            </p>
+            <p className='text-sm'>© 2025 Zerofx.club. All rights reserved.</p>
+              <p className="mt-1 text-sm">Regulated by Financial Services Authority</p>
           </div>
         </div>
       </div>
