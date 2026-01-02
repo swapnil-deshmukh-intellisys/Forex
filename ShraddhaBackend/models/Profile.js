@@ -39,6 +39,13 @@ const ProfileSchema = new mongoose.Schema(
     panDocument: { type: String },
     aadharFront: { type: String },
     aadharBack: { type: String },
+
+    // Document Verification Status
+    verificationStatus: { 
+      type: String, 
+      enum: ['unverified', 'verified'], 
+      default: 'unverified' 
+    },
   },
   { timestamps: true } // Optional: createdAt, updatedAt
 );

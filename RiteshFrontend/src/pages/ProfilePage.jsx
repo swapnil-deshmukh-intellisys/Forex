@@ -48,6 +48,7 @@ const ProfilePage = ({ userEmail, onSignOut, onBack, onProfileClick }) => {
 
 const [loading, setLoading] = useState(false);
 const [profileLoaded, setProfileLoaded] = useState(false);
+const [verificationStatus, setVerificationStatus] = useState('unverified');
 const fetchingProfile = useRef(false);
 
   // Arrays for dropdowns (matching SignUpPage)
@@ -203,24 +204,27 @@ const fetchingProfile = useRef(false);
           const fileData = {
             profilePicture: userData.profilePicture ? { 
               name: 'Profile Picture', 
-              url: userData.profilePicture.startsWith('data:') ? userData.profilePicture : getUploadUrl(userData.profilePicture) 
+              url: userData.profilePicture.startsWith('data:') ? userData.profilePicture : userData.profilePicture
             } : null,
-            panDocument: userData.idDocument ? { 
+            panDocument: userData.panDocument ? { 
               name: 'PAN Document', 
-              url: userData.idDocument.startsWith('data:') ? userData.idDocument : getUploadUrl(userData.idDocument) 
+              url: userData.panDocument.startsWith('data:') ? userData.panDocument : userData.panDocument
             } : null,
-            aadharFront: userData.addressProof ? { 
+            aadharFront: userData.aadharFront ? { 
               name: 'Aadhar Front', 
-              url: userData.addressProof.startsWith('data:') ? userData.addressProof : getUploadUrl(userData.addressProof) 
+              url: userData.aadharFront.startsWith('data:') ? userData.aadharFront : userData.aadharFront
             } : null,
             aadharBack: userData.aadharBack ? { 
               name: 'Aadhar Back', 
-              url: userData.aadharBack.startsWith('data:') ? userData.aadharBack : getUploadUrl(userData.aadharBack) 
+              url: userData.aadharBack.startsWith('data:') ? userData.aadharBack : userData.aadharBack
             } : null
           };
           
           
           setUploadedFiles(fileData);
+
+          // Set verification status
+          setVerificationStatus(userData.verificationStatus || 'unverified');
 
           setProfileLoaded(true);
         } else {
@@ -302,6 +306,14 @@ const fetchingProfile = useRef(false);
     const result = await profileAPI.saveProfile(profileData);
     
     alert("✅ Profile saved successfully!");
+    
+    // Refresh profile data to get updated verification status
+    await fetchUserProfile();
+    
+    // Update verification status based on uploaded documents
+    const hasAllDocuments = uploadedFiles.panDocument && uploadedFiles.aadharFront && uploadedFiles.aadharBack;
+    setVerificationStatus(hasAllDocuments ? 'verified' : 'unverified');
+    
   } catch (error) {
     console.error("Save Profile Error:", error);
     alert(error.message || "Something went wrong!");
@@ -311,8 +323,6 @@ const fetchingProfile = useRef(false);
 };
 
 
-
-  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-bg-primary via-bg-secondary to-bg-primary">
@@ -395,7 +405,23 @@ const fetchingProfile = useRef(false);
 
             {/* Document Verification Section */}
             <section className="mb-12">
-              <h2 className="text-2xl font-bold text-accent-color mb-6">Document Verification</h2>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-accent-color">Document Verification</h2>
+                <div className={`px-4 py-2 rounded-full text-sm font-bold ${
+                  verificationStatus === 'verified' 
+                    ? 'bg-green-500/20 text-green-500 border border-green-500/50' 
+                    : 'bg-yellow-500/20 text-yellow-500 border border-yellow-500/50'
+                }`}>
+                  {verificationStatus === 'verified' ? '✅ Verified' : '⏳ Unverified'}
+                </div>
+              </div>
+              {verificationStatus === 'unverified' && (
+                <div className="mb-4 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                  <p className="text-sm text-yellow-500">
+                    📋 Please upload all required documents (PAN, Aadhar Front & Back) to complete verification
+                  </p>
+                </div>
+              )}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* PAN Document */}
                 <div className="md:col-span-2">

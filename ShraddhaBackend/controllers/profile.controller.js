@@ -50,6 +50,10 @@ export const saveProfile = async (req, res) => {
 
     console.log('Profile picture URL received:', profilePicture);
 
+    // ✅ Check if all required documents are uploaded for verification
+    const allDocumentsUploaded = panDocument && aadharFront && aadharBack;
+    const verificationStatus = allDocumentsUploaded ? 'verified' : 'unverified';
+
     // ✅ Upsert profile (create or update)
     const profileData = {
       user: user._id,
@@ -76,6 +80,7 @@ export const saveProfile = async (req, res) => {
       ...(aadharFront && { aadharFront }),
       ...(aadharBack && { aadharBack }),
       ...(profilePicture && { profilePicture }),
+      verificationStatus, // Auto-set based on document completeness
     };
 
     const profile = await Profile.findOneAndUpdate(

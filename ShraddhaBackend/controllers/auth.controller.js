@@ -309,8 +309,8 @@ export const getProfile = async (req, res) => {
         streetAddress: profile?.streetAddress || user.streetAddress,
         // Include additional profile data
         profilePicture: profile?.profilePicture || null,
-        idDocument: profile?.panDocument || null,
-        addressProof: profile?.aadharFront || null,
+        panDocument: profile?.panDocument || null,
+        aadharFront: profile?.aadharFront || null,
         aadharBack: profile?.aadharBack || null,
         bankAccount: profile?.bankAccount || null,
         bankName: profile?.bankName || null,
@@ -318,7 +318,8 @@ export const getProfile = async (req, res) => {
         swiftCode: profile?.swiftCode || null,
         accountName: profile?.accountName || null,
         upiId: profile?.upiId || null,
-        upiApp: profile?.upiApp || null
+        upiApp: profile?.upiApp || null,
+        verificationStatus: profile?.verificationStatus || 'unverified'
       },
     });
   } catch (error) {
