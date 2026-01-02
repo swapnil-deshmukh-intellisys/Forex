@@ -144,21 +144,21 @@ const AccountPage = ({ userEmail, onSignOut, onProfileClick, onBack, onShowAccou
 
   const demoOffers = [
     {
-      title: "Demo Forex Hedge ₹ 01",
+      title: "Demo Forex Hedge 01",
       status: "Demo",
       icon: "handshake",
-      initialDeposit: "25000",
+      initialDeposit: "250",
       leverage: "1:100",
-      description: "Demo Forex Hedge ₹ 01",
+      description: "Demo Forex Hedge 01",
       gradient: "from-green-400 to-teal-500"
     },
     {
-      title: "Demo Forex Hedge ₹ 02",
+      title: "Demo Forex Hedge 02",
       status: "Demo", 
       icon: "handshake",
-      initialDeposit: "10000",
+      initialDeposit: "1000",
       leverage: "1:100",
-      description: "Demo Forex Hedge ₹ 02",
+      description: "Demo Forex Hedge 02",
       gradient: "from-green-400 to-teal-500"
     }
   ];
@@ -811,7 +811,7 @@ const AccountPage = ({ userEmail, onSignOut, onProfileClick, onBack, onShowAccou
                        <div className="space-y-2 sm:space-y-2.5 mb-4">
                          <div className="flex justify-between items-center bg-accent-color/10 rounded-md p-2">
                            <span className="text-text-secondary text-xs sm:text-sm">Initial deposit:</span>
-                           <span className="text-text-primary font-bold text-xs sm:text-sm">₹{offer.initialDeposit}</span>
+                           <span className="text-text-primary font-bold text-xs sm:text-sm">${offer.initialDeposit} (₹{parseInt(offer.initialDeposit) * 90})</span>
                        </div>
                          <div className="flex justify-between items-center bg-accent-color/10 rounded-md p-2">
                            <span className="text-text-secondary text-xs sm:text-sm">Leverage:</span>
