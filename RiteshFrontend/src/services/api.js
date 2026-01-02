@@ -326,7 +326,7 @@ export const profileAPI = {
     
     // Add all text fields
     Object.keys(profileData).forEach(key => {
-      if (key !== 'panDocument' && key !== 'aadharFront' && key !== 'aadharBack') {
+      if (key !== 'panDocument' && key !== 'aadharFront' && key !== 'aadharBack' && key !== 'profilePicture') {
         formData.append(key, profileData[key]);
       }
     });
@@ -340,6 +340,9 @@ export const profileAPI = {
     }
     if (profileData.aadharBack) {
       formData.append('aadharBack', profileData.aadharBack);
+    }
+    if (profileData.profilePicture) {
+      formData.append('profilePicture', profileData.profilePicture);
     }
 
     const token = getAuthToken();

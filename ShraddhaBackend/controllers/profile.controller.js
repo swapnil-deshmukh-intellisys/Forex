@@ -34,21 +34,21 @@ export const saveProfile = async (req, res) => {
     }
 
 
-    // ✅ Handle uploaded documents
+    // ✅ Handle uploaded documents from Cloudinary
     const panDocument = req.files?.panDocument
-      ? req.files.panDocument[0].filename
+      ? req.files.panDocument[0].path // Cloudinary URL
       : null;
     const aadharFront = req.files?.aadharFront
-      ? req.files.aadharFront[0].filename
+      ? req.files.aadharFront[0].path // Cloudinary URL
       : null;
     const aadharBack = req.files?.aadharBack
-      ? req.files.aadharBack[0].filename
+      ? req.files.aadharBack[0].path // Cloudinary URL
       : null;
     const profilePicture = req.files?.profilePicture
-      ? req.files.profilePicture[0].filename
+      ? req.files.profilePicture[0].path // Cloudinary URL
       : null;
 
-    console.log('Profile picture received:', profilePicture);
+    console.log('Profile picture URL received:', profilePicture);
 
     // ✅ Upsert profile (create or update)
     const profileData = {

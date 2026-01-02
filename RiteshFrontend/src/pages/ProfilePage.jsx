@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect  } from 'react';
 import Header from '../components/Header';
+import { profileAPI, getUploadUrl } from '../services/api';
 
 
 const ProfilePage = ({ userEmail, onSignOut, onBack, onProfileClick }) => {
@@ -202,19 +203,19 @@ const fetchingProfile = useRef(false);
           const fileData = {
             profilePicture: userData.profilePicture ? { 
               name: 'Profile Picture', 
-              url: userData.profilePicture.startsWith('data:') ? userData.profilePicture : `http://localhost:5000/uploads/${userData.profilePicture}` 
+              url: userData.profilePicture.startsWith('data:') ? userData.profilePicture : getUploadUrl(userData.profilePicture) 
             } : null,
             panDocument: userData.idDocument ? { 
               name: 'PAN Document', 
-              url: userData.idDocument.startsWith('data:') ? userData.idDocument : `http://localhost:5000/uploads/${userData.idDocument}` 
+              url: userData.idDocument.startsWith('data:') ? userData.idDocument : getUploadUrl(userData.idDocument) 
             } : null,
             aadharFront: userData.addressProof ? { 
               name: 'Aadhar Front', 
-              url: userData.addressProof.startsWith('data:') ? userData.addressProof : `http://localhost:5000/uploads/${userData.addressProof}` 
+              url: userData.addressProof.startsWith('data:') ? userData.addressProof : getUploadUrl(userData.addressProof) 
             } : null,
             aadharBack: userData.aadharBack ? { 
               name: 'Aadhar Back', 
-              url: userData.aadharBack.startsWith('data:') ? userData.aadharBack : `http://localhost:5000/uploads/${userData.aadharBack}` 
+              url: userData.aadharBack.startsWith('data:') ? userData.aadharBack : getUploadUrl(userData.aadharBack) 
             } : null
           };
           
@@ -280,59 +281,30 @@ const fetchingProfile = useRef(false);
   const user = JSON.parse(sessionStorage.getItem("user"));
 
 
-  const form = new FormData();
-  form.append("email", user.email);
+  // Create profileData object for API
+  const profileData = {
+    ...formData,
+    ...bankInfo,
+    ...upiInfo,
+    // Add files separately - the API service will handle FormData creation
+    profilePicture: uploadedFiles.profilePicture,
+    panDocument: uploadedFiles.panDocument,
+    aadharFront: uploadedFiles.aadharFront,
+    aadharBack: uploadedFiles.aadharBack,
+  };
 
-  // Add personal details
-  Object.keys(formData).forEach((key) => {
-    let value = formData[key];
-    // Convert state name back to code for saving
-    if (key === 'state' && value && stateNameToCode[value]) {
-      value = stateNameToCode[value];
-    }
-    form.append(key, value);
-  });
-
-  // Add bank info
-  Object.keys(bankInfo).forEach((key) => {
-    form.append(key, bankInfo[key]);
-  });
-
-  // Add UPI info
-  Object.keys(upiInfo).forEach((key) => {
-    form.append(key, upiInfo[key]);
-  });
-
-  // Add uploaded documents
-  Object.keys(uploadedFiles).forEach((key) => {
-    if (uploadedFiles[key]) {
-      // If it's a File object (new upload), append the file
-      // If it's an object with URL (saved image), don't append (already saved)
-      if (uploadedFiles[key] instanceof File) {
-        console.log('Appending file to form:', key, uploadedFiles[key]);
-        form.append(key, uploadedFiles[key]);
-      } else {
-        console.log('Skipping saved file:', key, uploadedFiles[key]);
-      }
-    }
-  });
+  // Convert state name back to code for saving
+  if (profileData.state && stateNameToCode[profileData.state]) {
+    profileData.state = stateNameToCode[profileData.state];
+  }
 
   try {
-    const res = await fetch("http://localhost:5000/api/profile/save", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: form,
-    });
-
-    const data = await res.json();
-    if (res.ok && data.success) {
-      alert("✅ Profile saved successfully!");
-    } else {
-      alert(data.message || "Failed to save profile");
-    }
+    const result = await profileAPI.saveProfile(profileData);
+    
+    alert("✅ Profile saved successfully!");
   } catch (error) {
     console.error("Save Profile Error:", error);
-    alert("Something went wrong!");
+    alert(error.message || "Something went wrong!");
   } finally {
     setLoading(false);
   }
