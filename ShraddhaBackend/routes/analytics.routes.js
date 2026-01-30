@@ -4,7 +4,7 @@ import {
   getTradingHistory, 
   getPerformanceMetrics 
 } from '../controllers/analytics.controller.js';
-import { authMiddleware } from '../middleware/authMiddleware.js';
+import authMiddleware from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
