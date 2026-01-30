@@ -70,8 +70,8 @@
 
 ### 1. Install Dependencies
 ```bash
-cd RiteshFrontend && pnpm install
-cd ../ShraddhaBackend && pnpm install
+cd RiteshFrontend && npm install
+cd ../ShraddhaBackend && npm install
 ```
 
 ### 2. Set Up Test Database
@@ -82,11 +82,11 @@ cd ../ShraddhaBackend && pnpm install
 ```bash
 # Frontend
 cd RiteshFrontend
-pnpm test
+npm test
 
 # Backend
 cd ../ShraddhaBackend
-pnpm test
+npm test
 ```
 
 ### 4. Start Writing Your Tests
@@ -173,7 +173,7 @@ See `TESTING_GUIDE.md` for detailed troubleshooting steps.
 
 Common issues:
 - MongoDB not running (backend tests)
-- Missing dependencies (run `pnpm install`)
+- Missing dependencies (run `npm install`)
 - Port conflicts (change PORT in `.env.test`)
 
 ---

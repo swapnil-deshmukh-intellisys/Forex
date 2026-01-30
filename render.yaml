@@ -3,8 +3,8 @@ services:
     name: shraddha-backend
     env: node
     plan: free
-    buildCommand: cd ShraddhaBackend && pnpm install
-    startCommand: cd ShraddhaBackend && pnpm start
+    buildCommand: cd ShraddhaBackend && npm ci
+    startCommand: cd ShraddhaBackend && npm start
     envVars:
       - key: NODE_ENV
         value: production

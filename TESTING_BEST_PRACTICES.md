@@ -120,7 +120,7 @@ it('calls next() when authenticated', () => {
 
 1. Use `console.log` sparingly
 2. Use debugger in IDE
-3. Run single test: `pnpm test -- MyTest.test.js`
+3. Run single test: `npm test -- MyTest.test.js`
 4. Use `--reporter=verbose` for detailed output
 
 ## Performance
