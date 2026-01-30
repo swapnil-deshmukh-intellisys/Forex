@@ -23,7 +23,7 @@ describe('AccountDetailsPage Component', () => {
 
   it('displays account information', () => {
     renderWithProviders(<AccountDetailsPage {...defaultProps} />);
-    expect(screen.getByText(/balance|equity|margin/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/balance|equity|margin/i).length).toBeGreaterThan(0);
   });
 });
 
