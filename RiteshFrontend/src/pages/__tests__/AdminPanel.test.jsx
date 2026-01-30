@@ -18,12 +18,12 @@ describe('AdminPanel Component', () => {
 
   it('renders admin panel when authenticated', () => {
     renderWithProviders(<AdminPanel {...defaultProps} />);
-    expect(screen.getByText(/admin|dashboard/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/admin|dashboard/i).length).toBeGreaterThan(0);
   });
 
   it('renders admin navigation', () => {
     renderWithProviders(<AdminPanel {...defaultProps} />);
-    expect(screen.getByText(/users|accounts|deposits|withdrawals/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/users|accounts|deposits|withdrawals/i).length).toBeGreaterThan(0);
   });
 });
 
