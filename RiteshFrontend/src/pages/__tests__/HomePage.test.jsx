@@ -22,7 +22,7 @@ describe('HomePage Component', () => {
 
   it('renders homepage content', () => {
     renderWithProviders(<HomePage {...defaultProps} />);
-    expect(screen.getByText(/forex|trading|welcome/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/forex|trading|welcome/i).length).toBeGreaterThan(0);
   });
 
   it('calls onSignUpClick when sign up button is clicked', () => {
@@ -40,9 +40,9 @@ describe('HomePage Component', () => {
   it('renders features section', () => {
     renderWithProviders(<HomePage {...defaultProps} />);
     // Check for feature text or icons
-    const featuresText = screen.queryByText(/ultra-low|spreads|instruments|200\+|support/i);
-    if (featuresText) {
-      expect(featuresText).toBeInTheDocument();
+    const featuresText = screen.queryAllByText(/ultra-low|spreads|instruments|200\+|support/i);
+    if (featuresText.length > 0) {
+      expect(featuresText[0]).toBeInTheDocument();
     } else {
       // Features may be rendered differently
       expect(document.body).toBeTruthy();
