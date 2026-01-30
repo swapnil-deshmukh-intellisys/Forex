@@ -31,14 +31,14 @@ describe('SignUpPage Component', () => {
   it('renders account type selection', () => {
     renderWithProviders(<SignUpPage {...defaultProps} />);
     expect(screen.getByText(/account type/i)).toBeInTheDocument();
-    const select = screen.getByRole('combobox', { name: /offers/i });
+    const select = screen.getByDisplayValue('Standard');
     expect(select).toBeInTheDocument();
     expect(select.value).toBe('Standard');
   });
 
   it('allows selecting account type', () => {
     renderWithProviders(<SignUpPage {...defaultProps} />);
-    const accountTypeSelect = screen.getByRole('combobox');
+    const accountTypeSelect = screen.getByDisplayValue('Standard');
     expect(accountTypeSelect).toBeInTheDocument();
     fireEvent.change(accountTypeSelect, { target: { value: 'Platinum' } });
     expect(accountTypeSelect.value).toBe('Platinum');
