@@ -67,3 +67,13 @@ Object.defineProperty(window, 'localStorage', {
   value: localStorageMock,
 });
 
+// Mock alert
+global.alert = vi.fn();
+
+// Mock console methods to reduce noise in tests
+global.console = {
+  ...console,
+  warn: vi.fn(),
+  error: vi.fn(),
+};
+
