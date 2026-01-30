@@ -33,6 +33,7 @@ describe('SignUpPage Component', () => {
     expect(screen.getByText(/account type/i)).toBeInTheDocument();
     const select = screen.getByRole('combobox', { name: /offers/i });
     expect(select).toBeInTheDocument();
+    expect(select.value).toBe('Standard');
   });
 
   it('allows selecting account type', () => {
