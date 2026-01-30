@@ -27,7 +27,7 @@ const TestWrapper = ({ children }) => {
           {children}
         </TradingProvider>
       </BrowserRouter>
-    </QueryWrapperProvider>
+    </QueryClientProvider>
   );
 };
 
