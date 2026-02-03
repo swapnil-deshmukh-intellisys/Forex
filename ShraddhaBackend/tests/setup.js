@@ -1,4 +1,5 @@
 // Test setup file for Jest
+import { jest } from '@jest/globals';
 import mongoose from 'mongoose';
 
 // Increase timeout for database operations
