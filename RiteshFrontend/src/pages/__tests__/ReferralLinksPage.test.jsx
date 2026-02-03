@@ -19,7 +19,7 @@ describe('ReferralLinksPage Component', () => {
 
   it('renders referral links page', () => {
     renderWithProviders(<ReferralLinksPage {...defaultProps} />);
-    expect(screen.getByText(/referral links/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/referral links/i).length).toBeGreaterThan(0);
   });
 
   it('renders create referral link button', () => {

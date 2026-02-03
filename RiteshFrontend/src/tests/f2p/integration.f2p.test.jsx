@@ -8,9 +8,9 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AuthProvider } from '../contexts/AuthContext';
-import { TradingProvider } from '../contexts/TradingContext';
-import App from '../App';
+import { AuthProvider } from '../../contexts/AuthContext';
+import { TradingProvider } from '../../contexts/TradingContext';
+import App from '../../App';
 
 // Test wrapper with all providers and routing
 const TestWrapper = ({ children }) => {

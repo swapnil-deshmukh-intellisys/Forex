@@ -26,7 +26,7 @@ describe('useScrollToTop Hook', () => {
 
   it('scrolls to top when enabled is true', () => {
     renderHook(() => useScrollToTop(true, 0));
-    expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+    expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, left: 0, behavior: 'smooth' });
   });
 
   it('does not scroll when enabled is false', () => {
@@ -36,7 +36,7 @@ describe('useScrollToTop Hook', () => {
 
   it('scrolls to specified offset', () => {
     renderHook(() => useScrollToTop(true, 100));
-    expect(window.scrollTo).toHaveBeenCalledWith({ top: 100, behavior: 'smooth' });
+    expect(window.scrollTo).toHaveBeenCalledWith({ top: 100, left: 0, behavior: 'smooth' });
   });
 });
 

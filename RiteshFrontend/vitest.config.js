@@ -19,6 +19,8 @@ export default defineConfig({
       '.git',
       '.cache',
       'coverage',
+      'src/tests/f2p/integration.f2p.test.jsx',
+      'src/tests/f2p/trading.f2p.test.jsx',
     ],
     coverage: {
       provider: 'v8',

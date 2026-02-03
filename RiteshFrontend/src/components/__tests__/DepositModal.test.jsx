@@ -89,9 +89,9 @@ describe('DepositModal Component', () => {
       if (submitButton) {
         fireEvent.click(submitButton);
         // Should show UPI apps
-        const upiText = screen.queryByText(/phonepe|google pay|paytm/i);
-        if (upiText) {
-          expect(upiText).toBeInTheDocument();
+        const upiText = screen.queryAllByText(/phonepe|google pay|paytm/i);
+        if (upiText.length > 0) {
+          expect(upiText[0]).toBeInTheDocument();
         } else {
           // UPI selection may be rendered differently
           expect(true).toBe(true);

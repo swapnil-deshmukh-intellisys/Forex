@@ -8,8 +8,8 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import TradingDashboard from '../pages/TradingDashboard';
-import { TradingProvider } from '../contexts/TradingContext';
+import TradingDashboard from '../../pages/TradingDashboard';
+import { TradingProvider } from '../../contexts/TradingContext';
 
 // Test wrapper for all providers
 const TestWrapper = ({ children }) => {
