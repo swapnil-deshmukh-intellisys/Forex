@@ -5,12 +5,13 @@
   "private": true,
   "scripts": {
     "test": "npm run test:frontend",
-    "test:frontend": "cd RiteshFrontend && pnpm test --run",
+    "test:frontend": "cd RiteshFrontend && npx vitest --run",
     "test:watch": "npm run test:watch:frontend",
-    "test:watch:frontend": "cd RiteshFrontend && pnpm test:watch",
+    "test:watch:frontend": "cd RiteshFrontend && npx vitest --watch",
     "test:coverage": "npm run test:coverage:frontend",
-    "test:coverage:frontend": "cd RiteshFrontend && pnpm test:coverage",
-    "install:all": "cd RiteshFrontend && pnpm install && cd ../ShraddhaBackend && pnpm install"
+    "test:coverage:frontend": "cd RiteshFrontend && npx vitest --coverage",
+    "lint": "cd RiteshFrontend && npm run lint",
+    "install:all": "cd RiteshFrontend && npm install && cd ../ShraddhaBackend && npm install"
   },
   "keywords": [
     "forex",
