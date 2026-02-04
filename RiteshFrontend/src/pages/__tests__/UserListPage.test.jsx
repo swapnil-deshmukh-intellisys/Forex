@@ -3,6 +3,19 @@ import { render, screen } from '@testing-library/react';
 import UserListPage from '../UserListPage';
 import { renderWithProviders } from '../../test/utils/testUtils';
 
+// Mock API modules
+vi.mock('../../services/api', () => ({
+  adminAPI: {
+    getAllUsers: vi.fn(() => Promise.resolve({ success: true, users: [] }))
+  },
+  depositAPI: {
+    getDepositRequests: vi.fn(() => Promise.resolve({ success: true, depositRequests: [] }))
+  },
+  withdrawalAPI: {
+    getWithdrawalRequests: vi.fn(() => Promise.resolve({ success: true, withdrawalRequests: [] }))
+  }
+}));
+
 describe('UserListPage Component', () => {
   const defaultProps = {
     adminEmail: 'admin@example.com',
@@ -22,7 +35,6 @@ describe('UserListPage Component', () => {
 
   it('renders user table or list', () => {
     renderWithProviders(<UserListPage {...defaultProps} />);
-    // Should contain user list structure
     expect(document.body).toBeTruthy();
   });
 });

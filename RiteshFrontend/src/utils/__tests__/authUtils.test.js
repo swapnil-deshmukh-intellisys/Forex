@@ -1,5 +1,4 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import * as authUtils from '../authUtils';
 
 describe('authUtils', () => {
   beforeEach(() => {

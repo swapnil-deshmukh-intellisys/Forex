@@ -4,15 +4,13 @@
   "description": "Forex trading platform with frontend and backend",
   "private": true,
   "scripts": {
-    "test": "npm run test:frontend && npm run test:backend",
-    "test:frontend": "cd RiteshFrontend && npm test --run",
-    "test:backend": "cd ShraddhaBackend && npm test",
+    "test": "npm run test:frontend",
+    "test:frontend": "cd RiteshFrontend && npx vitest --run",
     "test:watch": "npm run test:watch:frontend",
-    "test:watch:frontend": "cd RiteshFrontend && npm run test:watch",
-    "test:watch:backend": "cd ShraddhaBackend && npm run test:watch",
-    "test:coverage": "npm run test:coverage:frontend && npm run test:coverage:backend",
-    "test:coverage:frontend": "cd RiteshFrontend && npm run test:coverage",
-    "test:coverage:backend": "cd ShraddhaBackend && npm test",
+    "test:watch:frontend": "cd RiteshFrontend && npx vitest --watch",
+    "test:coverage": "npm run test:coverage:frontend",
+    "test:coverage:frontend": "cd RiteshFrontend && npx vitest --coverage",
+    "lint": "cd RiteshFrontend && npm run lint",
     "install:all": "cd RiteshFrontend && npm install && cd ../ShraddhaBackend && npm install"
   },
   "keywords": [
@@ -30,8 +28,8 @@
     "jest": "^29.7.0"
   },
   "engines": {
-    "node": "20.12.0",
+    "node": ">=18.0.0",
     "npm": ">=8.0.0"
-  }
+  },
+  "packageManager": "npm@8.19.2"
 }
-

@@ -2,19 +2,26 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import NotificationSystem from '../components/NotificationSystem';
 
-// Mock localStorage
+// Mock localStorage using Object.defineProperty
 const localStorageMock = {
   getItem: vi.fn(),
   setItem: vi.fn(),
   removeItem: vi.fn(),
   clear: vi.fn()
 };
-global.localStorage = localStorageMock;
+
+Object.defineProperty(global, 'localStorage', {
+  value: localStorageMock,
+  writable: true,
+  configurable: true
+});
 
 describe('NotificationSystem Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorageMock.getItem.mockReturnValue(null);
+    localStorageMock.setItem.mockReturnValue(undefined);
+    localStorageMock.removeItem.mockReturnValue(undefined);
   });
 
   it('renders notification bell', () => {
@@ -28,7 +35,7 @@ describe('NotificationSystem Component', () => {
     const bell = screen.getByRole('button');
     fireEvent.click(bell);
     
-    expect(screen.getByText(/Notifications/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Notifications/i).length).toBeGreaterThan(0);
   });
 
   it('displays unread count badge', async () => {
@@ -46,7 +53,7 @@ describe('NotificationSystem Component', () => {
     const bell = screen.getByRole('button');
     fireEvent.click(bell);
     
-    expect(screen.getByText(/Notifications/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Notifications/i).length).toBeGreaterThan(0);
     
     // Click outside (on the overlay)
     const overlay = document.querySelector('.fixed.inset-0');

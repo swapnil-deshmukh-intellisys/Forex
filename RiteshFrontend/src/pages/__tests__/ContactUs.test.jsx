@@ -6,7 +6,8 @@ import { renderWithProviders } from '../../test/utils/testUtils';
 describe('ContactUs Component', () => {
   it('renders contact us page', () => {
     renderWithProviders(<ContactUs />);
-    expect(screen.getByText(/contact|get in touch/i)).toBeInTheDocument();
+    // 'Get in Touch' is split across elements, so check for parts
+    expect(screen.getAllByText(/get in|touch/i).length).toBeGreaterThan(1);
   });
 
   it('renders contact form', () => {

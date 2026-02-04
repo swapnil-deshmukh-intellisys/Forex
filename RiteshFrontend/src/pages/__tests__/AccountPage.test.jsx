@@ -23,7 +23,7 @@ describe('AccountPage Component', () => {
 
   it('renders account page when authenticated', () => {
     renderWithProviders(<AccountPage {...defaultProps} />);
-    expect(screen.getByText(/account|accounts/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/account|accounts/i).length).toBeGreaterThan(0);
   });
 
   it('redirects to sign in when not authenticated', () => {
@@ -34,7 +34,7 @@ describe('AccountPage Component', () => {
 
   it('renders account tabs', () => {
     renderWithProviders(<AccountPage {...defaultProps} />);
-    expect(screen.getByText(/live|demo/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/live|demo/i).length).toBeGreaterThan(0);
   });
 });
 

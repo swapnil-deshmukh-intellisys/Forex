@@ -19,17 +19,18 @@ describe('ThemeContext', () => {
   });
 
   it('provides default light theme', () => {
-    renderWithProviders(<TestComponent />, { theme: 'light' });
+    renderWithProviders(<TestComponent />);
     expect(screen.getByTestId('theme')).toHaveTextContent('light');
   });
 
   it('provides dark theme when set', () => {
-    renderWithProviders(<TestComponent />, { theme: 'dark' });
+    localStorage.setItem('theme', 'dark');
+    renderWithProviders(<TestComponent />);
     expect(screen.getByTestId('theme')).toHaveTextContent('dark');
   });
 
   it('allows toggling theme', () => {
-    const { rerender } = renderWithProviders(<TestComponent />, { theme: 'light' });
+    const { rerender } = renderWithProviders(<TestComponent />);
     const toggleButton = screen.getByText('Toggle Theme');
     
     fireEvent.click(toggleButton);

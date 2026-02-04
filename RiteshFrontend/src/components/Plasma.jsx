@@ -183,7 +183,6 @@ export const Plasma = ({
         containerRef.current.removeEventListener('mousemove', handleMouseMove);
       }
       try {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
         containerRef.current?.removeChild(canvas);
       } catch {
         console.warn('Canvas already removed from container');
