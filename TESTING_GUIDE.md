@@ -43,7 +43,7 @@ The frontend testing infrastructure uses:
 
 ```bash
 cd RiteshFrontend
-pnpm install
+npm install
 ```
 
 ### Configuration Files
@@ -55,16 +55,16 @@ pnpm install
 
 ```bash
 # Run all tests once
-pnpm test
+npm test
 
 # Run tests in watch mode (recommended during development)
-pnpm test:watch
+npm test:watch
 
 # Run tests with UI (interactive)
-pnpm test:ui
+npm test:ui
 
 # Run tests with coverage report
-pnpm test:coverage
+npm test:coverage
 ```
 
 ### Example Test Structure
@@ -98,7 +98,7 @@ The backend testing infrastructure uses:
 
 ```bash
 cd ShraddhaBackend
-pnpm install
+npm install
 ```
 
 ### Configuration Files
@@ -121,16 +121,16 @@ JWT_SECRET=test_jwt_secret_key_for_testing_only
 
 ```bash
 # Run all tests with coverage
-pnpm test
+npm test
 
 # Run tests in watch mode
-pnpm test:watch
+npm test:watch
 
 # Run only unit tests
-pnpm test:unit
+npm test:unit
 
 # Run only integration tests
-pnpm test:integration
+npm test:integration
 ```
 
 ### Test Database Setup
@@ -192,7 +192,7 @@ describe('POST /api/auth/signup', () => {
 
 ```bash
 # From project root
-cd RiteshFrontend && pnpm test && cd ../ShraddhaBackend && pnpm test
+cd RiteshFrontend && npm test && cd ../ShraddhaBackend && npm test
 ```
 
 ### Run Tests in Parallel
@@ -202,7 +202,7 @@ Create a script in the root `package.json`:
 ```json
 {
   "scripts": {
-    "test:all": "pnpm --filter riteshfrontend test && pnpm --filter shraddhabackend test"
+    "test:all": "npm --filter riteshfrontend test && npm --filter shraddhabackend test"
   }
 }
 ```
@@ -283,7 +283,7 @@ Create a script in the root `package.json`:
 
 ```bash
 cd RiteshFrontend
-pnpm test:coverage
+npm test:coverage
 ```
 
 Coverage report will be generated in `coverage/` directory.
@@ -292,7 +292,7 @@ Coverage report will be generated in `coverage/` directory.
 
 ```bash
 cd ShraddhaBackend
-pnpm test
+npm test
 ```
 
 Coverage report will be generated in `coverage/` directory.
@@ -322,11 +322,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
+      - uses: npm/action-setup@v2
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
-      - run: cd RiteshFrontend && pnpm install && pnpm test:coverage
+      - run: cd RiteshFrontend && npm install && npm test:coverage
 
   backend-tests:
     runs-on: ubuntu-latest
@@ -337,11 +337,11 @@ jobs:
           - 27017:27017
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
+      - uses: npm/action-setup@v2
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
-      - run: cd ShraddhaBackend && pnpm install && pnpm test
+      - run: cd ShraddhaBackend && npm install && npm test
 ```
 
 ---
@@ -447,7 +447,7 @@ jest.mock('../services/emailService', () => ({
 
 ## Next Steps
 
-1. ✅ Install dependencies: `pnpm install` in both directories
+1. ✅ Install dependencies: `npm install` in both directories
 2. ✅ Set up test database for backend
 3. ✅ Run example tests to verify setup
 4. ✅ Start writing tests for your components/controllers

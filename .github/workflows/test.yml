@@ -15,25 +15,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+      - name: Cache npm dependencies
+        uses: actions/cache@v3
         with:
-          version: 10.13.1
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'pnpm'
-          cache-dependency-path: './RiteshFrontend/pnpm-lock.yaml'
+          cache: 'npm'
+          cache-dependency-path: './RiteshFrontend/package-lock.json'
       
       - name: Install dependencies
         working-directory: ./RiteshFrontend
-        run: pnpm install --frozen-lockfile
+        run: npm ci
       
       - name: Run tests
         working-directory: ./RiteshFrontend
-        run: pnpm test:coverage
+        run: npm run test:coverage
       
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
@@ -69,21 +70,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+      - name: Cache npm dependencies
+        uses: actions/cache@v3
         with:
-          version: 10.13.1
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'pnpm'
-          cache-dependency-path: './ShraddhaBackend/pnpm-lock.yaml'
+          cache: 'npm'
+          cache-dependency-path: './ShraddhaBackend/package-lock.json'
       
       - name: Install dependencies
         working-directory: ./ShraddhaBackend
-        run: pnpm install --frozen-lockfile
+        run: npm ci
       
       - name: Create test environment file
         working-directory: ./ShraddhaBackend
@@ -95,7 +97,7 @@ jobs:
       
       - name: Run tests
         working-directory: ./ShraddhaBackend
-        run: pnpm test
+        run: npm test
         env:
           NODE_ENV: test
       

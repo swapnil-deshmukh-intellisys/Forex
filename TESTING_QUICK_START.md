@@ -7,11 +7,11 @@
 ```bash
 # Frontend
 cd RiteshFrontend
-pnpm install
+npm install
 
 # Backend
 cd ../ShraddhaBackend
-pnpm install
+npm install
 ```
 
 ### 2. Backend Test Database Setup
@@ -39,29 +39,29 @@ JWT_SECRET=test_jwt_secret_key
 ```bash
 # Frontend tests
 cd RiteshFrontend
-pnpm test
+npm test
 
 # Backend tests
 cd ../ShraddhaBackend
-pnpm test
+npm test
 ```
 
 ## 📝 Common Commands
 
 ### Frontend
 ```bash
-pnpm test              # Run once
-pnpm test:watch        # Watch mode
-pnpm test:ui           # Interactive UI
-pnpm test:coverage     # With coverage
+npm test              # Run once
+npm test:watch        # Watch mode
+npm test:ui           # Interactive UI
+npm test:coverage     # With coverage
 ```
 
 ### Backend
 ```bash
-pnpm test              # All tests with coverage
-pnpm test:watch        # Watch mode
-pnpm test:unit         # Unit tests only
-pnpm test:integration  # Integration tests only
+npm test              # All tests with coverage
+npm test:watch        # Watch mode
+npm test:unit         # Unit tests only
+npm test:integration  # Integration tests only
 ```
 
 ## 📁 Test File Locations
@@ -84,11 +84,11 @@ Run the example tests:
 ```bash
 # Frontend
 cd RiteshFrontend
-pnpm test src/widgets/__tests__/MiniChartUsd.test.jsx
+npm test src/widgets/__tests__/MiniChartUsd.test.jsx
 
 # Backend
 cd ../ShraddhaBackend
-pnpm test tests/unit/auth.controller.test.js
+npm test tests/unit/auth.controller.test.js
 ```
 
 If these pass, your setup is complete! 🎉
@@ -111,7 +111,7 @@ If these pass, your setup is complete! 🎉
 - Check `jest.config.js` and `vitest.config.js` patterns
 
 **Import errors?**
-- Run `pnpm install` again
+- Run `npm install` again
 - Clear `node_modules` and reinstall
 
 For more help, see `TESTING_GUIDE.md`

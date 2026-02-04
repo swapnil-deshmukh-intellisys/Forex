@@ -14,7 +14,7 @@ Your backend is ready for deployment on Render with the following setup:
 - [x] Error handling middleware
 - [x] Database connection with fallback
 - [x] Render.yaml configuration file created
-- [x] **Uses pnpm** - Faster, more efficient package management
+- [x] **Uses npm** - Faster, more efficient package management
 
 ### ⚠️ Required Before Deployment:
 
@@ -42,8 +42,8 @@ Your backend is ready for deployment on Render with the following setup:
 1. Connect your GitHub repository
 2. Select "Web Service"
 3. Use these settings:
-   - **Build Command:** `pnpm install`
-   - **Start Command:** `pnpm start`
+   - **Build Command:** `npm install`
+   - **Start Command:** `npm start`
    - **Node Version:** 18.x or 20.x
 
 ### Option 2: Using render.yaml (Recommended)
