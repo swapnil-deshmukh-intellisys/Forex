@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { screen, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import MiniChartUsd from '../MiniChartUsd';
 import { renderWithProviders } from '../../test/utils/testUtils';
 
