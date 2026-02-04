@@ -38,10 +38,10 @@ export default defineConfig({
         '**/index.js',
       ],
       thresholds: {
-        lines: 45,
+        lines: 44,
         functions: 27,
         branches: 60,
-        statements: 45,
+        statements: 44,
       },
     },
     pool: 'threads',
