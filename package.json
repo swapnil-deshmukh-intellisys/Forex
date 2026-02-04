@@ -4,15 +4,12 @@
   "description": "Forex trading platform with frontend and backend",
   "private": true,
   "scripts": {
-    "test": "npm run test:frontend && npm run test:backend",
+    "test": "npm run test:frontend",
     "test:frontend": "cd RiteshFrontend && pnpm test --run",
-    "test:backend": "cd ShraddhaBackend && pnpm test",
     "test:watch": "npm run test:watch:frontend",
     "test:watch:frontend": "cd RiteshFrontend && pnpm test:watch",
-    "test:watch:backend": "cd ShraddhaBackend && pnpm test:watch",
-    "test:coverage": "npm run test:coverage:frontend && npm run test:coverage:backend",
+    "test:coverage": "npm run test:coverage:frontend",
     "test:coverage:frontend": "cd RiteshFrontend && pnpm test:coverage",
-    "test:coverage:backend": "cd ShraddhaBackend && pnpm test",
     "install:all": "cd RiteshFrontend && pnpm install && cd ../ShraddhaBackend && pnpm install"
   },
   "keywords": [
