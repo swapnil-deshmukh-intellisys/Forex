@@ -4,17 +4,17 @@
   "description": "Forex trading platform with frontend and backend",
   "private": true,
   "scripts": {
-    "test": "npm run test:frontend && npm run test:backend",
+    "test": "npx --yes vitest --run && npx --yes jest --coverage",
     "test:frontend": "cd RiteshFrontend && npx vitest --run",
-    "test:backend": "cd ShraddhaBackend && npm test",
-    "test:watch": "npm run test:watch:frontend && npm run test:watch:backend",
+    "test:backend": "cd ShraddhaBackend && npx jest --coverage",
+    "test:watch": "npx --yes vitest --watch && npx --yes jest --watch",
     "test:watch:frontend": "cd RiteshFrontend && npx vitest --watch",
-    "test:watch:backend": "cd ShraddhaBackend && npm test --watch",
-    "test:coverage": "npm run test:coverage:frontend && npm run test:coverage:backend",
+    "test:watch:backend": "cd ShraddhaBackend && npx jest --watch",
+    "test:coverage": "npx --yes vitest --coverage && npx --yes jest --coverage",
     "test:coverage:frontend": "cd RiteshFrontend && npx vitest --coverage",
-    "test:coverage:backend": "cd ShraddhaBackend && npm test --coverage",
-    "lint": "cd RiteshFrontend && npm run lint",
-    "install:all": "cd RiteshFrontend && npm install && cd ../ShraddhaBackend && npm install"
+    "test:coverage:backend": "cd ShraddhaBackend && npx jest --coverage",
+    "lint": "cd RiteshFrontend && npx eslint .",
+    "install:all": "cd RiteshFrontend && npx npm install && cd ../ShraddhaBackend && npx npm install"
   },
   "keywords": [
     "forex",
