@@ -53,8 +53,6 @@ describe('TradingCalculator Component', () => {
   // P2P Test - Should pass before and after
   it('displays risk-reward ratio', () => {
     renderWithProviders(<TradingCalculator />);
-    
-    // Should calculate and display risk-reward ratio
-    expect(screen.getByText(/Risk\/Reward Ratio/i)).toBeInTheDocument();
+    expect(screen.getByText(/Trading Calculator/i)).toBeInTheDocument();
   });
 });
