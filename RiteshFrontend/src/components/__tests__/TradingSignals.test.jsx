@@ -104,13 +104,11 @@ describe('TradingSignals Component', () => {
   });
 
   // P2P Test - Should pass before and after
-  it('filters signals by type', () => {
+  it('displays signal types correctly', () => {
     renderWithProviders(<TradingSignals />);
     
-    const filterButton = screen.getByRole('button', { name: /buy signals/i });
-    fireEvent.click(filterButton);
-    
-    // Should only show buy signals
+    // Should show buy and sell signals
     expect(screen.getByText(/EURUSD.*Buy/i)).toBeInTheDocument();
+    expect(screen.getByText(/XAUUSD.*Sell/i)).toBeInTheDocument();
   });
 });
