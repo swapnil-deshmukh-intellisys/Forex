@@ -23,13 +23,13 @@ const MarketNewsFeed = () => {
     setLoading(true);
     // Simulate API call - in production, this would fetch from a real news API
     setTimeout(() => {
-      const mockNews = generateMockNews();
+      const mockNews = generateMockNews(filter);
       setNews(mockNews);
       setLoading(false);
     }, 500);
   };
 
-  const generateMockNews = () => {
+  const generateMockNews = (currentFilter = 'all') => {
     const categories = ['forex', 'crypto', 'stocks', 'general'];
     const sentiments = ['positive', 'negative', 'neutral'];
     const headlines = [
@@ -51,7 +51,7 @@ const MarketNewsFeed = () => {
       const sentiment = sentiments[Math.floor(Math.random() * sentiments.length)];
       const headline = headlines[Math.floor(Math.random() * headlines.length)];
       
-      if (filter !== 'all' && category !== filter) continue;
+      if (currentFilter !== 'all' && category !== currentFilter) continue;
 
       newsItems.push({
         id: `news_${i + 1}`,
@@ -72,9 +72,9 @@ const MarketNewsFeed = () => {
   const getSentimentIcon = (sentiment) => {
     switch (sentiment) {
       case 'positive':
-        return <FaArrowTrendingUp className="text-success-color" />;
+        return <FaArrowTrendingUp className="text-green-600" />;
       case 'negative':
-        return <FaArrowTrendingDown className="text-danger-color" />;
+        return <FaArrowTrendingDown className="text-red-600" />;
       default:
         return null;
     }
@@ -83,29 +83,29 @@ const MarketNewsFeed = () => {
   const getSentimentColor = (sentiment) => {
     switch (sentiment) {
       case 'positive':
-        return 'text-success-color bg-success-color/10';
+        return 'text-green-600 bg-green-100';
       case 'negative':
-        return 'text-danger-color bg-danger-color/10';
+        return 'text-red-600 bg-red-100';
       default:
-        return 'text-text-secondary bg-bg-secondary';
+        return 'text-gray-600 bg-gray-100';
     }
   };
 
   const getCategoryColor = (category) => {
     const colors = {
-      forex: 'bg-primary-blue/10 text-primary-blue',
-      crypto: 'bg-accent-color/10 text-accent-color',
-      stocks: 'bg-warning-color/10 text-warning-color',
-      general: 'bg-text-secondary/10 text-text-secondary'
+      forex: 'bg-blue-100 text-blue-800',
+      crypto: 'bg-purple-100 text-purple-800',
+      stocks: 'bg-yellow-100 text-yellow-800',
+      general: 'bg-gray-100 text-gray-800'
     };
     return colors[category] || colors.general;
   };
 
   const getImpactBadge = (impact) => {
     const styles = {
-      high: 'bg-danger-color text-text-quaternary',
-      medium: 'bg-warning-color text-text-quaternary',
-      low: 'bg-text-secondary text-text-primary'
+      high: 'bg-red-600 text-white',
+      medium: 'bg-yellow-600 text-white',
+      low: 'bg-gray-600 text-white'
     };
     return styles[impact] || styles.low;
   };
@@ -125,16 +125,16 @@ const MarketNewsFeed = () => {
     : news.filter(item => item.category === filter);
 
   return (
-    <div className="bg-card-bg border border-border-color rounded-xl p-6">
+    <div className="bg-white border border-gray-200 rounded-xl p-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
-          <FaNewspaper className="text-accent-color text-2xl" />
-          <h2 className="text-2xl font-bold text-text-primary">Market News</h2>
+          <FaNewspaper className="text-blue-600 text-2xl" />
+          <h2 className="text-2xl font-bold text-gray-900">Market News</h2>
         </div>
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="bg-bg-secondary border border-border-color rounded-lg px-4 py-2 text-text-primary"
+          className="bg-gray-50 border border-gray-300 rounded-lg px-4 py-2 text-gray-900"
         >
           <option value="all">All News</option>
           <option value="forex">Forex</option>
@@ -145,23 +145,23 @@ const MarketNewsFeed = () => {
       </div>
 
       {loading ? (
-        <div className="text-center py-8 text-text-secondary">
+        <div className="text-center py-8 text-gray-500">
           Loading news...
         </div>
       ) : filteredNews.length === 0 ? (
-        <div className="text-center py-8 text-text-secondary">
+        <div className="text-center py-8 text-gray-500">
           <FaNewspaper className="text-4xl mx-auto mb-4 opacity-50" />
           <p>No news available</p>
         </div>
       ) : (
-        <div className="space-y-4 max-h-[600px] overflow-y-auto">
+        <div className="space-y-4 overflow-y-auto" style={{ maxHeight: '600px' }}>
           {filteredNews.map((item) => (
             <div
               key={item.id}
-              className="p-4 bg-bg-secondary rounded-lg border border-border-color hover:border-accent-color transition-all cursor-pointer group"
+              className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-300 transition-all cursor-pointer group"
             >
               <div className="flex items-start justify-between mb-2">
-                <div className="flex items-center space-x-2 flex-wrap">
+                <div className="flex items-center space-x-2">
                   <span className={`px-2 py-1 rounded text-xs font-semibold capitalize ${getCategoryColor(item.category)}`}>
                     {item.category}
                   </span>
@@ -175,26 +175,17 @@ const MarketNewsFeed = () => {
                     </span>
                   )}
                 </div>
-                <a
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-text-secondary hover:text-accent-color transition-colors"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <FaExternalLinkAlt className="text-sm" />
-                </a>
               </div>
               
-              <h3 className="text-lg font-semibold text-text-primary mb-2 group-hover:text-accent-color transition-colors">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
                 {item.headline}
               </h3>
               
-              <p className="text-text-secondary text-sm mb-3 line-clamp-2">
+              <p className="text-gray-600 text-sm mb-3 overflow-hidden" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
                 {item.summary}
               </p>
               
-              <div className="flex items-center justify-between text-xs text-text-secondary">
+              <div className="flex items-center justify-between text-xs text-gray-500">
                 <div className="flex items-center space-x-4">
                   <span className="flex items-center space-x-1">
                     <FaClock />
@@ -209,11 +200,11 @@ const MarketNewsFeed = () => {
       )}
 
       {/* Refresh Button */}
-      <div className="mt-6 pt-6 border-t border-border-color">
+      <div className="mt-6 pt-6 border-t border-gray-200">
         <button
           onClick={fetchNews}
           disabled={loading}
-          className="w-full bg-accent-color text-text-quaternary px-4 py-2 rounded-lg hover:bg-accent-color/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? 'Loading...' : 'Refresh News'}
         </button>

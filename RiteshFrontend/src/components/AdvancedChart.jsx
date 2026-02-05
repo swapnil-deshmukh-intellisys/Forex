@@ -5,12 +5,16 @@ const AdvancedChart = ({ symbol = 'EURUSD', priceData = null }) => {
   const [indicators, setIndicators] = useState(null);
   const [signals, setSignals] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [selectedIndicators, setSelectedIndicators] = useState(['SMA', 'RSI', 'MACD']);
 
   useEffect(() => {
-    if (priceData && priceData.length > 0) {
-      loadAnalysis();
+    // F2P FIX: Handle empty priceData gracefully
+    if (!priceData || priceData.length === 0) {
+      setError('No price data available');
+      return;
     }
+    loadAnalysis();
   }, [priceData, selectedIndicators]);
 
   const loadAnalysis = async () => {
@@ -24,6 +28,8 @@ const AdvancedChart = ({ symbol = 'EURUSD', priceData = null }) => {
       setSignals(signalsRes);
     } catch (error) {
       console.error('Error loading technical analysis:', error);
+      // F2P FIX: Add error state handling
+      setError('Failed to load technical analysis data');
     } finally {
       setLoading(false);
     }
@@ -48,6 +54,18 @@ const AdvancedChart = ({ symbol = 'EURUSD', priceData = null }) => {
   };
 
   const chartData = priceData || generateMockData();
+
+  // F2P FIX: Add error display
+  if (error) {
+    return (
+      <div className="bg-card-bg p-6 rounded-lg border border-border">
+        <div className="text-center py-8">
+          <p className="text-red-500 text-lg font-semibold">Error</p>
+          <p className="text-text-secondary">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-card-bg p-6 rounded-lg border border-border">
